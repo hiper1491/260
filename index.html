@@ -79,12 +79,13 @@
 
         h1 {
             margin-bottom: 10px;
-            font-size: 2.2rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            color: #ffd700;
+            font-size: 2.4rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            color: #ffdd44;
             z-index: 10;
             text-align: center;
             font-weight: bold;
+            letter-spacing: 2px;
         }
 
         .subtitle {
@@ -174,14 +175,28 @@
             100% { transform: scale(1); }
         }
 
-        /* KIN 名稱顯示 */
+        /* KIN 名稱顯示（已移到共時訊息框內，此處隱藏） */
         .kin-name {
-            font-size: 1.3rem;
-            color: #ffd700;
-            margin-top: 5px;
+            display: none;
+        }
+
+        /* 共時訊息框內的標題 */
+        .kin-title {
             text-align: center;
-            min-height: 30px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .kin-title .kin-name-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffd700;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .kin-title .wave-name {
+            font-size: 0.9rem;
+            color: rgba(255, 215, 0, 0.7);
         }
 
         /* KIN 顏色區分 - 紅白藍黃 */
@@ -194,15 +209,15 @@
             color: #ffffff;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-        .kin-name.kin-red {
-            color: #ff6b6b;
-        }
         .message-box.kin-red {
             background: linear-gradient(145deg, rgba(180, 40, 40, 0.6), rgba(120, 20, 20, 0.6));
             border-color: rgba(255, 80, 80, 0.4);
         }
-        .message-box.kin-red h3 {
+        .message-box.kin-red .kin-name-text {
             color: #ff8a8a;
+        }
+        .message-box.kin-red .kin-title {
+            border-bottom-color: rgba(255, 80, 80, 0.4);
         }
 
         .number-display.kin-white {
@@ -214,15 +229,15 @@
             color: #ffffff;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-        .kin-name.kin-white {
-            color: #ffffff;
-        }
         .message-box.kin-white {
             background: linear-gradient(145deg, rgba(180, 180, 190, 0.6), rgba(130, 130, 140, 0.6));
             border-color: rgba(255, 255, 255, 0.4);
         }
-        .message-box.kin-white h3 {
+        .message-box.kin-white .kin-name-text {
             color: #ffffff;
+        }
+        .message-box.kin-white .kin-title {
+            border-bottom-color: rgba(255, 255, 255, 0.4);
         }
 
         .number-display.kin-blue {
@@ -234,15 +249,15 @@
             color: #ffffff;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-        .kin-name.kin-blue {
-            color: #5cb8ff;
-        }
         .message-box.kin-blue {
             background: linear-gradient(145deg, rgba(30, 80, 160, 0.6), rgba(20, 50, 120, 0.6));
             border-color: rgba(80, 150, 255, 0.4);
         }
-        .message-box.kin-blue h3 {
+        .message-box.kin-blue .kin-name-text {
             color: #7ec8ff;
+        }
+        .message-box.kin-blue .kin-title {
+            border-bottom-color: rgba(80, 150, 255, 0.4);
         }
 
         .number-display.kin-yellow {
@@ -254,15 +269,15 @@
             color: #ffffff;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-        .kin-name.kin-yellow {
-            color: #ffd700;
-        }
         .message-box.kin-yellow {
             background: linear-gradient(145deg, rgba(180, 140, 0, 0.6), rgba(140, 100, 0, 0.6));
             border-color: rgba(255, 215, 0, 0.4);
         }
-        .message-box.kin-yellow h3 {
+        .message-box.kin-yellow .kin-name-text {
             color: #ffe44d;
+        }
+        .message-box.kin-yellow .kin-title {
+            border-bottom-color: rgba(255, 215, 0, 0.4);
         }
 
         /* 共時訊息 */
@@ -577,7 +592,7 @@
         <div class="kin-name" id="kinName"></div>
 
         <div class="message-box">
-            <h3>&#10022; 共時訊息 &#10022;</h3>
+            <div class="kin-title" id="kinTitle"></div>
             <p id="message">點擊下方按鈕，抽取今日的共時訊息...</p>
         </div>
 
@@ -862,6 +877,7 @@
         const numberEl = document.getElementById('number');
         const numberDisplay = document.getElementById('numberDisplay');
         const kinNameEl = document.getElementById('kinName');
+        const kinTitleEl = document.getElementById('kinTitle');
         const messageEl = document.getElementById('message');
         const messageBox = document.querySelector('.message-box');
         const drawBtn = document.getElementById('drawBtn');
@@ -949,6 +965,20 @@
 
         function getRandomNumber() {
             return Math.floor(Math.random() * (MAX_NUMBER - MIN_NUMBER + 1)) + MIN_NUMBER;
+        }
+
+        // 20個波符名稱（每13個KIN為一波）
+        const waveNames = [
+            '紅龍波', '白巫師波', '藍手波', '黃太陽波', '紅天行者波',
+            '白世界橋波', '藍風暴波', '黃人波', '紅蛇波', '白鏡波',
+            '藍猴波', '黃種子波', '紅地球波', '白狗波', '藍夜波',
+            '黃戰士波', '紅月波', '白風波', '藍鷹波', '黃星星波'
+        ];
+
+        // 獲取波符名稱
+        function getWaveName(kinNumber) {
+            const waveIndex = Math.floor((kinNumber - 1) / 13);
+            return waveNames[waveIndex];
         }
 
         // 獲取 KIN 顏色類別：1紅 2白 3藍 4黃，依序循環
@@ -1093,7 +1123,10 @@
                     messageBox.classList.add(colorClass);
 
                     const kinInfo = kinData[finalNumber];
+                    const waveName = getWaveName(finalNumber);
+
                     kinNameEl.textContent = kinInfo.name;
+                    kinTitleEl.innerHTML = `<span class="kin-name-text">${kinInfo.name}</span><span class="wave-name">${waveName}</span>`;
                     messageEl.textContent = kinInfo.message;
 
                     triggerWinEffects();
@@ -1119,6 +1152,7 @@
         function showHistoryKin(num) {
             const kinInfo = kinData[num];
             const colorClass = getKinColorClass(num);
+            const waveName = getWaveName(num);
 
             // 更新顯示
             clearKinColorClasses();
@@ -1127,6 +1161,7 @@
             kinNameEl.classList.add(colorClass);
             kinNameEl.textContent = kinInfo.name;
             messageBox.classList.add(colorClass);
+            kinTitleEl.innerHTML = `<span class="kin-name-text">${kinInfo.name}</span><span class="wave-name">${waveName}</span>`;
             messageEl.textContent = kinInfo.message;
         }
 
