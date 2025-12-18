@@ -80,10 +80,11 @@
         h1 {
             margin-bottom: 10px;
             font-size: 2.2rem;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             color: #ffd700;
             z-index: 10;
             text-align: center;
+            font-weight: bold;
         }
 
         .subtitle {
@@ -97,9 +98,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 18px;
+            gap: 10px;
             z-index: 10;
-            padding: 15px;
+            padding: 10px;
             max-width: 600px;
         }
 
@@ -177,10 +178,91 @@
         .kin-name {
             font-size: 1.3rem;
             color: #ffd700;
-            margin-top: 10px;
+            margin-top: 5px;
             text-align: center;
             min-height: 30px;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* KIN 顏色區分 - 紅白藍黃 */
+        .number-display.kin-red {
+            background: linear-gradient(145deg, rgba(180, 40, 40, 0.9), rgba(120, 20, 20, 0.9));
+            border-color: rgba(255, 80, 80, 0.7);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        .number-display.kin-red #number {
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .kin-name.kin-red {
+            color: #ff6b6b;
+        }
+        .message-box.kin-red {
+            background: linear-gradient(145deg, rgba(180, 40, 40, 0.6), rgba(120, 20, 20, 0.6));
+            border-color: rgba(255, 80, 80, 0.4);
+        }
+        .message-box.kin-red h3 {
+            color: #ff8a8a;
+        }
+
+        .number-display.kin-white {
+            background: linear-gradient(145deg, rgba(200, 200, 210, 0.9), rgba(150, 150, 160, 0.9));
+            border-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        .number-display.kin-white #number {
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .kin-name.kin-white {
+            color: #ffffff;
+        }
+        .message-box.kin-white {
+            background: linear-gradient(145deg, rgba(180, 180, 190, 0.6), rgba(130, 130, 140, 0.6));
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .message-box.kin-white h3 {
+            color: #ffffff;
+        }
+
+        .number-display.kin-blue {
+            background: linear-gradient(145deg, rgba(30, 80, 160, 0.9), rgba(20, 50, 120, 0.9));
+            border-color: rgba(80, 150, 255, 0.7);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        .number-display.kin-blue #number {
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .kin-name.kin-blue {
+            color: #5cb8ff;
+        }
+        .message-box.kin-blue {
+            background: linear-gradient(145deg, rgba(30, 80, 160, 0.6), rgba(20, 50, 120, 0.6));
+            border-color: rgba(80, 150, 255, 0.4);
+        }
+        .message-box.kin-blue h3 {
+            color: #7ec8ff;
+        }
+
+        .number-display.kin-yellow {
+            background: linear-gradient(145deg, rgba(180, 140, 0, 0.9), rgba(140, 100, 0, 0.9));
+            border-color: rgba(255, 215, 0, 0.7);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        .number-display.kin-yellow #number {
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .kin-name.kin-yellow {
+            color: #ffd700;
+        }
+        .message-box.kin-yellow {
+            background: linear-gradient(145deg, rgba(180, 140, 0, 0.6), rgba(140, 100, 0, 0.6));
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+        .message-box.kin-yellow h3 {
+            color: #ffe44d;
         }
 
         /* 共時訊息 */
@@ -258,6 +340,12 @@
             font-size: 1rem;
         }
 
+        .history-hint {
+            font-size: 0.8rem;
+            color: rgba(255, 215, 0, 0.5);
+            font-weight: normal;
+        }
+
         .history-list {
             display: flex;
             flex-wrap: wrap;
@@ -276,6 +364,34 @@
             color: #ffd700;
             font-size: 0.85rem;
             animation: fadeIn 0.3s ease;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .history-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .history-item.kin-red {
+            background: rgba(255, 80, 80, 0.15);
+            border-color: rgba(255, 80, 80, 0.4);
+            color: #ff6b6b;
+        }
+        .history-item.kin-white {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+        }
+        .history-item.kin-blue {
+            background: rgba(80, 150, 255, 0.15);
+            border-color: rgba(80, 150, 255, 0.4);
+            color: #5cb8ff;
+        }
+        .history-item.kin-yellow {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.4);
+            color: #ffd700;
         }
 
         @keyframes fadeIn {
@@ -467,10 +583,8 @@
 
         <button class="draw-btn" id="drawBtn" onclick="startDraw()">抽取共時</button>
 
-        <p class="info">KIN 1 - 260 | 卓爾金曆</p>
-
         <div class="result-history">
-            <h3>抽取紀錄</h3>
+            <h3>抽取紀錄 <span class="history-hint">（點擊可回顧）</span></h3>
             <div class="history-list" id="historyList"></div>
             <button class="clear-btn" onclick="clearHistory()">清除紀錄</button>
         </div>
@@ -749,6 +863,7 @@
         const numberDisplay = document.getElementById('numberDisplay');
         const kinNameEl = document.getElementById('kinName');
         const messageEl = document.getElementById('message');
+        const messageBox = document.querySelector('.message-box');
         const drawBtn = document.getElementById('drawBtn');
         const historyList = document.getElementById('historyList');
         const confettiContainer = document.getElementById('confettiContainer');
@@ -770,36 +885,60 @@
             }
         }
 
+        // 五聲音階音符 (C D E G A) - 有東方神秘感
+        const pentatonicNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+        let tickNoteIndex = 0;
+
         function playTickSound() {
             if (!soundEnabled || !audioContext) return;
+
+            // 使用五聲音階循環，產生旋律感
+            const freq = pentatonicNotes[tickNoteIndex % pentatonicNotes.length];
+            tickNoteIndex++;
+
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
-            oscillator.frequency.value = 600 + Math.random() * 300;
-            oscillator.type = 'sine';
-            gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            oscillator.frequency.value = freq;
+            oscillator.type = 'triangle';  // 更柔和的三角波
+            gainNode.gain.setValueAtTime(0.06, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
             oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.05);
+            oscillator.stop(audioContext.currentTime + 0.15);
         }
 
         function playWinSound() {
             if (!soundEnabled || !audioContext) return;
-            const notes = [392, 523.25, 659.25, 783.99, 1046.50];
-            notes.forEach((freq, index) => {
+
+            // 和弦琶音 - C大調和弦 (C E G C E)
+            const chordNotes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+
+            chordNotes.forEach((freq, index) => {
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                oscillator.connect(gainNode);
+
+                // 加入濾波器讓聲音更溫暖
+                const filter = audioContext.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 2000;
+
+                oscillator.connect(filter);
+                filter.connect(gainNode);
                 gainNode.connect(audioContext.destination);
+
                 oscillator.frequency.value = freq;
-                oscillator.type = 'sine';
+                oscillator.type = 'triangle';
+
                 const startTime = audioContext.currentTime + index * 0.12;
-                gainNode.gain.setValueAtTime(0.25, startTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.35);
+                gainNode.gain.setValueAtTime(0.12, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
                 oscillator.start(startTime);
-                oscillator.stop(startTime + 0.35);
+                oscillator.stop(startTime + 0.5);
             });
+
+            // 重置滾動音符索引
+            tickNoteIndex = 0;
         }
 
         function toggleSound() {
@@ -810,6 +949,31 @@
 
         function getRandomNumber() {
             return Math.floor(Math.random() * (MAX_NUMBER - MIN_NUMBER + 1)) + MIN_NUMBER;
+        }
+
+        // 獲取 KIN 顏色類別：1紅 2白 3藍 4黃，依序循環
+        function getKinColorClass(kinNumber) {
+            const remainder = kinNumber % 4;
+            if (remainder === 1) return 'kin-red';
+            if (remainder === 2) return 'kin-white';
+            if (remainder === 3) return 'kin-blue';
+            return 'kin-yellow'; // remainder === 0
+        }
+
+        // 獲取顏色中文名稱
+        function getKinColorName(kinNumber) {
+            const remainder = kinNumber % 4;
+            if (remainder === 1) return '紅';
+            if (remainder === 2) return '白';
+            if (remainder === 3) return '藍';
+            return '黃';
+        }
+
+        // 清除所有顏色類別
+        function clearKinColorClasses() {
+            numberDisplay.classList.remove('kin-red', 'kin-white', 'kin-blue', 'kin-yellow');
+            kinNameEl.classList.remove('kin-red', 'kin-white', 'kin-blue', 'kin-yellow');
+            messageBox.classList.remove('kin-red', 'kin-white', 'kin-blue', 'kin-yellow');
         }
 
         function createConfetti() {
@@ -899,6 +1063,7 @@
             numberEl.classList.add('rolling');
             numberEl.classList.remove('winner');
             numberDisplay.classList.remove('winner');
+            clearKinColorClasses();
             kinNameEl.textContent = '';
             messageEl.textContent = '正在連結宇宙能量...';
 
@@ -921,6 +1086,12 @@
                     drawBtn.disabled = false;
                     drawBtn.textContent = '再抽一次';
 
+                    // 添加顏色類別
+                    const colorClass = getKinColorClass(finalNumber);
+                    numberDisplay.classList.add(colorClass);
+                    kinNameEl.classList.add(colorClass);
+                    messageBox.classList.add(colorClass);
+
                     const kinInfo = kinData[finalNumber];
                     kinNameEl.textContent = kinInfo.name;
                     messageEl.textContent = kinInfo.message;
@@ -934,14 +1105,29 @@
 
         function addToHistory(number) {
             history.unshift(number);
-            if (history.length > 15) history.pop();
+            if (history.length > 5) history.pop();
             renderHistory();
         }
 
         function renderHistory() {
             historyList.innerHTML = history
-                .map(num => `<div class="history-item">KIN ${num}</div>`)
+                .map(num => `<div class="history-item ${getKinColorClass(num)}" onclick="showHistoryKin(${num})">KIN ${num}</div>`)
                 .join('');
+        }
+
+        // 點擊歷史記錄查看該 KIN 的訊息
+        function showHistoryKin(num) {
+            const kinInfo = kinData[num];
+            const colorClass = getKinColorClass(num);
+
+            // 更新顯示
+            clearKinColorClasses();
+            numberEl.textContent = `KIN ${num}`;
+            numberDisplay.classList.add(colorClass);
+            kinNameEl.classList.add(colorClass);
+            kinNameEl.textContent = kinInfo.name;
+            messageBox.classList.add(colorClass);
+            messageEl.textContent = kinInfo.message;
         }
 
         function clearHistory() {
