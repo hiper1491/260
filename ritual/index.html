@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>13月亮曆的小共時</title>
+    <title>共時儀式 | 13月亮曆的小共時</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&display=swap');
 
@@ -18,322 +18,829 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center;
             background: linear-gradient(
                 165deg,
-                #f8f6f1 0%,
-                #f2efe8 25%,
-                #eef1ef 50%,
-                #f5f3ee 75%,
-                #f8f7f4 100%
+                #1a1a2e 0%,
+                #16213e 50%,
+                #1a1a2e 100%
             );
             font-family: 'Noto Serif TC', serif;
-            color: #3a3a3a;
+            color: #e8e4dc;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* 柔和光暈背景 - 霧感 */
+        /* 星空背景 */
         body::before {
             content: '';
             position: fixed;
-            top: -30%;
-            right: -20%;
-            width: 70%;
-            height: 70%;
-            background: radial-gradient(
-                circle,
-                rgba(200, 190, 170, 0.15) 0%,
-                transparent 60%
-            );
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.3), transparent);
+            background-size: 200px 200px;
+            animation: twinkle 8s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
         }
 
-        body::after {
-            content: '';
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* 返回連結 */
+        .back-link {
             position: fixed;
-            bottom: -20%;
-            left: -15%;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(
-                circle,
-                rgba(160, 180, 175, 0.12) 0%,
-                transparent 60%
-            );
-            pointer-events: none;
-            z-index: 0;
+            top: 24px;
+            left: 24px;
+            font-size: 14px;
+            color: rgba(255, 215, 0, 0.5);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            color: rgba(255, 215, 0, 0.8);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
         }
 
         .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 50px;
+            justify-content: center;
             z-index: 10;
-            padding: 50px 40px 40px;
-            max-width: 1200px;
+            padding: 40px 24px;
+            max-width: 600px;
             width: 100%;
+            min-height: 100vh;
         }
 
-        /* HUNAB KU 圖像區 */
-        .hunab-ku {
-            width: 216px;
-            height: 216px;
+        /* 階段容器 */
+        .stage {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        .stage.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 開始階段 */
+        .stage-start h1 {
+            font-size: 32px;
+            font-weight: 300;
+            color: rgba(255, 215, 0, 0.9);
+            margin-bottom: 24px;
+            letter-spacing: 0.1em;
+        }
+
+        .stage-start p {
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 2;
+            margin-bottom: 40px;
+        }
+
+        .start-btn {
+            padding: 16px 48px;
+            font-size: 16px;
+            font-weight: 400;
+            font-family: 'Noto Serif TC', serif;
+            color: #1a1a2e;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.9), rgba(255, 180, 0, 0.9));
+            border: none;
+            border-radius: 32px;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        /* 呼吸階段 */
+        .stage-breathe h2 {
+            font-size: 24px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 48px;
+            letter-spacing: 0.15em;
+        }
+
+        .breath-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .breath-circle.inhale {
+            animation: breatheIn 4s ease-in-out forwards;
+        }
+
+        .breath-circle.exhale {
+            animation: breatheOut 4s ease-in-out forwards;
+        }
+
+        @keyframes breatheIn {
+            from { transform: scale(0.8); opacity: 0.5; }
+            to { transform: scale(1.2); opacity: 1; }
+        }
+
+        @keyframes breatheOut {
+            from { transform: scale(1.2); opacity: 1; }
+            to { transform: scale(0.8); opacity: 0.5; }
+        }
+
+        .breath-text {
+            font-size: 18px;
+            color: rgba(255, 215, 0, 0.8);
+            letter-spacing: 0.2em;
+        }
+
+        .breath-count {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 24px;
+        }
+
+        /* 抽取階段 */
+        .stage-draw h2 {
+            font-size: 20px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            letter-spacing: 0.1em;
+        }
+
+        .draw-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
             position: relative;
         }
 
-        .hunab-ku img {
+        .draw-circle:hover {
+            border-color: rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .draw-circle::before {
+            content: '';
+            position: absolute;
             width: 100%;
             height: 100%;
-            object-fit: contain;
             border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        /* 標題 */
-        .header {
-            text-align: center;
-            margin-top: -20px;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.5; }
         }
 
-        .header h1 {
-            font-size: 52px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            color: #4a4540;
-            margin-bottom: 16px;
-            line-height: 1.2;
+        .draw-text {
+            font-size: 16px;
+            color: rgba(255, 215, 0, 0.8);
+            letter-spacing: 0.15em;
         }
 
-        .header .subtitle {
-            font-size: 18px;
-            font-weight: 400;
-            color: #8a857a;
-            letter-spacing: 0.18em;
+        /* 揭示階段 */
+        .stage-reveal {
+            gap: 24px;
         }
 
-        /* 模式選擇區 */
-        .mode-selection {
-            display: flex;
-            flex-direction: row;
-            gap: 36px;
-            width: 100%;
-            max-width: 820px;
-            justify-content: center;
+        .seal-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: contain;
+            animation: revealSeal 1.5s ease forwards;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
         }
 
-        /* 模式卡片 - 高級玻璃卡 */
-        .mode-card {
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 36px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            flex: 1;
-            max-width: 380px;
-            box-shadow:
-                0 4px 24px rgba(0, 0, 0, 0.04),
-                0 1px 3px rgba(0, 0, 0, 0.02);
+        @keyframes revealSeal {
+            0% { opacity: 0; transform: scale(0.3) rotate(-180deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
 
-        .mode-card:hover {
-            transform: translateY(-4px);
-            box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.08),
-                0 4px 12px rgba(0, 0, 0, 0.04);
-            background: rgba(255, 255, 255, 0.7);
+        .kin-number {
+            font-size: 42px;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            animation: fadeIn 1s ease 0.3s both;
         }
 
-        .mode-card .mode-title {
+        .kin-number.kin-red { color: #ff6b6b; text-shadow: 0 0 30px rgba(255, 107, 107, 0.5); }
+        .kin-number.kin-white { color: #ffffff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.5); }
+        .kin-number.kin-blue { color: #5cb8ff; text-shadow: 0 0 30px rgba(92, 184, 255, 0.5); }
+        .kin-number.kin-yellow { color: #ffd700; text-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+
+        .kin-name {
             font-size: 22px;
-            font-weight: 500;
-            color: #4a4540;
-            margin-bottom: 16px;
-            letter-spacing: 0.06em;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            animation: fadeIn 1s ease 0.5s both;
         }
 
-        .mode-card .mode-desc {
-            font-size: 15px;
+        .kin-name.kin-red { color: #ff6b6b; }
+        .kin-name.kin-white { color: #ffffff; }
+        .kin-name.kin-blue { color: #5cb8ff; }
+        .kin-name.kin-yellow { color: #ffd700; }
+
+        .message-box {
+            max-width: 480px;
+            padding: 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease 0.8s both;
+        }
+
+        .message-box h3 {
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(255, 215, 0, 0.7);
+            margin-bottom: 14px;
+            letter-spacing: 0.2em;
+        }
+
+        .message-text {
+            font-size: 17px;
             font-weight: 300;
-            color: #6a665c;
             line-height: 1.9;
-            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        .mode-card .mode-sub {
-            font-size: 13px;
-            font-weight: 300;
-            color: #9a958a;
-            margin-bottom: 28px;
-        }
-
-        /* 按鈕樣式 */
-        .mode-btn {
-            display: inline-block;
-            padding: 14px 36px;
-            font-size: 15px;
-            font-weight: 400;
-            letter-spacing: 0.08em;
-            border-radius: 28px;
-            transition: all 0.35s ease;
-        }
-
-        /* Ritual - 主按鈕（淡金低飽和） */
-        .mode-card.ritual .mode-btn {
-            background: #c4b89a;
-            color: #fff;
-            border: none;
-        }
-
-        .mode-card.ritual:hover .mode-btn {
-            background: #b8aa8a;
-        }
-
-        /* Quick - 次按鈕（描邊） */
-        .mode-card.quick .mode-btn {
-            background: transparent;
-            color: #8a857a;
-            border: 1px solid rgba(138, 133, 122, 0.4);
-        }
-
-        .mode-card.quick:hover .mode-btn {
-            border-color: rgba(138, 133, 122, 0.6);
-            background: rgba(138, 133, 122, 0.06);
-        }
-
-        /* 移除小標籤 */
-        .mode-tag {
-            display: none;
-        }
-
-        /* 設計者資訊 */
-        .designer-credit {
+        .body-connection {
             margin-top: 20px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 300;
-            color: #a0a0a0;
-            line-height: 1.8;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1s ease 1.2s both;
         }
 
-        .designer-credit a {
-            color: #909090;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .designer-credit a:hover {
-            color: #6a6a6a;
-        }
-
-        .designer-credit .kin-info {
+        .body-connection h4 {
+            font-size: 12px;
             font-weight: 400;
-            color: #8a8a8a;
+            color: rgba(255, 215, 0, 0.6);
+            margin-bottom: 10px;
+            letter-spacing: 0.15em;
+        }
+
+        .body-part {
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(255, 215, 0, 0.9);
+            margin-bottom: 8px;
+        }
+
+        .body-invitation {
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .restart-btn {
+            margin-top: 32px;
+            padding: 14px 36px;
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Noto Serif TC', serif;
+            color: rgba(255, 215, 0, 0.8);
+            background: transparent;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 28px;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            animation: fadeIn 1s ease 1.5s both;
+        }
+
+        .restart-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.5);
         }
 
         /* RWD */
-        @media (max-width: 820px) {
-            .mode-selection {
-                flex-direction: column;
-                align-items: center;
-                gap: 24px;
-            }
-
-            .mode-card {
-                max-width: 420px;
-                width: 100%;
-            }
-
-            .header h1 {
-                font-size: 40px;
-            }
-        }
-
         @media (max-width: 520px) {
-            .container {
-                gap: 36px;
-                padding: 36px 20px 32px;
+            .stage-start h1 {
+                font-size: 26px;
             }
 
-            .header h1 {
+            .breath-circle,
+            .draw-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .seal-image {
+                width: 100px;
+                height: 100px;
+            }
+
+            .kin-number {
                 font-size: 32px;
             }
 
-            .header .subtitle {
+            .kin-name {
+                font-size: 18px;
+            }
+
+            .message-box {
+                padding: 20px;
+            }
+
+            .message-text {
                 font-size: 15px;
-            }
-
-            .hunab-ku {
-                width: 160px;
-                height: 160px;
-            }
-
-            .mode-card {
-                padding: 28px 24px;
-            }
-
-            .mode-card .mode-title {
-                font-size: 20px;
-            }
-
-            .mode-card .mode-desc {
-                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
+    <a href="../" class="back-link">返回</a>
+
     <div class="container">
-        <!-- HUNAB KU 圖像 -->
-        <div class="hunab-ku">
-            <img src="./hunab-ku-1.png" alt="Hunab Ku">
+        <!-- 階段 1：開始 -->
+        <div class="stage stage-start active" id="stageStart">
+            <h1>共時儀式</h1>
+            <p>
+                給自己一點時間，<br>
+                讓訊息慢慢落到身體。<br><br>
+                準備好了，就開始吧。
+            </p>
+            <button class="start-btn" onclick="startRitual()">開始儀式</button>
         </div>
 
-        <!-- 標題 -->
-        <header class="header">
-            <h1>13月亮曆的小共時</h1>
-            <p class="subtitle">Dreamspell Synchronicity</p>
-        </header>
-
-        <!-- 模式選擇 -->
-        <div class="mode-selection">
-            <!-- 共時儀式 - 主要 -->
-            <a href="./ritual/" class="mode-card ritual">
-                <h2 class="mode-title">共時儀式</h2>
-                <p class="mode-desc">
-                    給自己一點時間，<br>
-                    讓訊息慢慢落到身體。
-                </p>
-                <p class="mode-sub">約 1–3 分鐘的靜心體驗</p>
-                <span class="mode-btn">進入儀式</span>
-            </a>
-
-            <!-- 快速共時 - 次要 -->
-            <a href="./quick/" class="mode-card quick">
-                <h2 class="mode-title">快速共時</h2>
-                <p class="mode-desc">
-                    跟著直覺，<br>
-                    快速抽一張今天的訊息。
-                </p>
-                <p class="mode-sub">簡單、直接、不多想</p>
-                <span class="mode-btn">快速抽卡</span>
-            </a>
+        <!-- 階段 2：呼吸 -->
+        <div class="stage stage-breathe" id="stageBreathe">
+            <h2>跟著呼吸</h2>
+            <div class="breath-circle" id="breathCircle">
+                <span class="breath-text" id="breathText">吸氣</span>
+            </div>
+            <p class="breath-count" id="breathCount">1 / 3</p>
         </div>
 
-        <!-- 設計者資訊 -->
-        <footer class="designer-credit">
-            設計 | <span class="kin-info">KIN 74 太陽的白巫師</span> HIPER<br>
-            <a href="https://www.facebook.com/profile.php?id=100074630472925" target="_blank">波波日常數數</a>
-        </footer>
+        <!-- 階段 3：抽取 -->
+        <div class="stage stage-draw" id="stageDraw">
+            <h2>當你準備好了</h2>
+            <div class="draw-circle" onclick="drawKin()">
+                <span class="draw-text">輕觸抽取</span>
+            </div>
+        </div>
+
+        <!-- 階段 4：揭示 -->
+        <div class="stage stage-reveal" id="stageReveal">
+            <img class="seal-image" id="sealImage" src="" alt="圖騰">
+            <div class="kin-number" id="kinNumber"></div>
+            <div class="kin-name" id="kinName"></div>
+            <div class="message-box">
+                <h3>✦ 共時訊息 ✦</h3>
+                <p class="message-text" id="messageText"></p>
+                <div class="body-connection">
+                    <h4>✦ 身體連結 ✦</h4>
+                    <p class="body-part" id="bodyPart"></p>
+                    <p class="body-invitation" id="bodyInvitation"></p>
+                </div>
+            </div>
+            <button class="restart-btn" onclick="restart()">再來一次</button>
+        </div>
     </div>
+
+    <script>
+        // 20 個圖騰的身體對應
+        const sealBodyParts = {
+            1:  { name: "紅龍", part: "右手食指", invitation: "如果你願意，輕觸右手食指，感受創造與誕生的力量。" },
+            2:  { name: "白風", part: "右手中指", invitation: "如果你願意，輕觸右手中指，讓呼吸與話語自然流動。" },
+            3:  { name: "藍夜", part: "右手無名指", invitation: "如果你願意，輕觸右手無名指，連結內在的夢想與直覺。" },
+            4:  { name: "黃種子", part: "右手小指", invitation: "如果你願意，輕觸右手小指，感受耐心與成長的力量。" },
+            5:  { name: "紅蛇", part: "右腳大拇趾", invitation: "如果你願意，感受右腳大拇趾，喚醒身體的生命力。" },
+            6:  { name: "白世界橋", part: "右腳食趾", invitation: "如果你願意，感受右腳食趾，讓連結與放下自然發生。" },
+            7:  { name: "藍手", part: "右腳中趾", invitation: "如果你願意，感受右腳中趾，啟動創造與療癒的能量。" },
+            8:  { name: "黃星星", part: "右腳無名趾", invitation: "如果你願意，感受右腳無名趾，讓內在的美自然綻放。" },
+            9:  { name: "紅月", part: "右腳小趾", invitation: "如果你願意，感受右腳小趾，讓情緒如水般流動。" },
+            10: { name: "白狗", part: "左手大拇指", invitation: "如果你願意，輕觸左手大拇指，感受愛與忠誠的力量。" },
+            11: { name: "藍猴", part: "左手食指", invitation: "如果你願意，輕觸左手食指，喚醒內在的遊戲與創意。" },
+            12: { name: "黃人", part: "左手中指", invitation: "如果你願意，輕觸左手中指，連結自由意志的智慧。" },
+            13: { name: "紅天行者", part: "左手無名指", invitation: "如果你願意，輕觸左手無名指，打開探索與可能性。" },
+            14: { name: "白巫師", part: "左手小指", invitation: "如果你願意，輕觸左手小指，安住於當下的魔法。" },
+            15: { name: "藍鷹", part: "左腳大拇趾", invitation: "如果你願意，感受左腳大拇趾，拓展你的視野與格局。" },
+            16: { name: "黃戰士", part: "左腳食趾", invitation: "如果你願意，感受左腳食趾，啟動無懼前行的勇氣。" },
+            17: { name: "紅地球", part: "左腳中趾", invitation: "如果你願意，感受左腳中趾，連結大地與同步的力量。" },
+            18: { name: "白鏡", part: "左腳無名趾", invitation: "如果你願意，感受左腳無名趾，看見真實的自己。" },
+            19: { name: "藍風暴", part: "左腳小趾", invitation: "如果你願意，感受左腳小趾，迎接蛻變與更新。" },
+            20: { name: "黃太陽", part: "右手大拇指", invitation: "如果你願意，輕觸右手大拇指，感受生命之光的溫暖。" }
+        };
+
+        // 260 KIN 訊息
+        const kinMessages = {
+            1: "有意識的聚焦創造，新事物將從你手中誕生並得到滋養。",
+            2: "你需要平衡你的表達，輕快風趣不用力地溝通，是個不錯的建議。",
+            3: "混亂的直覺，加上沒有重點的想像力，是否使得你想做的事情，無法真正的落實。",
+            4: "紮根內在，借助所有外力來滋養自己。",
+            5: "三思而後行！沒想清楚，就行動反而帶給自己不想要的結果。",
+            6: "對任何人、事、物的執著，已經成為生命成長，以及開展的障礙了。",
+            7: "治療想太多最好的辦法就是著手去做，當你動起手來了，你能為周圍一切帶來療愈。",
+            8: "自卑與自負，都是形成自我價值的不確定感，試試看，停止自我批判，停止抱怨吧！",
+            9: "當情緒來自：事情沒有按照自己所期待的。那麼何不試著接受且隨著當下發生的流動起來。",
+            10: "照顧好自己內在所有感受，你所要的一切物質都會被你顯化。",
+            11: "釋放你內在的枷鎖，大膽玩起來吧，你本是靈動，富有創造力的。",
+            12: "尊重自己與全人類的自由意志，為自己選擇負起百分百責任。",
+            13: "你不受時間、空間以及身份約束，你擁有無限的可能。",
+            14: "靈性的惰性，總把「無為」當作不去行動的藉口，那麼連老子也救不了這樣自欺欺人的人了。",
+            15: "總是可以把自己的缺陷隱藏得太好，正因為如此，生命就無法真正的進化，與進步。",
+            16: "當內心的問題太多，反而顯示那些問題都不是真正的問題。",
+            17: "你所要的一切，都在你的中心。當你為自己而轉的時候，所有一切都被你吸引而來。",
+            18: "或許活在自己的想像中很自得其樂，但事實却是不願意面對現狀的自己。",
+            19: "保持內在的平靜，你的世界將快速進階蛻變，而顯得越來越好。",
+            20: "當你由內而外的散發你的光芒，全世界都被你點亮。",
+            21: "相信未知的力量，它將時刻引導你。",
+            22: "清晰你想表達的，因為它們都在為了會快速成真。",
+            23: "此刻你有著將夢想快速成真的力量。",
+            24: "凡事想要開花結果，若不願意放開來去經驗，要知道，那是不可能的。",
+            25: "將你的熱情融到你的合作之中，這一切會變得富有生命力。",
+            26: "過去已經過去了，卻不願意放下過去，總先得承認，這是多麼愚蠢的一件事。",
+            27: "你在創造中吸引一切同頻人事物。",
+            28: "外表的美，就像面子一樣單薄，面子，只是一面容易破碎的鏡子。",
+            29: "你喜悅的能量，可以為周圍的一切注入新鮮活力。",
+            30: "愛自己並信任自己是安全的，你時時刻刻是被宇宙愛和看顧的。",
+            31: "允許自己打破框架，你會有很多新鮮好玩的靈感和念頭湧現。",
+            32: "凡事總是堅持自己的原則而不懂得變通，所以事情或關係，就會卡在一個狀態無法繼續。",
+            33: "去探索更多的可能性，你將協助更多人打破設限。",
+            34: "信任自己可以掌控時間，享受當下唯一一件事情，其他的一切都會為你定格。",
+            35: "對很多事情裝作看不到，反而造成無法彌補的錯過。",
+            36: "邁開腳步去實踐與執行，你能將想法開花結果。",
+            37: "你在不斷地釋放過去身份的同時，將走在正確的道路上。",
+            38: "「小我」只是偽装自己很強大的一層保護色，可能已經耽誤，且障礙了内在真正的成長了。",
+            39: "將你過往所有老舊的信念連根摧毀，保持空性宇宙將賜予你新的禮物。",
+            40: "用你溫暖的力量，來吸引和創造一切。",
+            41: "此刻轉一個念，去相信未知的力量，你將開創新能力。",
+            42: "像風一般服務世界，你將為周圍的環境帶來新鮮空氣。",
+            43: "內在的穩定，會為你帶來源源不斷的豐盛與富足。",
+            44: "如果不想為自己所做的事負責，那麼很有可能也會遇到一個對自己不負責的人。",
+            45: "用你內在的生命源動力去點燃自己和他人。",
+            46: "保持通透，你將為世界帶來源源不斷的資源。",
+            47: "相信自己擁有無限的創造力，然後去為你的目標與夢想做一件小事吧。",
+            48: "會不會太需要得到他人的認同，其實，只是自己沒有自信而已。",
+            49: "你的熱忱會為你顯化一切物質。",
+            50: "對任何形式的執著放手吧！不然，那只會阻礙往更好的自己前進的。",
+            51: "融入大家最好的方式，就是和他們玩在一起。",
+            52: "你除了你的所有身份，你還是你自己。",
+            53: "擴張你的意識層級，所有一切可能性都將被你吸引而來。",
+            54: "從時間緊迫感中解脫出來，享受當下，你將心想事成。",
+            55: "你的視野和格局，將為你和他人帶來最好的服務。",
+            56: "別太拘泥於形式。畢竟，這個世界真的沒有一定要如何啊！",
+            57: "由內而外的彰顯你自己，你將成為自己生活的中心。",
+            58: "關注身邊最親近的人。最容易引起自己有情緒的人，就是生命的大鏡子。",
+            59: "當你處變不驚的時候，周圍的一切都開始加速蛻變。",
+            60: "你需要相信，你值得擁有一切。",
+            61: "清晰你的意圖，你會收到更多的指引。",
+            62: "注意你的言語，它將在實相世界中顯化你所說的一切。",
+            63: "尊重你的感受，並釋放你內在的靈感。",
+            64: "向著能夠協助你成長內在的方向生長，並拉著大家一起成長。",
+            65: "遵循你心中的渴望而行動，你將爆發最大的能量。",
+            66: "當你有意識的去鏈接，所有的人脈、資源、機遇會隨之而來。",
+            67: "療愈焦慮的最好方法，就是立馬行動。",
+            68: "由內而外的點亮自己，用你的熱情去服務，周遭會因你而充滿活力。",
+            69: "當你內在穩定的時候，你的正向能量能更多的感染他人。",
+            70: "當你照顧好自己所有感受之後，用你的所有能量可以給他人帶來最好的服務。",
+            71: "用娛樂的態度，平衡你的精神和物質世界。",
+            72: "當你清醒的時候，周圍的所有人都將清醒。",
+            73: "就是因為很久沒有自我突破的勇氣，才限制了自己生命的發展。",
+            74: "當你明白你清晰的意圖並享受當下，便可心享事成。",
+            75: "你擁有行動即可顯化的能力，拔高你的格局你將顯化更大的東西。",
+            76: "釋放所有的疑惑，像戰士一樣勇敢前行。",
+            77: "事情一旦遇到阻礙、困難就退縮，「怨天尤人」就成為逃避的最佳遮眼布。",
+            78: "人世間的一切都會被你看見，你需要藉此來「內省」和「內醒」。",
+            79: "當你有意識的迎接變化，所有一切都會快速的朝著正向的去發展。",
+            80: "當你承認自己擁有軟弱一面，你就會變得更加的剛強有力量。",
+            81: "遵循你的直覺，它指導你如何注入生命力。",
+            82: "當你內在信任自己是安全而被理解的，你就能更多展示你風趣幽默一樣。",
+            83: "將你精神世界的靈感呈現給現實世界的人們，他們因會你的想法而驚嘆。",
+            84: "試著組織大家一起成長，你會獲得更多滋養。",
+            85: "追逐你心中的渴望，你將為你自己和周遭一切帶來生命力。",
+            86: "你需要相信，會有更棒的禮物來到你的生命中。",
+            87: "帶著清晰的意圖去行動，你能創造一切。",
+            88: "由內而外的閃亮自己，當下就是最好的顯化。",
+            89: "害怕「失去」而不敢真正「放下」，所以，總有一種「卡住」的感覺。",
+            90: "先學會愛自己，然後再將你的愛擴散出去。",
+            91: "世間一切皆為幻想，你可以做一個孩子頭，放開手腳將喜悅能量帶給大家。",
+            92: "有意識的去做一個觀察者，你能從現有的身份局限中解脫。",
+            93: "平衡你的深度和廣度，去探索更多可能性的同時，別忘了清空所有的認知。",
+            94: "雜亂只會讓內外更混亂。不如，安静下來吧！",
+            95: "打破過往的定義，從更高的角度來看待眼前的一切。",
+            96: "有了想法，無懼前行，你能獲得更多的能力。",
+            97: "團結一切可以團結的力量，組織平衡好一切可以平衡的資源。",
+            98: "周圍的一切，都會隨著你的內心而發生改變。",
+            99: "請相信眼前一切的變化，都是為了讓你變得更好。",
+            100: "清晰自己的定位，你將獲得匹配的能量。",
+            101: "相信未知的力量，你能夠創造出新鮮的事物。",
+            102: "釋放和清空你所有的認知，會有更多的靈性訊息，從你這兒而傳播開來。",
+            103: "你擁有許多內在的靈感，可以將它們投入與他人的合作之中，會促進你與他人的融合。",
+            104: "你的夢想正在快速開花結果，繼續保持信心和耐心。",
+            105: "當你有了目標，你就有了生命力。",
+            106: "所有離開你的，在你放手的那一刻，都會有更高版本的回歸。",
+            107: "你在參與行動中獲得活力，並將活力傳給身邊人。",
+            108: "內在穩定，會讓你由內而外發光如星。",
+            109: "保持正向，你的所有情緒，將快速感染所有人。",
+            110: "照顧好自己的感受，然後去平衡組織更多人學會愛自己。",
+            111: "太拘謹，放不開，可能已經讓自己的肩頸有氣結了喔！",
+            112: "相信自己的自由意志，由自己來掌握人生的選擇權。",
+            113: "清晰你的意圖，你將探索到更多的可能性。",
+            114: "享受當下，你將快速顯化一切你所需物質。",
+            115: "釋放你過去的認知，重新拔高格局，你能看得更遠。",
+            116: "你在實踐和體驗中學會如何與他人合作。",
+            117: "去存在而非去成為，整個宇宙都在為你服務。",
+            118: "將意識聚焦在你的內在並進行調頻，你當下的頻率，將會投射於你所處的環境之中。",
+            119: "所有一切顛覆你的，都將讓你變得更加強大。",
+            120: "用你的陽光先溫暖自己，當你足夠有能量的時候，你自然能夠釋放出更多的光芒給到他人。",
+            121: "在未知之中你依然是絕對的安全，請跟隨直覺去創造。",
+            122: "想要說話或者分享，就讓它發生吧，會有很多訊息在你溝通和分享中流動出來。",
+            123: "平衡你的精神世界與物質世界，它們對於你來說一樣精彩。",
+            124: "滋養自己的內在讓內在成長，當你成長了，你周圍的一切都會成長。",
+            125: "當你非常堅定自己可以拿下目標，並立刻行動，你將擁有巨大的爆發力去實現它。",
+            126: "你非常明白放下就會回流之時，你釋放束縛自己的一切，會有更高版本的東西進入你的生命中。",
+            127: "知道自己要創造什麼，然後去創造，你便可創造任何一切。",
+            128: "釋放所有的束縛，便可由內而外的去呈現你的內在美。",
+            129: "將你的正向情感，融入與他人的鏈接之中，這會讓一切關係更加融洽。",
+            130: "活出無條件的愛最佳途徑是，先活出圓滿的自己，然後在服務他人。",
+            131: "當你把所有的一切設定成遊戲，並無拘束的大膽玩耍起來，你將輕鬆而富有創造力的搞定一切。",
+            132: "尊重自己自由意志的同時，別忘了打破所有自己設限的框架。",
+            133: "你在不斷探索更多可能性之中充滿活力。",
+            134: "你越專注享受當下，你的內在越穩定且安全。",
+            135: "拔高你的格局看事情，你會收到更多的靈感和啟發。",
+            136: "你會在實踐之中，學會如何平衡周圍一切。",
+            137: "當你回歸你自己的中心，你周圍的一切都會回到正確的軌道上。",
+            138: "你需要相信，改變你的內心，周圍一切自然隨之改變。",
+            139: "當你清晰的了解到自己需要的是什麼，周圍的一切會配合你快速的顛覆更新為你需要的環境。",
+            140: "給予自己足夠的能量和關懷，你就能為自己快速顯化一切物質。",
+            141: "釋放內心所有的懷疑，你擁有無限的潛能去創造你未曾有過的體驗。",
+            142: "當你允許內在隨性傳播與表達時，你能為周遭創造更多的和諧。",
+            143: "你的內在有你所需的一切，感受富足時，你會經歷富足。",
+            144: "為自己種下夢想，用你的耐心和信心去滋養牠們成長。",
+            145: "時刻樹立的目標和獵物，這將讓你保持生命力。",
+            146: "有意識的讓一切人事物流動起來，你會感覺自己充滿活力。",
+            147: "你遠比你認為的更棒，你的創造能力和你的內心世界一樣豐富。",
+            148: "無需尋求認可，從你的內在去綻放你自己的時候，自然會獲得掌聲。",
+            149: "太在意「公平」、「平等」，却失去自己內在真正的平衡。",
+            150: "愛是互相尊重對方的，不要要求對方按照自己想要的方式來表達愛。",
+            151: "相信你的內在有無限的創造力，然後大膽去玩出你自己。",
+            152: "將意識回歸你自己，保持你清晰的意圖，守護你當下的自由意志。",
+            153: "允許有更多的可能性發生，因為凡是你內在允許的可能性，你都能顯化它們。",
+            154: "真正完全放下的時候，才能隨順自然，而不是用消極、無所謂的態度來避免、逃避。",
+            155: "拔高你的格局和視野，來看到你與他人自己的合作關係。",
+            156: "在自己完全盡力後還是無法解決的問題，唯一能夠做的就是不要再為這個問題煩惱。",
+            157: "搞清楚自己的目的，你便可吸引來一切有利你的資源。",
+            158: "接納所有面相的你自己，周圍一切都將變得美好。",
+            159: "穩住你的內心，隨時追隨變化和蛻變，它們會為你和身邊一切帶來新鮮的生命活力。",
+            160: "提升你的配得感，將自己定位定的更高一些，你會發現你能夠給出去的能量更多了。",
+            161: "遵循內在的直覺指引去創造，會有新事物因你而誕生。",
+            162: "去平衡你的表達，將你內心的一切，透過你的表達擴散出去。",
+            163: "尊重你的內在感受，它們會快速的投射在你的現實生活之中。",
+            164: "對於你的目標和夢想，你需要保持耐心，相信它們都會破土而出。",
+            165: "當你非常清晰自己想要捕捉什麼獵物的時候，你自然就會有很強大的爆發力去完成它。",
+            166: "有意識去做鏈接，你會接引來特別多的人事物，進入到你的生命之中。",
+            167: "釋放所有的顧慮，直接去行動和創造，你將獲得力量和指引。",
+            168: "放下對自己與他人的評判，允許自己和他人由內而外大放異彩。",
+            169: "善用你的正向情緒能量，將它融入於你的言行之中，可以為他人充電甚至療愈。",
+            170: "服務他人之前，請先照顧好自己所有感受。",
+            171: "唯一限制你的是你自己，當你更大膽的去活出自己，你將富有創造力。",
+            172: "將意念回歸於你自己，你將為自己和他人帶來更多的活力。",
+            173: "請你記得，你是穿梭時空的預言家、探索家，你有能力放下自我禁錮，一切為你打開。",
+            174: "享受當下，你的想法能夠快速成真。",
+            175: "平衡你的現在和未來，拔高格局同時，別忘了腳踏實地從當下出發。",
+            176: "當你回歸你的中心，像一個戰士無懼前行，身邊所有的人事物都會處於他們正確的位置上。",
+            177: "你需要相信，你正走在正確的道路上，所有你需要的資源也都會被你吸引而來。",
+            178: "當你有意識的去內省，你能快速的轉變你的環境。",
+            179: "你會在顛覆和變化之中，顯化你需要的一切物質。",
+            180: "釋放掉那些責任感，將你的能量放在更有意義的事情，你能輸出更大的價值。",
+            181: "放下內在評判，信任你的直覺去創造新事物，並與他人達成融合。",
+            182: "保持輕快風趣的狀態，你的輕鬆自在會創造更多輕鬆自在。",
+            183: "尊重你的感受，它會為你吸引來一切。",
+            184: "對自己的夢想和願景保持耐心，它們在你看不見的土裡持續生長著。",
+            185: "遵循內在的渴望行動，它能為你和他人帶來活力。",
+            186: "保持通透允許人事物的流動和變化，你的生活會被照顧的更好。",
+            187: "開始著手行動，你會獲取更多的靈感。",
+            188: "你需要平衡內在和外在的美，追求細節的同時，別忘了注重整體進度。",
+            189: "當你內在平靜的時候，你周圍的一切也都因你的平靜而淨化。",
+            190: "你需要相信，當你學會愛自己之後，你將更有能力去愛身邊的人。",
+            191: "當你清楚明白眼前的一切都是幻相，然後放開手腳大膽去玩去創造，你反而可以很輕鬆的搞定一切。",
+            192: "將意識回歸自己，為自己的選擇負起百分百的責任，你能為自己創造顯化一切物質需求。",
+            193: "釋放掉所有的設限，大膽去相信並探索更多的可能性。",
+            194: "你越享受當下，你能促進周圍一切和諧。",
+            195: "站在未來去展望未來，凡是你能看到的未來，都是你能去到的地方。",
+            196: "你會在實踐和體驗之中，吸引和創造一切。",
+            197: "你不需要替別人操心，當你正位了，周圍的人也會跟著一起正位。",
+            198: "你會在不斷自我內省修正過程中，獲取更多的活力。",
+            199: "信任自己是安全的，並學會臣服，周圍一切的發生最終都會讓你的生活變得更好。",
+            200: "由內而外彰顯自己，你像太陽一般溫暖而有能量。",
+            201: "當你的內心越篤定，外在的質疑你的人越少。",
+            202: "保持正向表達，它會改變你周遭的環境。",
+            203: "學會相信你的內在感受，並遵從感覺辦事。",
+            204: "保持你的意圖清晰，因為你在哪兒播種，你在哪兒開花結果。",
+            205: "有了想法就立馬行動，你能快速顯化你所需的一切。",
+            206: "釋放所有束縛你的人事物，保持敞開會有更多的資源進入你的生命中。",
+            207: "在參與行動之中，你將越來越懂得如何將一切變得更融洽。",
+            208: "活出多彩的你自己，許多人會因你而受到啟發。",
+            209: "運用你的正向情緒能量，將為你吸引和創造一切所需。",
+            210: "當你學會接納所有的自己並愛上自己，周圍的人便可給予你更多的愛和理解。",
+            211: "你能為自己和他人提供最佳的服務，就是放開手腳開心快樂的去玩耍。",
+            212: "請打破對於你自己所有的定義，因為你擁有無限的可能。",
+            213: "探索更多的可能性，你將快速獲取更多的靈感。",
+            214: "你需要在線性時間與你內在感受時間之中取得平衡。",
+            215: "拔高你的格局，用更高的角度去看待一切，你會發現一切都開始有所不同。",
+            216: "你需要相信真正的真理是經得起你的實踐，然後無懼前行。",
+            217: "當你清楚的知道自己去哪兒，全世界都會為你讓路。",
+            218: "現在的結果，只是之前行為所種下的因，看穿因果，就是願意為自己每個當下負責的態度。",
+            219: "釋放所有外在的依靠，放手信任宇宙，你將回到最正確的位置上。",
+            220: "你的光芒和愛將包融一切。",
+            221: "你具有在未知之中，無限的創造力，請遵循你的內在指引。",
+            222: "當你有意識的去表達，會有很多新訊息從你身上傳遞出來。",
+            223: "當你感到疲憊的時候，不妨讓自己安靜的獨處來充充電。",
+            224: "不斷地去吸收正向的頻率，能為你帶來生命活力。",
+            225: "信任自己是安全的，然後大膽的去遵循渴望行動，你將獲得更多的能量。",
+            226: "你鏈接的人事物越多，你越能從內在去彰顯你自己。",
+            227: "你能快速適應環境，並有雙倍的創造力、完成力、療愈力。",
+            228: "當你由內而外的活出自己，你能點亮周圍的一切。",
+            229: "相信你的情緒能量能夠感染一切，並將它實踐於你的生活之中。",
+            230: "當你很清楚的明白在愛別人之前，先學會讓自己圓滿，你便獲掌握了無條件的愛。",
+            231: "此刻只管盡情的玩耍，所有的物質會為了匹配你的興奮而顯化。",
+            232: "釋放頭腦所有的設限，你需要清除的明白，你擁有無限可能性。",
+            233: "透過你的探索以及相信這個世界是有更多的可能性，你將協助更多的人提升意識層級。",
+            234: "當你完全的沉浸於你的當下，你將掌握心享事成的魔法。",
+            235: "你現在的格局，會為你開啟新的世界。",
+            236: "你有能力從所有二元對立中穿越跳脫，你的智慧讓你無所畏懼，勇於開拓。",
+            237: "當你處於軌道上的時候，你周圍的一切都會充滿活力。",
+            238: "你可以透過觀察周圍的一切，快速來覺知和內醒自己，從而打破自我限制。",
+            239: "你的想法正在以顛覆的形式，在你生活中快速成真。",
+            240: "你需要平衡你的奉獻與接收，你可以無條件的付出，你也需要全然的敞開接收。",
+            241: "相信你的內在指引，在未知中去創造新事物，你將引領更多的人成為新世界的開拓者。",
+            242: "你需要對你所表達的一切保持信任，然後大膽的去表達，當下一切本就是最好的安排。",
+            243: "你的內在本就具足，當你越清晰自己需求時，你就越能獲得你要的一切。",
+            244: "保持正向從外界吸收更多的營養，關注內在的成長，你能顯化一切所需物質。",
+            245: "釋放所有束縛你的一切，並立刻採取行動，這會讓你持續保持能量。",
+            246: "保持自身的通透，去鏈接更多的人事物，你能將更多的能量融合起來。",
+            247: "當你開始運用你的雙手行動起來，你便可創造一切和療愈一切。",
+            248: "活出多彩的自己，你會像啟明星一般吸引人注意力。",
+            249: "允許所有的情緒流動，你就能淨化自己的能量。",
+            250: "服務別人之前，請先服務好自己。",
+            251: "當你玩到開心了，你的環境自然就會處於穩定狀態。",
+            252: "你不需要透過別人的認可來定義你自己，因為你本就充滿無限可能。",
+            253: "你需要平衡自己廣度和深度上的探索，因為它們一樣會為你帶來更多可能性。",
+            254: "當你越享受當下，周圍的一切越不會對你進行干擾。",
+            255: "你需要相信，你所有展望的未來，都是你可以到達的未來。",
+            256: "當你意圖清晰的時候，你只要無懼前行，便可到達。",
+            257: "當你堅定自己的方向並開始行動時，你能快速顯化一切所需物質。",
+            258: "釋放掉內在對自己所有的評判，你會發現周圍一切環境都變得更加和諧。",
+            259: "所有的顛覆，都是為了更好的融合。",
+            260: "你的能量包羅萬象，你清晰地知道自己是誰。"
+        };
+
+        // 13 調性名稱
+        const toneNames = ["磁性的", "月亮的", "電力的", "自我存在的", "超頻的", "韻律的", "共振的", "銀河的", "太陽的", "行星的", "光譜的", "水晶的", "宇宙的"];
+
+        // 20 圖騰名稱
+        const sealNames = ["紅龍", "白風", "藍夜", "黃種子", "紅蛇", "白世界橋", "藍手", "黃星星", "紅月", "白狗", "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹", "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"];
+
+        let breathCount = 0;
+        const maxBreaths = 3;
+
+        function switchStage(currentId, nextId) {
+            document.getElementById(currentId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(nextId).classList.add('active');
+            }, 300);
+        }
+
+        function startRitual() {
+            switchStage('stageStart', 'stageBreathe');
+            startBreathing();
+        }
+
+        function startBreathing() {
+            breathCount = 0;
+            breathCycle();
+        }
+
+        function breathCycle() {
+            if (breathCount >= maxBreaths) {
+                setTimeout(() => {
+                    switchStage('stageBreathe', 'stageDraw');
+                }, 1000);
+                return;
+            }
+
+            const circle = document.getElementById('breathCircle');
+            const text = document.getElementById('breathText');
+            const count = document.getElementById('breathCount');
+
+            circle.className = 'breath-circle inhale';
+            text.textContent = '吸氣';
+            count.textContent = `${breathCount + 1} / ${maxBreaths}`;
+
+            setTimeout(() => {
+                circle.className = 'breath-circle exhale';
+                text.textContent = '吐氣';
+
+                setTimeout(() => {
+                    breathCount++;
+                    breathCycle();
+                }, 4000);
+            }, 4000);
+        }
+
+        function getKinColorClass(kinNumber) {
+            const remainder = kinNumber % 4;
+            if (remainder === 1) return 'kin-red';
+            if (remainder === 2) return 'kin-white';
+            if (remainder === 3) return 'kin-blue';
+            return 'kin-yellow';
+        }
+
+        function getSealNumber(kinNumber) {
+            return ((kinNumber - 1) % 20) + 1;
+        }
+
+        function getToneNumber(kinNumber) {
+            return ((kinNumber - 1) % 13) + 1;
+        }
+
+        function getKinName(kinNumber) {
+            const toneIndex = getToneNumber(kinNumber) - 1;
+            const sealIndex = getSealNumber(kinNumber) - 1;
+            return toneNames[toneIndex] + sealNames[sealIndex];
+        }
+
+        function drawKin() {
+            const kinNumber = Math.floor(Math.random() * 260) + 1;
+            const sealNumber = getSealNumber(kinNumber);
+            const colorClass = getKinColorClass(kinNumber);
+            const sealInfo = sealBodyParts[sealNumber];
+
+            // 設定圖騰圖片
+            const sealImageNum = sealNumber.toString().padStart(2, '0');
+            document.getElementById('sealImage').src = `../images/${sealImageNum}.png`;
+
+            // 設定 KIN 資訊
+            document.getElementById('kinNumber').textContent = `KIN ${kinNumber}`;
+            document.getElementById('kinNumber').className = `kin-number ${colorClass}`;
+            document.getElementById('kinName').textContent = getKinName(kinNumber);
+            document.getElementById('kinName').className = `kin-name ${colorClass}`;
+            document.getElementById('messageText').textContent = kinMessages[kinNumber];
+
+            // 設定身體連結
+            document.getElementById('bodyPart').textContent = `${sealInfo.name}｜${sealInfo.part}`;
+            document.getElementById('bodyInvitation').textContent = sealInfo.invitation;
+
+            switchStage('stageDraw', 'stageReveal');
+        }
+
+        function restart() {
+            document.getElementById('stageReveal').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('stageStart').classList.add('active');
+            }, 300);
+        }
+    </script>
 </body>
 </html>
