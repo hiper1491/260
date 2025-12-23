@@ -1,0 +1,189 @@
+{
+  "version": "1.0",
+  "description": "13月亮曆共時訊息資料庫",
+  "usage": {
+    "message": "共時小訊息（簡短、溫柔、留白）",
+    "bodyConnection": "身體連結提示，格式為 { part: 'finger' | 'toe', position: 位置描述 }",
+    "invitation": "邀請語，以「如果你願意……」開頭的引導"
+  },
+  "kinMessages": {
+    "1": {
+      "name": "磁性的紅龍",
+      "sealName": "紅龍",
+      "toneName": "磁性",
+      "color": "red",
+      "messages": [
+        {
+          "message": "新的開始正在醞釀。\n信任那股想要誕生的力量。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "右手拇指",
+            "description": "拇指是意志與力量的起點"
+          },
+          "invitation": "如果你願意，輕輕按住右手拇指，感受那份想要創造的渴望。"
+        },
+        {
+          "message": "你被滋養著。\n允許自己接收。",
+          "bodyConnection": {
+            "part": "toe",
+            "position": "右腳大拇趾",
+            "description": "大拇趾連結根基與穩定"
+          },
+          "invitation": "如果你願意，將注意力放在右腳大拇趾，感受大地的支持。"
+        }
+      ]
+    },
+    "2": {
+      "name": "月亮的白風",
+      "sealName": "白風",
+      "toneName": "月亮",
+      "color": "white",
+      "messages": [
+        {
+          "message": "呼吸之間，\n有話想說。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "右手食指",
+            "description": "食指是溝通與指引的管道"
+          },
+          "invitation": "如果你願意，輕觸右手食指，讓想說的話自然浮現。"
+        },
+        {
+          "message": "風會帶走多餘的，\n留下該留的。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "左手食指",
+            "description": "左手接收，右手給予"
+          },
+          "invitation": "如果你願意，深吸一口氣，再慢慢吐出，讓風帶走不需要的。"
+        }
+      ]
+    },
+    "3": {
+      "name": "電力的藍夜",
+      "sealName": "藍夜",
+      "toneName": "電力",
+      "color": "blue",
+      "messages": [
+        {
+          "message": "夢境正在服務你。\n讓直覺引路。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "右手中指",
+            "description": "中指連結內在的直覺中心"
+          },
+          "invitation": "如果你願意，閉上眼睛三秒，問問內心：此刻，什麼是重要的？"
+        }
+      ]
+    },
+    "4": {
+      "name": "自我存在的黃種子",
+      "sealName": "黃種子",
+      "toneName": "自我存在",
+      "color": "yellow",
+      "messages": [
+        {
+          "message": "種子已經種下。\n不需要挖開土壤確認。",
+          "bodyConnection": {
+            "part": "toe",
+            "position": "左腳大拇趾",
+            "description": "紮根的力量從這裡開始"
+          },
+          "invitation": "如果你願意，感受雙腳踩在地上的重量，信任時間。"
+        },
+        {
+          "message": "耐心，\n是種子給自己的禮物。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "雙手掌心",
+            "description": "掌心是給予與接收的中心"
+          },
+          "invitation": "如果你願意，把雙手放在心口，給自己一點溫暖。"
+        }
+      ]
+    },
+    "74": {
+      "name": "太陽的白巫師",
+      "sealName": "白巫師",
+      "toneName": "太陽",
+      "color": "white",
+      "messages": [
+        {
+          "message": "當下，就是魔法發生的地方。\n不早不晚，剛剛好。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "右手無名指",
+            "description": "無名指連結心輪與承諾"
+          },
+          "invitation": "如果你願意，輕輕握住右手無名指，允許自己完全存在於此刻。"
+        },
+        {
+          "message": "你的意圖，\n正在成為真實。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "雙手十指交握",
+            "description": "十指相扣象徵意念的整合"
+          },
+          "invitation": "如果你願意，將雙手十指輕輕交握，感受意念在掌心匯聚。"
+        },
+        {
+          "message": "心想事成的秘密：\n享受這個當下。",
+          "bodyConnection": {
+            "part": "toe",
+            "position": "雙腳腳底",
+            "description": "腳底是連結大地能量的門戶"
+          },
+          "invitation": "如果你願意，赤腳踩在地上，或想像自己踩在柔軟的草地上。"
+        }
+      ]
+    },
+    "260": {
+      "name": "宇宙的黃太陽",
+      "sealName": "黃太陽",
+      "toneName": "宇宙",
+      "color": "yellow",
+      "messages": [
+        {
+          "message": "圓滿。\n你已經是完整的。",
+          "bodyConnection": {
+            "part": "finger",
+            "position": "雙手張開",
+            "description": "張開雙手，接收宇宙的光"
+          },
+          "invitation": "如果你願意，張開雙手掌心朝上，想像陽光正輕輕落在你的手心。"
+        },
+        {
+          "message": "結束也是開始。\n一切都在循環中。",
+          "bodyConnection": {
+            "part": "toe",
+            "position": "十趾",
+            "description": "十趾連結大地與行走的力量"
+          },
+          "invitation": "如果你願意，活動一下腳趾，感謝它們帶你走過的每一步路。"
+        }
+      ]
+    }
+  },
+  "bodyParts": {
+    "fingers": {
+      "thumb": { "name": "拇指", "meaning": "意志力、決心" },
+      "index": { "name": "食指", "meaning": "方向、指引" },
+      "middle": { "name": "中指", "meaning": "平衡、直覺" },
+      "ring": { "name": "無名指", "meaning": "承諾、心輪連結" },
+      "pinky": { "name": "小指", "meaning": "溝通、人際" }
+    },
+    "toes": {
+      "bigToe": { "name": "大拇趾", "meaning": "根基、穩定" },
+      "secondToe": { "name": "第二趾", "meaning": "方向、行動" },
+      "thirdToe": { "name": "中趾", "meaning": "平衡" },
+      "fourthToe": { "name": "第四趾", "meaning": "關係" },
+      "pinkyToe": { "name": "小趾", "meaning": "信任、放鬆" }
+    }
+  },
+  "notes": [
+    "每個 KIN 可以有多則訊息，抽到時隨機顯示其中一則",
+    "訊息風格：簡短、溫柔、留白，不說教",
+    "身體連結：讓訊息落到身體，增加儀式感",
+    "邀請語：使用「如果你願意」開頭，尊重使用者的選擇"
+  ]
+}

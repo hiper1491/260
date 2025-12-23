@@ -1,0 +1,1090 @@
+  1<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13月亮曆的小共時</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120, 0, 200, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 165, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 150, 136, 0.2) 0%, transparent 70%),
+                linear-gradient(135deg, #1a0a2e 0%, #16213e 30%, #0d2137 60%, #1a0a2e 100%);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 馬雅幾何背景圖案 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M50 0 L100 50 L50 100 L0 50 Z' fill='none' stroke='rgba(255,215,0,0.1)' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='rgba(255,215,0,0.05)' stroke-width='1'/%3E%3C/svg%3E");
+            background-size: 100px 100px;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 馬雅太陽裝飾 */
+        .mayan-sun {
+            position: fixed;
+            top: -150px;
+            right: -150px;
+            width: 400px;
+            height: 400px;
+            background:
+                radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,165,0,0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .mayan-sun::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background:
+                conic-gradient(from 0deg, transparent 0deg, rgba(255,215,0,0.2) 15deg, transparent 30deg);
+            border-radius: 50%;
+            animation: rotateSun 60s linear infinite;
+        }
+
+        @keyframes rotateSun {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 返回連結 */
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 0.85rem;
+            color: rgba(255, 215, 0, 0.5);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            color: rgba(255, 215, 0, 0.8);
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 6px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            color: #ffd700;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(255, 215, 0, 0.7);
+            margin-bottom: 15px;
+            z-index: 10;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 10;
+            padding: 10px;
+            max-width: 600px;
+        }
+
+        .number-display {
+            width: 300px;
+            height: 120px;
+            background: linear-gradient(145deg, rgba(30, 30, 48, 0.9), rgba(42, 42, 69, 0.9));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 10px rgba(255, 215, 0, 0.1),
+                0 0 30px rgba(255, 215, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .number-display.winner {
+            animation: winnerGlow 0.5s ease infinite alternate;
+            border-color: rgba(255, 215, 0, 0.6);
+        }
+
+        @keyframes winnerGlow {
+            from {
+                box-shadow:
+                    0 0 30px rgba(255, 215, 0, 0.8),
+                    0 0 60px rgba(255, 215, 0, 0.4),
+                    0 10px 40px rgba(0, 0, 0, 0.5);
+            }
+            to {
+                box-shadow:
+                    0 0 50px rgba(255, 215, 0, 1),
+                    0 0 100px rgba(255, 215, 0, 0.6),
+                    0 10px 40px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        #number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow:
+                0 0 20px rgba(255, 215, 0, 0.8),
+                0 0 40px rgba(255, 215, 0, 0.4);
+            transition: transform 0.1s ease;
+            z-index: 1;
+        }
+
+        #number.rolling {
+            animation: pulse 0.1s ease infinite;
+        }
+
+        #number.winner {
+            animation: winnerBounce 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes winnerBounce {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.3); }
+            50% { transform: scale(0.9); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* KIN 名稱顯示 */
+        .kin-name {
+            font-size: 1.3rem;
+            color: #ffd700;
+            margin-top: 5px;
+            text-align: center;
+            min-height: 30px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* KIN 顏色區分 - 紅白藍黃 */
+        .number-display.kin-red {
+            border-color: rgba(255, 80, 80, 0.8);
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 10px rgba(255, 80, 80, 0.2),
+                0 0 30px rgba(255, 80, 80, 0.3);
+        }
+        .number-display.kin-red #number {
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 80, 80, 0.8);
+        }
+        .kin-name.kin-red {
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255, 80, 80, 0.8);
+        }
+
+        .number-display.kin-white {
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 10px rgba(255, 255, 255, 0.2),
+                0 0 30px rgba(255, 255, 255, 0.3);
+        }
+        .number-display.kin-white #number {
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+        .kin-name.kin-white {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .number-display.kin-blue {
+            border-color: rgba(80, 150, 255, 0.8);
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 10px rgba(80, 150, 255, 0.2),
+                0 0 30px rgba(80, 150, 255, 0.3);
+        }
+        .number-display.kin-blue #number {
+            color: #5cb8ff;
+            text-shadow: 0 0 20px rgba(80, 150, 255, 0.8);
+        }
+        .kin-name.kin-blue {
+            color: #5cb8ff;
+            text-shadow: 0 0 10px rgba(80, 150, 255, 0.8);
+        }
+
+        .number-display.kin-yellow {
+            border-color: rgba(255, 215, 0, 0.8);
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                inset 0 2px 10px rgba(255, 215, 0, 0.2),
+                0 0 30px rgba(255, 215, 0, 0.3);
+        }
+        .number-display.kin-yellow #number {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+        .kin-name.kin-yellow {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        /* 共時訊息 */
+        .message-box {
+            width: 100%;
+            max-width: 500px;
+            min-height: 120px;
+            padding: 20px;
+            background: linear-gradient(145deg, rgba(30, 30, 48, 0.8), rgba(42, 42, 69, 0.8));
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-box h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        #message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .draw-btn {
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1a0a2e;
+            background: linear-gradient(145deg, #ffd700, #ffb300);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow:
+                0 8px 25px rgba(255, 215, 0, 0.4),
+                0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+        }
+
+        .draw-btn:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 12px 35px rgba(255, 215, 0, 0.5),
+                0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .draw-btn:active {
+            transform: translateY(0);
+        }
+
+        .draw-btn:disabled {
+            background: linear-gradient(145deg, #666, #555);
+            color: #999;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .info {
+            font-size: 0.9rem;
+            color: rgba(255, 215, 0, 0.6);
+        }
+
+        .result-history {
+            margin-top: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .result-history h3 {
+            margin-bottom: 15px;
+            color: rgba(255, 215, 0, 0.8);
+            font-size: 1rem;
+        }
+
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .history-item {
+            padding: 8px 12px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 0.85rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .history-item.kin-red {
+            background: rgba(255, 80, 80, 0.15);
+            border-color: rgba(255, 80, 80, 0.4);
+            color: #ff6b6b;
+        }
+        .history-item.kin-white {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+        }
+        .history-item.kin-blue {
+            background: rgba(80, 150, 255, 0.15);
+            border-color: rgba(80, 150, 255, 0.4);
+            color: #5cb8ff;
+        }
+        .history-item.kin-yellow {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.4);
+            color: #ffd700;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .clear-btn {
+            margin-top: 15px;
+            padding: 8px 25px;
+            font-size: 0.85rem;
+            color: rgba(255, 215, 0, 0.7);
+            background: transparent;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        /* 音效控制按鈕 */
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .sound-toggle.muted {
+            opacity: 0.5;
+        }
+
+        /* 彩帶容器 */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            top: -20px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotateZ(0deg) rotateX(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotateZ(720deg) rotateX(360deg);
+                opacity: 0;
+            }
+        }
+
+        .firework {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkle 0.6s ease-out forwards;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 馬雅符號裝飾 */
+        .mayan-glyph {
+            position: fixed;
+            font-size: 3rem;
+            opacity: 0.1;
+            color: #ffd700;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .mayan-glyph:nth-child(1) { top: 10%; left: 5%; }
+        .mayan-glyph:nth-child(2) { top: 60%; left: 8%; }
+        .mayan-glyph:nth-child(3) { top: 30%; right: 5%; }
+        .mayan-glyph:nth-child(4) { bottom: 15%; right: 10%; }
+
+        /* 設計者資訊 */
+        .designer-credit {
+            margin-top: 20px;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255, 215, 0, 0.6);
+        }
+
+        .designer-credit a {
+            color: #ffd700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .designer-credit a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .designer-credit .kin-info {
+            font-weight: bold;
+            color: rgba(255, 215, 0, 0.8);
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .number-display { width: 260px; height: 100px; }
+            #number { font-size: 2.8rem; }
+            .message-box { padding: 15px; }
+            #message { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-link">返回</a>
+    <div class="mayan-sun"></div>
+    <div class="mayan-glyph">&#x2726;</div>
+    <div class="mayan-glyph">&#x2736;</div>
+    <div class="mayan-glyph">&#x2737;</div>
+    <div class="mayan-glyph">&#x2738;</div>
+
+    <button class="sound-toggle" id="soundToggle" onclick="toggleSound()">&#128266;</button>
+
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <div class="container">
+        <h1>13月亮曆的小共時</h1>
+        <p class="subtitle">Dreamspell - 卓爾金曆共時訊息</p>
+
+        <div class="number-display" id="numberDisplay">
+            <span id="number">KIN ?</span>
+        </div>
+
+        <div class="kin-name" id="kinName"></div>
+
+        <div class="message-box">
+            <h3>&#10022; 共時訊息 &#10022;</h3>
+            <p id="message">點擊下方按鈕，抽取今日的共時訊息...</p>
+        </div>
+
+        <button class="draw-btn" id="drawBtn" onclick="startDraw()">抽取共時</button>
+
+        <div class="result-history">
+            <h3>抽取紀錄</h3>
+            <div class="history-list" id="historyList"></div>
+            <button class="clear-btn" onclick="clearHistory()">清除紀錄</button>
+        </div>
+
+        <div class="designer-credit">
+            設計 | <span class="kin-info">KIN 74 太陽的白巫師</span> HIPER<br>
+            <a href="https://www.facebook.com/profile.php?id=100074630472925" target="_blank">波波日常數數</a>
+        </div>
+    </div>
+
+    <script>
+        const kinData = {
+            1: { name: "磁性的紅龍", message: "有意識的聚焦創造，新事物將從你手中誕生並得到滋養。" },
+            2: { name: "月亮的白風", message: "你需要平衡你的表達，輕快風趣不用力地溝通，是個不錯的建議。" },
+            3: { name: "電力的藍夜", message: "混亂的直覺，加上沒有重點的想像力，是否使得你想做的事情，無法真正的落實。" },
+            4: { name: "自我存在的黃種子", message: "紮根內在，借助所有外力來滋養自己。" },
+            5: { name: "超頻的紅蛇", message: "三思而後行！沒想清楚，就行動反而帶給自己不想要的結果。" },
+            6: { name: "韻律的白橋", message: "對任何人、事、物的執著，已經成為生命成長，以及開展的障礙了。" },
+            7: { name: "共振的藍手", message: "治療想太多最好的辦法就是著手去做，當你動起手來了，你能為周圍一切帶來療愈。" },
+            8: { name: "銀河的黃星星", message: "自卑與自負，都是形成自我價值的不確定感，試試看，停止自我批判，停止抱怨吧！" },
+            9: { name: "太陽的紅月", message: "當情緒來自：事情沒有按照自己所期待的。那麼何不試著接受且隨著當下發生的流動起來。" },
+            10: { name: "行星的白狗", message: "照顧好自己內在所有感受，你所要的一切物質都會被你顯化。" },
+            11: { name: "光譜的藍猴", message: "釋放你內在的枷鎖，大膽玩起來吧，你本是靈動，富有創造力的。" },
+            12: { name: "水晶的黃人", message: "尊重自己與全人類的自由意志，為自己選擇負起百分百責任。" },
+            13: { name: "宇宙的紅天行者", message: "你不受時間、空間以及身份約束，你擁有無限的可能。" },
+            14: { name: "磁性的白巫師", message: "靈性的惰性，總把「無為」當作不去行動的藉口，那麼連老子也救不了這樣自欺欺人的人了。" },
+            15: { name: "月亮的藍鷹", message: "總是可以把自己的缺陷隱藏得太好，正因為如此，生命就無法真正的進化，與進步。" },
+            16: { name: "電力的黃戰士", message: "當內心的問題太多，反而顯示那些問題都不是真正的問題。" },
+            17: { name: "自我存在的紅地球", message: "你所要的一切，都在你的中心。當你為自己而轉的時候，所有一切都被你吸引而來。" },
+            18: { name: "超頻的白鏡", message: "或許活在自己的想像中很自得其樂，但事實却是不願意面對現狀的自己。" },
+            19: { name: "韻律的藍風暴", message: "保持內在的平靜，你的世界將快速進階蛻變，而顯得越來越好。" },
+            20: { name: "共振的黃太陽", message: "當你由內而外的散發你的光芒，全世界都被你點亮。" },
+            21: { name: "銀河的紅龍", message: "相信未知的力量，它將時刻引導你。" },
+            22: { name: "太陽的白風", message: "清晰你想表達的，因為它們都在為了會快速成真。" },
+            23: { name: "行星的藍夜", message: "此刻你有著將夢想快速成真的力量。" },
+            24: { name: "光譜的黃種子", message: "凡事想要開花結果，若不願意放開來去經驗，要知道，那是不可能的。" },
+            25: { name: "水晶的紅蛇", message: "將你的熱情融到你的合作之中，這一切會變得富有生命力。" },
+            26: { name: "宇宙的白橋", message: "過去已經過去了，卻不願意放下過去，總先得承認，這是多麼愚蠢的一件事。" },
+            27: { name: "磁性的藍手", message: "你在創造中吸引一切同頻人事物。" },
+            28: { name: "月亮的黃星星", message: "外表的美，就像面子一樣單薄，面子，只是一面容易破碎的鏡子。" },
+            29: { name: "電力的紅月", message: "你喜悅的能量，可以為周圍的一切注入新鮮活力。" },
+            30: { name: "自我存在的白狗", message: "愛自己並信任自己是安全的，你時時刻刻是被宇宙愛和看顧的。" },
+            31: { name: "超頻的藍猴", message: "允許自己打破框架，你會有很多新鮮好玩的靈感和念頭湧現。" },
+            32: { name: "韻律的黃人", message: "凡事總是堅持自己的原則而不懂得變通，所以事情或關係，就會卡在一個狀態無法繼續。" },
+            33: { name: "共振的紅天行者", message: "去探索更多的可能性，你將協助更多人打破設限。" },
+            34: { name: "銀河的白巫師", message: "信任自己可以掌控時間，享受當下唯一一件事情，其他的一切都會為你定格。" },
+            35: { name: "太陽的藍鷹", message: "對很多事情裝作看不到，反而造成無法彌補的錯過。" },
+            36: { name: "行星的黃戰士", message: "邁開腳步去實踐與執行，你能將想法開花結果。" },
+            37: { name: "光譜的紅地球", message: "你在不斷地釋放過去身份的同時，將走在正確的道路上。事情一旦遇到阻礙、困難就退縮，「怨天尤人」就成為逃避的最佳遮眼布。" },
+            38: { name: "水晶的白鏡", message: "「小我」只是偽装自己很強大的一層保護色，可能已經耽誤，且障礙了内在真正的成長了。" },
+            39: { name: "宇宙的藍風暴", message: "將你過往所有老舊的信念連根摧毀，保持空性宇宙將賜予你新的禮物。" },
+            40: { name: "磁性的黃太陽", message: "用你溫暖的力量，來吸引和創造一切。" },
+            41: { name: "月亮的紅龍", message: "此刻轉一個念，去相信未知的力量，你將開創新能力。" },
+            42: { name: "電力的白風", message: "像風一般服務世界，你將為周圍的環境帶來新鮮空氣。" },
+            43: { name: "自我存在的藍夜", message: "內在的穩定，會為你帶來源源不斷的豐盛與富足。" },
+            44: { name: "超頻的黃種子", message: "如果不想為自己所做的事負責，那麼很有可能也會遇到一個對自己不負責的人。" },
+            45: { name: "韻律的紅蛇", message: "用你內在的生命源動力去點燃自己和他人。" },
+            46: { name: "共振的白橋", message: "保持通透，你將為世界帶來源源不斷的資源。" },
+            47: { name: "銀河的藍手", message: "相信自己擁有無限的創造力，然後去為你的目標與夢想做一件小事吧。" },
+            48: { name: "太陽的黃星星", message: "會不會太需要得到他人的認同，其實，只是自己沒有自信而已。" },
+            49: { name: "行星的紅月", message: "你的熱忱會為你顯化一切物質。" },
+            50: { name: "光譜的白狗", message: "對任何形式的執著放手吧！不然，那只會阻礙往更好的自己前進的。" },
+            51: { name: "水晶的藍猴", message: "融入大家最好的方式，就是和他們玩在一起。" },
+            52: { name: "宇宙的黃人", message: "你除了你的所有身份，你還是你自己。" },
+            53: { name: "磁性的紅天行者", message: "擴張你的意識層級，所有一切可能性都將被你吸引而來。" },
+            54: { name: "月亮的白巫師", message: "從時間緊迫感中解脫出來，享受當下，你將心想事成。" },
+            55: { name: "電力的藍鷹", message: "你的視野和格局，將為你和他人帶來最好的服務。" },
+            56: { name: "自我存在的黃戰士", message: "別太拘泥於形式。畢竟，這個世界真的沒有一定要如何啊！" },
+            57: { name: "超頻的紅地球", message: "由內而外的彰顯你自己，你將成為自己生活的中心。" },
+            58: { name: "韻律的白鏡", message: "關注身邊最親近的人。最容易引起自己有情緒的人，就是生命的大鏡子。" },
+            59: { name: "共振的藍風暴", message: "當你處變不驚的時候，周圍的一切都開始加速蛻變。" },
+            60: { name: "銀河的黃太陽", message: "你需要相信，你值得擁有一切。" },
+            61: { name: "太陽的紅龍", message: "清晰你的意圖，你會收到更多的指引。" },
+            62: { name: "行星的白風", message: "注意你的言語，它將在實相世界中顯化你所說的一切。" },
+            63: { name: "光譜的藍夜", message: "尊重你的感受，並釋放你內在的靈感。" },
+            64: { name: "水晶的黃種子", message: "向著能夠協助你成長內在的方向生長，並拉著大家一起成長。" },
+            65: { name: "宇宙的紅蛇", message: "遵循你心中的渴望而行動，你將爆發最大的能量。" },
+            66: { name: "磁性的白橋", message: "當你有意識的去鏈接，所有的人脈、資源、機遇會隨之而來。" },
+            67: { name: "月亮的藍手", message: "療愈焦慮的最好方法，就是立馬行動。" },
+            68: { name: "電力的黃星星", message: "由內而外的點亮自己，用你的熱情去服務，周遭會因你而充滿活力。" },
+            69: { name: "自我存在的紅月", message: "當你內在穩定的時候，你的正向能量能更多的感染他人。" },
+            70: { name: "超頻的白狗", message: "當你照顧好自己所有感受之後，用你的所有能量可以給他人帶來最好的服務。" },
+            71: { name: "韻律的藍猴", message: "用娛樂的態度，平衡你的精神和物質世界。" },
+            72: { name: "共振的黃人", message: "當你清醒的時候，周圍的所有人都將清醒。" },
+            73: { name: "銀河的紅天行者", message: "就是因為很久沒有自我突破的勇氣，才限制了自己生命的發展。" },
+            74: { name: "太陽的白巫師", message: "當你明白你清晰的意圖並享受當下，便可心享事成。" },
+            75: { name: "行星的藍鷹", message: "你擁有行動即可顯化的能力，拔高你的格局你將顯化更大的東西。" },
+            76: { name: "光譜的黃戰士", message: "釋放所有的疑惑，像戰士一樣勇敢前行。" },
+            77: { name: "水晶的紅地球", message: "事情一旦遇到阻礙、困難就退縮，「怨天尤人」就成為逃避的最佳遮眼布。" },
+            78: { name: "宇宙的白鏡", message: "人世間的一切都會被你看見，你需要藉此來「內省」和「內醒」。" },
+            79: { name: "磁性的藍風暴", message: "當你有意識的迎接變化，所有一切都會快速的朝著正向的去發展。" },
+            80: { name: "月亮的黃太陽", message: "當你承認自己擁有軟弱一面，你就會變得更加的剛強有力量。" },
+            81: { name: "電力的紅龍", message: "遵循你的直覺，它指導你如何注入生命力。" },
+            82: { name: "自我存在的白風", message: "當你內在信任自己是安全而被理解的，你就能更多展示你風趣幽默一樣。" },
+            83: { name: "超頻的藍夜", message: "將你精神世界的靈感呈現給現實世界的人們，他們因會你的想法而驚嘆。" },
+            84: { name: "韻律的黃種子", message: "試著組織大家一起成長，你會獲得更多滋養。" },
+            85: { name: "共振的紅蛇", message: "追逐你心中的渴望，你將為你自己和周遭一切帶來生命力。" },
+            86: { name: "銀河的白橋", message: "你需要相信，會有更棒的禮物來到你的生命中。" },
+            87: { name: "太陽的藍手", message: "帶著清晰的意圖去行動，你能創造一切。" },
+            88: { name: "行星的黃星星", message: "由內而外的閃亮自己，當下就是最好的顯化。" },
+            89: { name: "光譜的紅月", message: "害怕「失去」而不敢真正「放下」，所以，總有一種「卡住」的感覺。" },
+            90: { name: "水晶的白狗", message: "先學會愛自己，然後再將你的愛擴散出去。" },
+            91: { name: "宇宙的藍猴", message: "世間一切皆為幻想，你可以做一個孩子頭，放開手腳將喜悅能量帶給大家。" },
+            92: { name: "磁性的黃人", message: "有意識的去做一個觀察者，你能從現有的身份局限中解脫。" },
+            93: { name: "月亮的紅天行者", message: "平衡你的深度和廣度，去探索更多可能性的同時，別忘了清空所有的認知。" },
+            94: { name: "電力的白巫師", message: "雜亂只會讓內外更混亂。不如，安静下來吧！" },
+            95: { name: "自我存在的藍鷹", message: "打破過往的定義，從更高的角度來看待眼前的一切。" },
+            96: { name: "超頻的黃戰士", message: "有了想法，無懼前行，你能獲得更多的能力。" },
+            97: { name: "韻律的紅地球", message: "團結一切可以團結的力量，組織平衡好一切可以平衡的資源。" },
+            98: { name: "共振的白鏡", message: "周圍的一切，都會隨著你的內心而發生改變。" },
+            99: { name: "銀河的藍風暴", message: "請相信眼前一切的變化，都是為了讓你變得更好。" },
+            100: { name: "太陽的黃太陽", message: "清晰自己的定位，你將獲得匹配的能量。" },
+            101: { name: "行星的紅龍", message: "相信未知的力量，你能夠創造出新鮮的事物。" },
+            102: { name: "光譜的白風", message: "釋放和清空你所有的認知，會有更多的靈性訊息，從你這兒而傳播開來。" },
+            103: { name: "水晶的藍夜", message: "你擁有許多內在的靈感，可以將它們投入與他人的合作之中，會促進你與他人的融合。" },
+            104: { name: "宇宙的黃種子", message: "你的夢想正在快速開花結果，繼續保持信心和耐心。" },
+            105: { name: "磁性的紅蛇", message: "當你有了目標，你就有了生命力。" },
+            106: { name: "月亮的白橋", message: "所有離開你的，在你放手的那一刻，都會有更高版本的回歸。" },
+            107: { name: "電力的藍手", message: "你在參與行動中獲得活力，並將活力傳給身邊人。" },
+            108: { name: "自我存在的黃星星", message: "內在穩定，會讓你由內而外發光如星。" },
+            109: { name: "超頻的紅月", message: "保持正向，你的所有情緒，將快速感染所有人。" },
+            110: { name: "韻律的白狗", message: "照顧好自己的感受，然後去平衡組織更多人學會愛自己。" },
+            111: { name: "共振的藍猴", message: "太拘謹，放不開，可能已經讓自己的肩頸有氣結了喔！" },
+            112: { name: "銀河的黃人", message: "相信自己的自由意志，由自己來掌握人生的選擇權。" },
+            113: { name: "太陽的紅天行者", message: "清晰你的意圖，你將探索到更多的可能性。" },
+            114: { name: "行星的白巫師", message: "享受當下，你將快速顯化一切你所需物質。" },
+            115: { name: "光譜的藍鷹", message: "釋放你過去的認知，重新拔高格局，你能看得更遠。" },
+            116: { name: "水晶的黃戰士", message: "你在實踐和體驗中學會如何與他人合作。" },
+            117: { name: "宇宙的紅地球", message: "去存在而非去成為，整個宇宙都在為你服務。" },
+            118: { name: "磁性的白鏡", message: "將意識聚焦在你的內在並進行調頻，你當下的頻率，將會投射於你所處的環境之中。" },
+            119: { name: "月亮的藍風暴", message: "所有一切顛覆你的，都將讓你變得更加強大。" },
+            120: { name: "電力的黃太陽", message: "用你的陽光先溫暖自己，當你足夠有能量的時候，你自然能夠釋放出更多的光芒給到他人。" },
+            121: { name: "自我存在的紅龍", message: "在未知之中你依然是絕對的安全，請跟隨直覺去創造。" },
+            122: { name: "超頻的白風", message: "想要說話或者分享，就讓它發生吧，會有很多訊息在你溝通和分享中流動出來。" },
+            123: { name: "韻律的藍夜", message: "平衡你的精神世界與物質世界，它們對於你來說一樣精彩。" },
+            124: { name: "共振的黃種子", message: "滋養自己的內在讓內在成長，當你成長了，你周圍的一切都會成長。" },
+            125: { name: "銀河的紅蛇", message: "當你非常堅定自己可以拿下目標，並立刻行動，你將擁有巨大的爆發力去實現它。" },
+            126: { name: "太陽的白橋", message: "你非常明白放下就會回流之時，你釋放束縛自己的一切，會有更高版本的東西進入你的生命中。" },
+            127: { name: "行星的藍手", message: "知道自己要創造什麼，然後去創造，你便可創造任何一切（如金錢、物質）。" },
+            128: { name: "光譜的黃星星", message: "釋放所有的束縛，便可由內而外的去呈現你的內在美。" },
+            129: { name: "水晶的紅月", message: "將你的正向情感，融入與他人的鏈接之中，這會讓一切關係更加融洽。" },
+            130: { name: "宇宙的白狗", message: "活出無條件的愛最佳途徑是，先活出圓滿的自己，然後在服務他人。" },
+            131: { name: "磁性的藍猴", message: "當你把所有的一切設定成遊戲，並無拘束的大膽玩耍起來，你將輕鬆而富有創造力的搞定一切。" },
+            132: { name: "月亮的黃人", message: "尊重自己自由意志的同時，別忘了打破所有自己設限的框架。" },
+            133: { name: "電力的紅天行者", message: "你在不斷探索更多可能性之中充滿活力。" },
+            134: { name: "自我存在的白巫師", message: "你越專注享受當下，你的內在越穩定且安全。" },
+            135: { name: "超頻的藍鷹", message: "拔高你的格局看事情，你會收到更多的靈感和啟發。" },
+            136: { name: "韻律的黃戰士", message: "你會在實踐之中，學會如何平衡周圍一切。" },
+            137: { name: "共振的紅地球", message: "當你回歸你自己的中心，你周圍的一切都會回到正確的軌道上。" },
+            138: { name: "銀河的白鏡", message: "你需要相信，改變你的內心，周圍一切自然隨之改變。" },
+            139: { name: "太陽的藍風暴", message: "當你清晰的了解到自己需要的是什麼，周圍的一切會配合你快速的顛覆更新為你需要的環境。" },
+            140: { name: "行星的黃太陽", message: "給予自己足夠的能量和關懷，你就能為自己快速顯化一切物質。" },
+            141: { name: "光譜的紅龍", message: "釋放內心所有的懷疑，你擁有無限的潛能去創造你未曾有過的體驗。" },
+            142: { name: "水晶的白風", message: "當你允許內在隨性傳播與表達時，你能為周遭創造更多的和諧。" },
+            143: { name: "宇宙的藍夜", message: "你的內在有你所需的一切，感受富足時，你會經歷富足。" },
+            144: { name: "磁性的黃種子", message: "為自己種下夢想，用你的耐心和信心去滋養牠們成長。" },
+            145: { name: "月亮的紅蛇", message: "時刻樹立的目標和獵物，這將讓你保持生命力。" },
+            146: { name: "電力的白橋", message: "有意識的讓一切人事物流動起來，你會感覺自己充滿活力。" },
+            147: { name: "自我存在的藍手", message: "你遠比你認為的更棒，你的創造能力和你的內心世界一樣豐富，用你的智慧重新定義你和你的世界，然後把你的定義活出來。" },
+            148: { name: "超頻的黃星星", message: "無需尋求認可，從你的內在去綻放你自己的時候，自然會獲得掌聲。不要過於謙虛，有時候那會顯得很虛偽，矯情。" },
+            149: { name: "韻律的紅月", message: "太在意「公平」、「平等」，却失去自己內在真正的平衡。" },
+            150: { name: "共振的白狗", message: "愛是互相尊重對方的，不要要求對方按照自己想要的方式來表達愛。" },
+            151: { name: "銀河的藍猴", message: "相信你的內在有無限的創造力，然後大膽去玩出你自己。" },
+            152: { name: "太陽的黃人", message: "將意識回歸你自己，保持你清晰的意圖，守護你當下的自由意志。" },
+            153: { name: "行星的紅天行者", message: "允許有更多的可能性發生，因為凡是你內在允許的可能性，你都能顯化它們。" },
+            154: { name: "光譜的白巫師", message: "真正完全放下的時候，才能隨順自然，而不是用消極、無所謂的態度來避免、逃避。" },
+            155: { name: "水晶的藍鷹", message: "拔高你的格局和視野，來看到你與他人自己的合作關係。" },
+            156: { name: "宇宙的黃戰士", message: "在自己完全盡力後還是無法解決的問題，唯一能夠做的就是不要再為這個問題煩惱。" },
+            157: { name: "磁性的紅地球", message: "搞清楚自己的目的，你便可吸引來一切有利你的資源。" },
+            158: { name: "月亮的白鏡", message: "接納所有面相的你自己，周圍一切都將變得美好。" },
+            159: { name: "電力的藍風暴", message: "穩住你的內心，隨時追隨變化和蛻變，它們會為你和身邊一切帶來新鮮的生命活力。" },
+            160: { name: "自我存在的黃太陽", message: "提升你的配得感，將自己定位定的更高一些，你會發現你能夠給出去的能量更多了，而且你的內在也會更加的穩定。" },
+            161: { name: "超頻的紅龍", message: "遵循內在的直覺指引去創造，會有新事物因你而誕生。" },
+            162: { name: "韻律的白風", message: "去平衡你的表達，將你內心的一切，透過你的表達擴散出去。" },
+            163: { name: "共振的藍夜", message: "尊重你的內在感受，它們會快速的投射在你的現實生活之中。" },
+            164: { name: "銀河的黃種子", message: "對於你的目標和夢想，你需要保持耐心，相信它們都會破土而出，用你的信心和正面態度去滋養他們。" },
+            165: { name: "太陽的紅蛇", message: "當你非常清晰自己想要捕捉什麼獵物的時候，你自然就會有很強大的爆發力去完成它。" },
+            166: { name: "行星的白橋", message: "有意識去做鏈接，你會接引來特別多的人事物，進入到你的生命之中。" },
+            167: { name: "光譜的藍手", message: "釋放所有的顧慮，直接去行動和創造，你將獲得力量和指引。" },
+            168: { name: "水晶的黃星星", message: "放下對自己與他人的評判，允許自己和他人由內而外大放異彩，它能協助你與更多人融洽相處。" },
+            169: { name: "宇宙的紅月", message: "善用你的正向情緒能量，將它融入於你的言行之中，可以為他人充電甚至療愈。" },
+            170: { name: "磁性的白狗", message: "服務他人之前，請先照顧好自己所有感受。" },
+            171: { name: "月亮的藍猴", message: "唯一限制你的是你自己，當你更大膽的去活出自己，你將富有創造力。" },
+            172: { name: "電力的黃人", message: "將意念回歸於你自己，你將為自己和他人帶來更多的活力。" },
+            173: { name: "自我存在的紅天行者", message: "請你記得，你是穿梭時空的預言家、探索家，你有能力放下自我禁錮，一切為你打開。" },
+            174: { name: "超頻的白巫師", message: "享受當下，你的想法能夠快速成真。" },
+            175: { name: "韻律的藍鷹", message: "平衡你的現在和未來，拔高格局同時，別忘了腳踏實地從當下出發。" },
+            176: { name: "共振的黃戰士", message: "當你回歸你的中心，像一個戰士無懼前行，身邊所有的人事物都會處於他們正確的位置上。" },
+            177: { name: "銀河的紅地球", message: "你需要相信，你正走在正確的道路上，所有你需要的資源也都會被你吸引而來。" },
+            178: { name: "太陽的白鏡", message: "當你有意識的去內省，你能快速的轉變你的環境。" },
+            179: { name: "行星的藍風暴", message: "你會在顛覆和變化之中，顯化你需要的一切物質。" },
+            180: { name: "光譜的黃太陽", message: "釋放掉那些責任感，將你的能量放在更有意義的事情，你能輸出更大的價值。" },
+            181: { name: "水晶的紅龍", message: "放下內在評判，信任你的直覺去創造新事物，並與這個他人達成融合。" },
+            182: { name: "宇宙的白風", message: "保持輕快風趣的狀態，你的輕鬆自在會創造更多輕鬆自在。" },
+            183: { name: "磁性的藍夜", message: "尊重你的感受，它會為你吸引來一切。" },
+            184: { name: "月亮的黃種子", message: "對自己的夢想和願景保持耐心，它們在你看不見的土裡持續生長著。" },
+            185: { name: "電力的紅蛇", message: "遵循內在的渴望行動，它能為你和他人帶來活力。" },
+            186: { name: "自我存在的白橋", message: "保持通透允許人事物的流動和變化，你的生活會被照顧的更好。" },
+            187: { name: "超頻的藍手", message: "開始著手行動，你會獲取更多的靈感。" },
+            188: { name: "韻律的黃星星", message: "你需要平衡內在和外在的美，追求細節的同時，別忘了注重整體進度。" },
+            189: { name: "共振的紅月", message: "當你內在平靜的時候，你周圍的一切也都因你的平靜而淨化。" },
+            190: { name: "銀河的白狗", message: "你需要相信，當你學會愛自己之後，你將更有能力去愛身邊的人。" },
+            191: { name: "太陽的藍猴", message: "當你清楚明白眼前的一切都是幻相，然後放開手腳大膽去玩去創造，你反而可以很輕鬆的搞定一切。" },
+            192: { name: "行星的黃人", message: "將意識回歸自己，為自己的選擇負起百分百的責任，你能為自己創造顯化一切物質需求。" },
+            193: { name: "光譜的紅天行者", message: "釋放掉所有的設限，大膽去相信並探索更多的可能性。" },
+            194: { name: "水晶的白巫師", message: "你越享受當下，你能促進周圍一切和諧。" },
+            195: { name: "宇宙的藍鷹", message: "站在未來去展望未來，凡是你能看到的未來，都是你能去到的地方。" },
+            196: { name: "磁性的黃戰士", message: "你會在實踐和體驗之中，吸引和創造一切。" },
+            197: { name: "月亮的紅地球", message: "你不需要替別人操心，當你正位了，周圍的人也會跟著一起正位。" },
+            198: { name: "電力的白鏡", message: "你會在不斷自我內省修正過程中，獲取更多的活力。" },
+            199: { name: "自我存在的藍風暴", message: "信任自己是安全的，並學會臣服，周圍一切的發生最終都會讓你的生活變得更好。" },
+            200: { name: "超頻的黃太陽", message: "由內而外彰顯自己，你像太陽一般溫暖而有能量。" },
+            201: { name: "韻律的紅龍", message: "當你的內心越篤定，外在的質疑你的人越少。" },
+            202: { name: "共振的白風", message: "保持正向表達，它會改變你周遭的環境。" },
+            203: { name: "銀河的藍夜", message: "學會相信你的內在感受，並遵從感覺辦事。" },
+            204: { name: "太陽的黃種子", message: "保持你的意圖清晰，因為你在哪兒播種，你在哪兒開花結果。" },
+            205: { name: "行星的紅蛇", message: "有了想法就立馬行動，你能快速顯化你所需的一切。" },
+            206: { name: "光譜的白橋", message: "釋放所有束縛你的人事物，保持敞開會有更多的資源進入你的生命中。" },
+            207: { name: "水晶的藍手", message: "在參與行動之中，你將越來越懂得如何將一切變得更融洽。" },
+            208: { name: "宇宙的黃星星", message: "活出多彩的你自己，許多人會因你而受到啟發。" },
+            209: { name: "磁性的紅月", message: "運用你的正向情緒能量，將為你吸引和創造一切所需。" },
+            210: { name: "月亮的白狗", message: "當你學會接納所有的自己並愛上自己，周圍的人便可給予你更多的愛和理解。" },
+            211: { name: "電力的藍猴", message: "你能為自己和他人提供最佳的服務，就是放開手腳開心快樂的去玩耍。" },
+            212: { name: "自我存在的黃人", message: "請打破對於你自己所有的定義，因為你擁有無限的可能。" },
+            213: { name: "超頻的紅天行者", message: "探索更多的可能性，你將快速獲取更多的靈感。" },
+            214: { name: "韻律的白巫師", message: "你需要在線性時間與你內在感受時間之中取得平衡。" },
+            215: { name: "共振的藍鷹", message: "拔高你的格局，用更高的角度去看待一切，你會發現一切都開始有所不同。" },
+            216: { name: "銀河的黃戰士", message: "你需要相信真正的真理是經得起你的實踐，然後無懼前行。" },
+            217: { name: "太陽的紅地球", message: "當你清楚的知道自己去哪兒，全世界都會為你讓路。" },
+            218: { name: "行星的白鏡", message: "現在的結果，只是之前行為所種下的因，看穿因果，就是願意為自己每個當下負責的態度。" },
+            219: { name: "光譜的藍風暴", message: "釋放所有外在的依靠，放手信任宇宙，你將回到最正確的位置上。" },
+            220: { name: "水晶的黃太陽", message: "你的光芒和愛將包融一切。" },
+            221: { name: "宇宙的紅龍", message: "你具有在未知之中，無限的創造力，請遵循你的內在指引。" },
+            222: { name: "磁性的白風", message: "當你有意識的去表達，會有很多新訊息從你身上傳遞出來。" },
+            223: { name: "月亮的藍夜", message: "當你感到疲憊的時候，不妨讓自己安靜的獨處來充充電。" },
+            224: { name: "電力的黃種子", message: "不斷地去吸收正向的頻率，能為你帶來生命活力。" },
+            225: { name: "自我存在的紅蛇", message: "信任自己是安全的，然後大膽的去遵循渴望行動，你將獲得更多的能量。" },
+            226: { name: "超頻的白橋", message: "你鏈接的人事物越多，你越能從內在去彰顯你自己。" },
+            227: { name: "韻律的藍手", message: "你能快速適應環境，並有雙倍的創造力、完成力、療愈力，開啟的秘鑰原本就在你心中，只需閉眼詢問自己的內心，即可拿回。" },
+            228: { name: "共振的黃星星", message: "當你由內而外的活出自己，你能點亮周圍的一切。" },
+            229: { name: "銀河的紅月", message: "相信你的情緒能量能夠感染一切，並將它實踐於你的生活之中，你便掌握了這個世界的情緒遙控器。" },
+            230: { name: "太陽的白狗", message: "當你很清楚的明白在愛別人之前，先學會讓自己圓滿，你便獲掌握了無條件的愛。" },
+            231: { name: "行星的藍猴", message: "此刻只管盡情的玩耍，所有的物質會為了匹配你的興奮而顯化。" },
+            232: { name: "光譜的黃人", message: "釋放頭腦所有的設限，你需要清除的明白，你擁有無限可能性。" },
+            233: { name: "水晶的紅天行者", message: "透過你的探索以及相信這個世界是有更多的可能性，你將協助更多的人提升意識層級。" },
+            234: { name: "宇宙的白巫師", message: "當你完全的沉浸於你的當下，你將掌握心享事成的魔法。" },
+            235: { name: "磁性的藍鷹", message: "你現在的格局，會為你開啟新的世界。" },
+            236: { name: "月亮的黃戰士", message: "你有能力從所有二元對立中穿越跳脫，你的智慧讓你無所畏懼，勇於開拓。" },
+            237: { name: "電力的紅地球", message: "當你處於軌道上的時候，你周圍的一切都會充滿活力。" },
+            238: { name: "自我存在的白鏡", message: "你可以透過觀察周圍的一切，快速來覺知和內醒自己，從而打破自我限制。" },
+            239: { name: "超頻的藍風暴", message: "你的想法正在以顛覆的形式，在你生活中快速成真。" },
+            240: { name: "韻律的黃太陽", message: "你需要平衡你的奉獻與接收，你可以無條件的付出，你也需要全然的敞開接收。" },
+            241: { name: "共振的紅龍", message: "相信你的內在指引，在未知中去創造新事物，你將引領更多的人成為新世界的開拓者。" },
+            242: { name: "銀河的白風", message: "你需要對你所表達的一切保持信任，然後大膽的去表達，當下一切本就是最好的安排。" },
+            243: { name: "太陽的藍夜", message: "你的內在本就具足，當你越清晰自己需求時，你就越能獲得你要的一切。" },
+            244: { name: "行星的黃種子", message: "保持正向從外界吸收更多的營養，關注內在的成長，你能顯化一切所需物質。" },
+            245: { name: "光譜的紅蛇", message: "釋放所有束縛你的一切，並立刻採取行動，這會讓你持續保持能量。" },
+            246: { name: "水晶的白橋", message: "保持自身的通透，去鏈接更多的人事物，你能將更多的能量融合起來。" },
+            247: { name: "宇宙的藍手", message: "當你開始運用你的雙手行動起來，你便可創造一切和療愈一切。" },
+            248: { name: "磁性的黃星星", message: "活出多彩的自己，你會像啟明星一般吸引人注意力。" },
+            249: { name: "月亮的紅月", message: "允許所有的情緒流動，你就能淨化自己的能量。" },
+            250: { name: "電力的白狗", message: "服務別人之前，請先服務好自己。" },
+            251: { name: "自我存在的藍猴", message: "當你玩到開心了，你的環境自然就會處於穩定狀態。" },
+            252: { name: "超頻的黃人", message: "你不需要透過別人的認可來定義你自己，因為你本就充滿無限可能。" },
+            253: { name: "韻律的紅天行者", message: "你需要平衡自己廣度和深度上的探索，因為它們一樣會為你帶來更多可能性。" },
+            254: { name: "共振的白巫師", message: "當你越享受當下，周圍的一切越不會對你進行干擾。" },
+            255: { name: "銀河的藍鷹", message: "你需要相信，你所有展望的未來，都是你可以到達的未來。" },
+            256: { name: "太陽的黃戰士", message: "當你意圖清晰的時候，你只要無懼前行，便可到達。" },
+            257: { name: "行星的紅地球", message: "當你堅定自己的方向並開始行動時，你能快速顯化一切所需物質。" },
+            258: { name: "光譜的白鏡", message: "釋放掉內在對自己所有的評判，你會發現周圍一切環境都變得更加和諧。" },
+            259: { name: "水晶的藍風暴", message: "所有的顛覆，都是為了更好的融合。" },
+            260: { name: "宇宙的黃太陽", message: "你的能量包羅萬象，你清晰地知道自己是誰。" }
+        };
+
+        const numberEl = document.getElementById('number');
+        const numberDisplay = document.getElementById('numberDisplay');
+        const kinNameEl = document.getElementById('kinName');
+        const messageEl = document.getElementById('message');
+        const drawBtn = document.getElementById('drawBtn');
+        const historyList = document.getElementById('historyList');
+        const confettiContainer = document.getElementById('confettiContainer');
+        const soundToggle = document.getElementById('soundToggle');
+
+        const MIN_NUMBER = 1;
+        const MAX_NUMBER = 260;
+        const ROLL_DURATION = 2500;
+        const ROLL_INTERVAL = 50;
+
+        let isRolling = false;
+        let history = [];
+        let soundEnabled = true;
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTickSound() {
+            if (!soundEnabled || !audioContext) return;
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = 600 + Math.random() * 300;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.05);
+        }
+
+        function playWinSound() {
+            if (!soundEnabled || !audioContext) return;
+            const notes = [392, 523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                const startTime = audioContext.currentTime + index * 0.12;
+                gainNode.gain.setValueAtTime(0.25, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.35);
+                oscillator.start(startTime);
+                oscillator.stop(startTime + 0.35);
+            });
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            soundToggle.innerHTML = soundEnabled ? '&#128266;' : '&#128263;';
+            soundToggle.classList.toggle('muted', !soundEnabled);
+        }
+
+        function getRandomNumber() {
+            return Math.floor(Math.random() * (MAX_NUMBER - MIN_NUMBER + 1)) + MIN_NUMBER;
+        }
+
+        // 獲取 KIN 顏色類別：1紅 2白 3藍 4黃，依序循環
+        function getKinColorClass(kinNumber) {
+            const remainder = kinNumber % 4;
+            if (remainder === 1) return 'kin-red';
+            if (remainder === 2) return 'kin-white';
+            if (remainder === 3) return 'kin-blue';
+            return 'kin-yellow'; // remainder === 0
+        }
+
+        // 獲取顏色中文名稱
+        function getKinColorName(kinNumber) {
+            const remainder = kinNumber % 4;
+            if (remainder === 1) return '紅';
+            if (remainder === 2) return '白';
+            if (remainder === 3) return '藍';
+            return '黃';
+        }
+
+        // 清除所有顏色類別
+        function clearKinColorClasses() {
+            numberDisplay.classList.remove('kin-red', 'kin-white', 'kin-blue', 'kin-yellow');
+            kinNameEl.classList.remove('kin-red', 'kin-white', 'kin-blue', 'kin-yellow');
+        }
+
+        function createConfetti() {
+            const colors = ['#ffd700', '#ff6b35', '#00d4aa', '#ff69b4', '#87ceeb', '#dda0dd', '#f0e68c'];
+            for (let i = 0; i < 80; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    if (Math.random() > 0.5) {
+                        confetti.style.borderRadius = '50%';
+                        confetti.style.width = '12px';
+                        confetti.style.height = '12px';
+                    }
+                    confettiContainer.appendChild(confetti);
+                    confetti.addEventListener('animationend', () => confetti.remove());
+                }, i * 25);
+            }
+        }
+
+        function createFireworks() {
+            const colors = ['#ffd700', '#ff6b35', '#00d4aa', '#ff69b4', '#ffffff'];
+            for (let burst = 0; burst < 4; burst++) {
+                setTimeout(() => {
+                    const centerX = Math.random() * window.innerWidth;
+                    const centerY = Math.random() * (window.innerHeight / 2);
+                    for (let i = 0; i < 25; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'firework';
+                        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        particle.style.left = centerX + 'px';
+                        particle.style.top = centerY + 'px';
+                        particle.style.boxShadow = `0 0 6px ${particle.style.backgroundColor}`;
+                        const angle = (i / 25) * Math.PI * 2;
+                        const velocity = 40 + Math.random() * 80;
+                        const endX = Math.cos(angle) * velocity;
+                        const endY = Math.sin(angle) * velocity;
+                        particle.animate([
+                            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                            { transform: `translate(${endX}px, ${endY}px) scale(0)`, opacity: 0 }
+                        ], { duration: 1000 + Math.random() * 500, easing: 'cubic-bezier(0, 0, 0.2, 1)' });
+                        confettiContainer.appendChild(particle);
+                        setTimeout(() => particle.remove(), 1500);
+                    }
+                }, burst * 350);
+            }
+        }
+
+        function createSparkles() {
+            const displayRect = numberDisplay.getBoundingClientRect();
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.innerHTML = '&#10022;';
+                    sparkle.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    sparkle.style.color = '#ffd700';
+                    sparkle.style.left = (displayRect.left + Math.random() * displayRect.width) + 'px';
+                    sparkle.style.top = (displayRect.top + Math.random() * displayRect.height) + 'px';
+                    confettiContainer.appendChild(sparkle);
+                    sparkle.addEventListener('animationend', () => sparkle.remove());
+                }, i * 60);
+            }
+        }
+
+        function triggerWinEffects() {
+            numberEl.classList.add('winner');
+            numberDisplay.classList.add('winner');
+            playWinSound();
+            createConfetti();
+            createFireworks();
+            createSparkles();
+            setTimeout(() => {
+                numberEl.classList.remove('winner');
+                numberDisplay.classList.remove('winner');
+            }, 3500);
+        }
+
+        function startDraw() {
+            if (isRolling) return;
+            initAudio();
+            isRolling = true;
+            drawBtn.disabled = true;
+            drawBtn.textContent = '抽取中...';
+            numberEl.classList.add('rolling');
+            numberEl.classList.remove('winner');
+            numberDisplay.classList.remove('winner');
+            clearKinColorClasses();
+            kinNameEl.textContent = '';
+            messageEl.textContent = '正在連結宇宙能量...';
+
+            const finalNumber = getRandomNumber();
+            const startTime = Date.now();
+
+            function roll() {
+                const elapsed = Date.now() - startTime;
+                if (elapsed < ROLL_DURATION) {
+                    const randomNum = getRandomNumber();
+                    numberEl.textContent = `KIN ${randomNum}`;
+                    playTickSound();
+                    const progress = elapsed / ROLL_DURATION;
+                    const delay = ROLL_INTERVAL + (progress * 180);
+                    setTimeout(roll, delay);
+                } else {
+                    numberEl.textContent = `KIN ${finalNumber}`;
+                    numberEl.classList.remove('rolling');
+                    isRolling = false;
+                    drawBtn.disabled = false;
+                    drawBtn.textContent = '再抽一次';
+
+                    // 添加顏色類別
+                    const colorClass = getKinColorClass(finalNumber);
+                    numberDisplay.classList.add(colorClass);
+                    kinNameEl.classList.add(colorClass);
+
+                    const kinInfo = kinData[finalNumber];
+                    kinNameEl.textContent = kinInfo.name;
+                    messageEl.textContent = kinInfo.message;
+
+                    triggerWinEffects();
+                    addToHistory(finalNumber);
+                }
+            }
+            roll();
+        }
+
+        function addToHistory(number) {
+            history.unshift(number);
+            if (history.length > 15) history.pop();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            historyList.innerHTML = history
+                .map(num => `<div class="history-item ${getKinColorClass(num)}">KIN ${num}</div>`)
+                .join('');
+        }
+
+        function clearHistory() {
+            history = [];
+            renderHistory();
+        }
+    </script>
+</body>
+</html>
