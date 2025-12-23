@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13月亮曆的小共時</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: linear-gradient(
+                165deg,
+                #f8f6f1 0%,
+                #f2efe8 25%,
+                #eef1ef 50%,
+                #f5f3ee 75%,
+                #f8f7f4 100%
+            );
+            font-family: 'Noto Serif TC', serif;
+            color: #3a3a3a;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 柔和光暈背景 - 霧感 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            right: -20%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(
+                circle,
+                rgba(200, 190, 170, 0.15) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20%;
+            left: -15%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(
+                circle,
+                rgba(160, 180, 175, 0.12) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            z-index: 10;
+            padding: 50px 40px 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* HUNAB KU 圖像區 */
+        .hunab-ku {
+            width: 216px;
+            height: 216px;
+            position: relative;
+        }
+
+        .hunab-ku img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        /* 標題 */
+        .header {
+            text-align: center;
+            margin-top: -20px;
+        }
+
+        .header h1 {
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #4a4540;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            font-weight: 400;
+            color: #8a857a;
+            letter-spacing: 0.18em;
+        }
+
+        /* 模式選擇區 */
+        .mode-selection {
+            display: flex;
+            flex-direction: row;
+            gap: 36px;
+            width: 100%;
+            max-width: 820px;
+            justify-content: center;
+        }
+
+        /* 模式卡片 - 高級玻璃卡 */
+        .mode-card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 36px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 380px;
+            box-shadow:
+                0 4px 24px rgba(0, 0, 0, 0.04),
+                0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.08),
+                0 4px 12px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .mode-card .mode-title {
+            font-size: 22px;
+            font-weight: 500;
+            color: #4a4540;
+            margin-bottom: 16px;
+            letter-spacing: 0.06em;
+        }
+
+        .mode-card .mode-desc {
+            font-size: 15px;
+            font-weight: 300;
+            color: #6a665c;
+            line-height: 1.9;
+            margin-bottom: 12px;
+        }
+
+        .mode-card .mode-sub {
+            font-size: 13px;
+            font-weight: 300;
+            color: #9a958a;
+            margin-bottom: 28px;
+        }
+
+        /* 按鈕樣式 */
+        .mode-btn {
+            display: inline-block;
+            padding: 14px 36px;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            border-radius: 28px;
+            transition: all 0.35s ease;
+        }
+
+        /* Ritual - 主按鈕（淡金低飽和） */
+        .mode-card.ritual .mode-btn {
+            background: #c4b89a;
+            color: #fff;
+            border: none;
+        }
+
+        .mode-card.ritual:hover .mode-btn {
+            background: #b8aa8a;
+        }
+
+        /* Quick - 次按鈕（描邊） */
+        .mode-card.quick .mode-btn {
+            background: transparent;
+            color: #8a857a;
+            border: 1px solid rgba(138, 133, 122, 0.4);
+        }
+
+        .mode-card.quick:hover .mode-btn {
+            border-color: rgba(138, 133, 122, 0.6);
+            background: rgba(138, 133, 122, 0.06);
+        }
+
+        /* 移除小標籤 */
+        .mode-tag {
+            display: none;
+        }
+
+        /* 設計者資訊 */
+        .designer-credit {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 300;
+            color: #a0a0a0;
+            line-height: 1.8;
+        }
+
+        .designer-credit a {
+            color: #909090;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .designer-credit a:hover {
+            color: #6a6a6a;
+        }
+
+        .designer-credit .kin-info {
+            font-weight: 400;
+            color: #8a8a8a;
+        }
+
+        /* RWD */
+        @media (max-width: 820px) {
+            .mode-selection {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+
+            .mode-card {
+                max-width: 420px;
+                width: 100%;
+            }
+
+            .header h1 {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .container {
+                gap: 36px;
+                padding: 36px 20px 32px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .header .subtitle {
+                font-size: 15px;
+            }
+
+            .hunab-ku {
+                width: 160px;
+                height: 160px;
+            }
+
+            .mode-card {
+                padding: 28px 24px;
+            }
+
+            .mode-card .mode-title {
+                font-size: 20px;
+            }
+
+            .mode-card .mode-desc {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HUNAB KU 圖像 -->
+        <div class="hunab-ku">
+            <img src="./hunab-ku-1.png" alt="Hunab Ku">
+        </div>
+
+        <!-- 標題 -->
+        <header class="header">
+            <h1>13月亮曆的小共時</h1>
+            <p class="subtitle">Dreamspell Synchronicity</p>
+        </header>
+
+        <!-- 模式選擇 -->
+        <div class="mode-selection">
+            <!-- 共時儀式 - 主要 -->
+            <a href="./ritual/" class="mode-card ritual">
+                <h2 class="mode-title">共時儀式</h2>
+                <p class="mode-desc">
+                    給自己一點時間，<br>
+                    讓訊息慢慢落到身體。
+                </p>
+                <p class="mode-sub">約 1–3 分鐘的靜心體驗</p>
+                <span class="mode-btn">進入儀式</span>
+            </a>
+
+            <!-- 快速共時 - 次要 -->
+            <a href="./quick/" class="mode-card quick">
+                <h2 class="mode-title">快速共時</h2>
+                <p class="mode-desc">
+                    跟著直覺，<br>
+                    快速抽一張今天的訊息。
+                </p>
+                <p class="mode-sub">簡單、直接、不多想</p>
+                <span class="mode-btn">快速抽卡</span>
+            </a>
+        </div>
+
+        <!-- 設計者資訊 -->
+        <footer class="designer-credit">
+            設計 | <span class="kin-info">KIN 74 太陽的白巫師</span> HIPER<br>
+            <a href="https://www.facebook.com/profile.php?id=100074630472925" target="_blank">波波日常數數</a>
+        </footer>
+    </div>
+</body>
+</html>
