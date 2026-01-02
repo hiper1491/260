@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主題指引 | 13月亮曆的小共時</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* 身心靈配色：溫暖大地色調 */
+            background: linear-gradient(
+                165deg,
+                #e8e4df 0%,
+                #ddd8d2 25%,
+                #d5d0c8 50%,
+                #ddd8d2 75%,
+                #e8e4df 100%
+            );
+            font-family: 'Noto Serif TC', serif;
+            color: #3a3632;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 柔和光暈背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(196, 168, 85, 0.1) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -15%;
+            left: -10%;
+            width: 45%;
+            height: 45%;
+            background: radial-gradient(
+                circle,
+                rgba(160, 150, 135, 0.1) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 返回連結 */
+        .back-link {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #7a756c;
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            color: #4a4540;
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 40px 24px;
+            max-width: 640px;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* 階段容器 */
+        .stage {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 1s ease;
+            width: 100%;
+        }
+
+        .stage.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== State 1：選擇主題 ==================== */
+        .stage-theme {
+            gap: 44px;
+        }
+
+        .theme-title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #2d2a26;
+            letter-spacing: 0.15em;
+        }
+
+        .theme-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            color: #c4a855;
+            letter-spacing: 0.2em;
+            margin-top: -12px;
+        }
+
+        .theme-desc {
+            font-size: 20px;
+            font-weight: 500;
+            color: #4a4540;
+            line-height: 2.2;
+        }
+
+        .theme-options {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .theme-option {
+            padding: 28px 36px;
+            background: #fff;
+            border-radius: 16px;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .theme-option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: #c4a855;
+            border-radius: 14px 0 0 14px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .theme-option:hover {
+            border-color: rgba(196, 168, 85, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-option:hover::before {
+            opacity: 0.5;
+        }
+
+        .theme-option:active {
+            transform: translateY(-2px);
+        }
+
+        .theme-option.selected {
+            background: linear-gradient(135deg, #c4a855 0%, #a89040 100%);
+            border-color: #c4a855;
+            box-shadow: 0 8px 28px rgba(196, 168, 85, 0.35);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .theme-option.selected::before {
+            opacity: 0;
+        }
+
+        .theme-option.selected .theme-option-name {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .theme-option.selected .theme-option-desc {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* 選中後加勾選標記 */
+        .theme-option.selected::after {
+            content: '✓';
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .theme-option-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3a3632;
+            margin-bottom: 8px;
+            letter-spacing: 0.08em;
+        }
+
+        .theme-option-desc {
+            font-size: 16px;
+            font-weight: 500;
+            color: #7a756c;
+        }
+
+        .confirm-btn {
+            padding: 22px 72px;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Noto Serif TC', serif;
+            color: #fff;
+            background: linear-gradient(135deg, #c4a855 0%, #a89040 100%);
+            border: none;
+            border-radius: 36px;
+            cursor: pointer;
+            letter-spacing: 0.15em;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 28px rgba(196, 168, 85, 0.35);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .confirm-btn.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .confirm-btn.enabled:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #a89040 0%, #8a7830 100%);
+            box-shadow: 0 10px 28px rgba(196, 168, 85, 0.4);
+        }
+
+        /* ==================== 呼吸過渡階段 ==================== */
+        .stage-breathe {
+            gap: 40px;
+        }
+
+        .breath-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(180, 175, 160, 0.1) 0%, transparent 70%);
+            border: 2px solid rgba(160, 154, 138, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .breath-circle.inhale {
+            animation: breatheIn 4s ease-in-out forwards;
+        }
+
+        .breath-circle.exhale {
+            animation: breatheOut 4s ease-in-out forwards;
+        }
+
+        @keyframes breatheIn {
+            from { transform: scale(0.7); opacity: 0.4; border-color: rgba(160, 154, 138, 0.2); }
+            to { transform: scale(1.1); opacity: 1; border-color: rgba(160, 154, 138, 0.6); }
+        }
+
+        @keyframes breatheOut {
+            from { transform: scale(1.1); opacity: 1; border-color: rgba(160, 154, 138, 0.6); }
+            to { transform: scale(0.7); opacity: 0.4; border-color: rgba(160, 154, 138, 0.2); }
+        }
+
+        .breath-text {
+            font-size: 20px;
+            color: #8a857a;
+            letter-spacing: 0.25em;
+        }
+
+        .breath-hint {
+            font-size: 15px;
+            color: #a09a8a;
+            letter-spacing: 0.1em;
+        }
+
+        .breath-count {
+            font-size: 22px;
+            font-weight: 700;
+            color: #c4a855;
+            letter-spacing: 0.15em;
+        }
+
+        /* ==================== State 2：抽卡 ==================== */
+        .stage-draw {
+            gap: 48px;
+        }
+
+        .draw-theme-badge {
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 2px solid rgba(196, 168, 85, 0.3);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .draw-theme-label {
+            font-size: 14px;
+            color: #8a857a;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .draw-theme-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3a3632;
+            letter-spacing: 0.08em;
+        }
+
+        .draw-kin-display {
+            font-size: 64px;
+            font-weight: 700;
+            color: #4a4540;
+        }
+
+        .draw-kin-display.rolling {
+            animation: kinPulse 0.15s ease infinite;
+        }
+
+        @keyframes kinPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .draw-btn {
+            padding: 22px 60px;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Noto Serif TC', serif;
+            color: #fff;
+            background: linear-gradient(135deg, #c4a855 0%, #a89040 100%);
+            border: none;
+            border-radius: 36px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.15em;
+            box-shadow: 0 6px 24px rgba(196, 168, 85, 0.35);
+        }
+
+        .draw-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 32px rgba(196, 168, 85, 0.45);
+            background: linear-gradient(135deg, #a89040 0%, #8a7830 100%);
+        }
+
+        .draw-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ==================== State 3：結果顯示 ==================== */
+        .stage-result {
+            gap: 32px;
+        }
+
+        .result-theme-badge {
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6a665c;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .result-seal {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            border-radius: 14px;
+            filter: drop-shadow(0 0 25px rgba(180, 175, 160, 0.4));
+        }
+
+        .result-kin {
+            font-size: 38px;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+        }
+
+        .result-kin.kin-red { color: #c4706a; }
+        .result-kin.kin-white { color: #6a665c; }
+        .result-kin.kin-blue { color: #6a8fa0; }
+        .result-kin.kin-yellow { color: #b8a860; }
+
+        .result-name {
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+        }
+
+        .result-name.kin-red { color: #c4706a; }
+        .result-name.kin-white { color: #6a665c; }
+        .result-name.kin-blue { color: #6a8fa0; }
+        .result-name.kin-yellow { color: #b8a860; }
+
+        .result-message-box {
+            max-width: 480px;
+            padding: 28px 32px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .result-message-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #8a857a;
+            margin-bottom: 16px;
+            letter-spacing: 0.2em;
+        }
+
+        .result-message {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.9;
+            color: #4a4540;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .restart-btn {
+            padding: 14px 32px;
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Noto Serif TC', serif;
+            color: #fff;
+            background: #6a665c;
+            border: none;
+            border-radius: 28px;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: #5a5650;
+        }
+
+        .change-theme-btn {
+            padding: 14px 32px;
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Noto Serif TC', serif;
+            color: #8a857a;
+            background: transparent;
+            border: 1px solid rgba(138, 133, 122, 0.4);
+            border-radius: 28px;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+
+        .change-theme-btn:hover {
+            background: rgba(138, 133, 122, 0.05);
+            border-color: rgba(138, 133, 122, 0.6);
+        }
+
+        /* RWD */
+        @media (max-width: 520px) {
+            .theme-title {
+                font-size: 36px;
+            }
+
+            .theme-subtitle {
+                font-size: 15px;
+            }
+
+            .theme-desc {
+                font-size: 17px;
+            }
+
+            .theme-options {
+                max-width: 100%;
+                gap: 14px;
+            }
+
+            .theme-option {
+                padding: 22px 24px;
+                min-height: 80px;
+            }
+
+            .theme-option-name {
+                font-size: 20px;
+            }
+
+            .theme-option-desc {
+                font-size: 14px;
+            }
+
+            .confirm-btn {
+                padding: 18px 48px;
+                font-size: 17px;
+            }
+
+            .breath-count {
+                font-size: 18px;
+            }
+
+            .breath-circle {
+                width: 160px;
+                height: 160px;
+            }
+
+            .draw-theme-badge {
+                padding: 16px 32px;
+            }
+
+            .draw-theme-name {
+                font-size: 22px;
+            }
+
+            .draw-kin-display {
+                font-size: 48px;
+            }
+
+            .draw-btn {
+                padding: 18px 48px;
+                font-size: 17px;
+            }
+
+            .result-seal {
+                width: 130px;
+                height: 130px;
+            }
+
+            .result-kin {
+                font-size: 30px;
+            }
+
+            .result-name {
+                font-size: 18px;
+            }
+
+            .result-message-box {
+                padding: 22px 20px;
+            }
+
+            .result-message {
+                font-size: 15px;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+
+            .restart-btn,
+            .change-theme-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-link">返回</a>
+
+    <div class="container">
+        <!-- State 1：選擇主題 -->
+        <div class="stage stage-theme active" id="stageTheme">
+            <h1 class="theme-title">主題指引</h1>
+            <p class="theme-subtitle">（智慧的果實）</p>
+            <p class="theme-desc">
+                選擇一個你想探索的主題，<br>
+                讓宇宙為你帶來專屬的指引訊息。
+            </p>
+            <div class="theme-options" id="themeOptions">
+                <div class="theme-option" data-theme="money" onclick="selectTheme(this)">
+                    <div class="theme-option-name">金錢與豐盛</div>
+                    <div class="theme-option-desc">財務、資源、物質豐盛</div>
+                </div>
+                <div class="theme-option" data-theme="career" onclick="selectTheme(this)">
+                    <div class="theme-option-name">事業與志業</div>
+                    <div class="theme-option-desc">工作、目標、人生方向</div>
+                </div>
+                <div class="theme-option" data-theme="relationship" onclick="selectTheme(this)">
+                    <div class="theme-option-name">關係與情感</div>
+                    <div class="theme-option-desc">愛情、友誼、人際連結</div>
+                </div>
+                <div class="theme-option" data-theme="health" onclick="selectTheme(this)">
+                    <div class="theme-option-name">健康與能量</div>
+                    <div class="theme-option-desc">身心平衡、活力、療癒</div>
+                </div>
+                <div class="theme-option" data-theme="growth" onclick="selectTheme(this)">
+                    <div class="theme-option-name">成長與蛻變</div>
+                    <div class="theme-option-desc">自我提升、突破、進化</div>
+                </div>
+            </div>
+            <button class="confirm-btn" id="confirmBtn" onclick="confirmTheme()">開始抽卡</button>
+        </div>
+
+        <!-- State 1.5：呼吸過渡 -->
+        <div class="stage stage-breathe" id="stageBreathe">
+            <p class="breath-count" id="breathCountEl">第一次呼吸</p>
+            <p class="breath-hint">放鬆身心，聚焦你選擇的主題</p>
+            <div class="breath-circle" id="breathCircle">
+                <span class="breath-text" id="breathText">吸氣</span>
+            </div>
+        </div>
+
+        <!-- State 2：抽卡 -->
+        <div class="stage stage-draw" id="stageDraw">
+            <div class="draw-theme-badge">
+                <p class="draw-theme-label">當前主題</p>
+                <p class="draw-theme-name" id="drawThemeName"></p>
+            </div>
+            <div class="draw-kin-display rolling" id="drawKinDisplay">KIN 1</div>
+            <button class="draw-btn" onclick="stopDraw()">抽取印記</button>
+        </div>
+
+        <!-- State 3：結果顯示 -->
+        <div class="stage stage-result" id="stageResult">
+            <div class="result-theme-badge" id="resultThemeBadge"></div>
+            <img class="result-seal" id="resultSeal" src="" alt="圖騰">
+            <div class="result-kin" id="resultKin"></div>
+            <div class="result-name" id="resultName"></div>
+            <div class="result-message-box">
+                <p class="result-message-title" id="resultMessageTitle">主題指引</p>
+                <p class="result-message" id="resultMessage"></p>
+            </div>
+            <div class="result-actions">
+                <button class="restart-btn" onclick="restartSameTheme()">同主題再抽</button>
+                <button class="change-theme-btn" onclick="changeTheme()">換個主題</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 資料定義 ====================
+
+        // 13 調性名稱
+        const toneNames = ["磁性的", "月亮的", "電力的", "自我存在的", "超頻的", "韻律的", "共振的", "銀河的", "太陽的", "行星的", "光譜的", "水晶的", "宇宙的"];
+
+        // 20 圖騰名稱
+        const sealNames = ["紅龍", "白風", "藍夜", "黃種子", "紅蛇", "白世界橋", "藍手", "黃星星", "紅月", "白狗", "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹", "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"];
+
+        // 主題資料
+        const themes = {
+            money: {
+                name: "金錢與豐盛",
+                messageTitle: "金錢指引"
+            },
+            career: {
+                name: "事業與志業",
+                messageTitle: "事業指引"
+            },
+            relationship: {
+                name: "關係與情感",
+                messageTitle: "關係指引"
+            },
+            health: {
+                name: "健康與能量",
+                messageTitle: "健康指引"
+            },
+            growth: {
+                name: "成長與蛻變",
+                messageTitle: "成長指引"
+            }
+        };
+
+        // ==================== 主題訊息資料結構（待填充） ====================
+        // TODO: 未來每個主題可有 260 條專屬訊息
+        const themeMessages = {
+            money: {
+                default: "豐盛的能量正在流向你。放下對匱乏的恐懼，打開接收的通道，允許宇宙以各種形式滋養你。"
+            },
+            career: {
+                default: "你的志業正在召喚你。傾聽內心的聲音，它知道你真正想要創造什麼。每一步都在引導你走向更大的可能性。"
+            },
+            relationship: {
+                default: "愛是流動的能量。當你學會愛自己，你就能吸引與你頻率相匹配的關係。敞開心扉，讓愛自然流動。"
+            },
+            health: {
+                default: "你的身體是神聖的殿堂。傾聽它的訊息，給予它需要的休息與滋養。健康從內在的和諧開始。"
+            },
+            growth: {
+                default: "蛻變正在發生。每一次的不舒適都是成長的邀請。信任這個過程，你正在成為更完整的自己。"
+            }
+        };
+
+        // ==================== 工具函數 ====================
+
+        function getKinColorClass(kinNumber) {
+            const remainder = kinNumber % 4;
+            if (remainder === 1) return 'kin-red';
+            if (remainder === 2) return 'kin-white';
+            if (remainder === 3) return 'kin-blue';
+            return 'kin-yellow';
+        }
+
+        function getSealNumber(kinNumber) {
+            return ((kinNumber - 1) % 20) + 1;
+        }
+
+        function getToneNumber(kinNumber) {
+            return ((kinNumber - 1) % 13) + 1;
+        }
+
+        function getKinName(kinNumber) {
+            const toneIndex = getToneNumber(kinNumber) - 1;
+            const sealIndex = getSealNumber(kinNumber) - 1;
+            return toneNames[toneIndex] + sealNames[sealIndex];
+        }
+
+        // ==================== State 管理 ====================
+
+        let selectedTheme = null;
+        let drawnKin = null;
+        let drawInterval = null;
+        let currentDrawKin = 1;
+
+        function switchStage(currentId, nextId, callback) {
+            const current = document.getElementById(currentId);
+            const next = document.getElementById(nextId);
+
+            current.style.animation = 'fadeOut 0.5s ease forwards';
+
+            setTimeout(() => {
+                current.classList.remove('active');
+                current.style.animation = '';
+                next.classList.add('active');
+                if (callback) callback();
+            }, 500);
+        }
+
+        // ==================== State 1：選擇主題 ====================
+
+        function selectTheme(element) {
+            // 移除其他選中狀態
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // 設定選中狀態
+            element.classList.add('selected');
+            selectedTheme = element.dataset.theme;
+
+            // 啟用確認按鈕
+            document.getElementById('confirmBtn').classList.add('enabled');
+        }
+
+        function confirmTheme() {
+            if (!selectedTheme) return;
+            switchStage('stageTheme', 'stageBreathe', initBreathe);
+        }
+
+        // ==================== State 1.5：呼吸過渡 ====================
+
+        let breathCountNum = 0;
+        const maxBreaths = 2;
+        const breathCountNames = ['第一次呼吸', '第二次呼吸', '第三次呼吸'];
+
+        function initBreathe() {
+            breathCountNum = 0;
+            document.getElementById('breathCountEl').textContent = breathCountNames[0];
+            breathCycle();
+        }
+
+        function breathCycle() {
+            if (breathCountNum >= maxBreaths) {
+                setTimeout(() => {
+                    switchStage('stageBreathe', 'stageDraw', initDraw);
+                }, 500);
+                return;
+            }
+
+            const circle = document.getElementById('breathCircle');
+            const text = document.getElementById('breathText');
+            const countEl = document.getElementById('breathCountEl');
+
+            // 更新呼吸次數提示
+            countEl.textContent = breathCountNames[breathCountNum];
+
+            // 吸氣
+            circle.className = 'breath-circle inhale';
+            text.textContent = '吸氣';
+
+            setTimeout(() => {
+                // 吐氣
+                circle.className = 'breath-circle exhale';
+                text.textContent = '吐氣';
+
+                setTimeout(() => {
+                    breathCountNum++;
+                    breathCycle();
+                }, 4000);
+            }, 4000);
+        }
+
+        // ==================== State 2：抽卡 ====================
+
+        function initDraw() {
+            document.getElementById('drawThemeName').textContent = themes[selectedTheme].name;
+            startKinRolling();
+        }
+
+        function startKinRolling() {
+            const kinDisplay = document.getElementById('drawKinDisplay');
+            kinDisplay.classList.add('rolling');
+
+            drawInterval = setInterval(() => {
+                currentDrawKin = Math.floor(Math.random() * 260) + 1;
+                kinDisplay.textContent = `KIN ${currentDrawKin}`;
+            }, 80);
+        }
+
+        function stopDraw() {
+            if (!drawInterval) return;
+
+            clearInterval(drawInterval);
+            drawInterval = null;
+
+            const kinDisplay = document.getElementById('drawKinDisplay');
+            kinDisplay.classList.remove('rolling');
+
+            drawnKin = currentDrawKin;
+
+            setTimeout(() => {
+                switchStage('stageDraw', 'stageResult', initResult);
+            }, 800);
+        }
+
+        // ==================== State 3：結果顯示 ====================
+
+        function initResult() {
+            const sealNumber = getSealNumber(drawnKin);
+            const sealImageNum = sealNumber.toString().padStart(2, '0');
+            const colorClass = getKinColorClass(drawnKin);
+
+            document.getElementById('resultThemeBadge').textContent = themes[selectedTheme].name;
+            document.getElementById('resultSeal').src = `../images/${sealImageNum}.png`;
+
+            const kinEl = document.getElementById('resultKin');
+            kinEl.textContent = `KIN ${drawnKin}`;
+            kinEl.className = `result-kin ${colorClass}`;
+
+            const nameEl = document.getElementById('resultName');
+            nameEl.textContent = getKinName(drawnKin);
+            nameEl.className = `result-name ${colorClass}`;
+
+            document.getElementById('resultMessageTitle').textContent = themes[selectedTheme].messageTitle;
+
+            // 取得主題訊息（目前使用預設訊息，未來可擴充為 260 條）
+            const themeData = themeMessages[selectedTheme];
+            const message = themeData[drawnKin] || themeData.default;
+            document.getElementById('resultMessage').textContent = message;
+        }
+
+        // ==================== 重新開始 ====================
+
+        function restartSameTheme() {
+            drawnKin = null;
+            currentDrawKin = 1;
+            breathCountNum = 0;
+
+            // 重置呼吸圈
+            const breathCircle = document.getElementById('breathCircle');
+            if (breathCircle) {
+                breathCircle.className = 'breath-circle';
+            }
+
+            document.querySelectorAll('.stage').forEach(stage => {
+                stage.classList.remove('active');
+                stage.style.animation = '';
+            });
+
+            document.getElementById('stageBreathe').classList.add('active');
+            initBreathe();
+        }
+
+        function changeTheme() {
+            selectedTheme = null;
+            drawnKin = null;
+            currentDrawKin = 1;
+            breathCountNum = 0;
+
+            // 重置主題選擇
+            document.querySelectorAll('.theme-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById('confirmBtn').classList.remove('enabled');
+
+            // 重置呼吸圈
+            const breathCircle = document.getElementById('breathCircle');
+            if (breathCircle) {
+                breathCircle.className = 'breath-circle';
+            }
+
+            document.querySelectorAll('.stage').forEach(stage => {
+                stage.classList.remove('active');
+                stage.style.animation = '';
+            });
+
+            document.getElementById('stageTheme').classList.add('active');
+        }
+    </script>
+</body>
+</html>

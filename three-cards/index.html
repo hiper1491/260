@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>時光流轉 | 13月亮曆的小共時</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* 身心靈配色：溫暖大地色調 */
+            background: linear-gradient(
+                165deg,
+                #e8e4df 0%,
+                #ddd8d2 25%,
+                #d5d0c8 50%,
+                #ddd8d2 75%,
+                #e8e4df 100%
+            );
+            font-family: 'Noto Serif TC', serif;
+            color: #3a3632;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 柔和光暈背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(90, 143, 168, 0.1) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -15%;
+            left: -10%;
+            width: 45%;
+            height: 45%;
+            background: radial-gradient(
+                circle,
+                rgba(160, 150, 135, 0.1) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 返回連結 */
+        .back-link {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #7a756c;
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: color 0.3s ease;
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            color: #4a4540;
+        }
+
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 40px 24px;
+            max-width: 1000px;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* 階段容器 */
+        .stage {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 1s ease;
+            width: 100%;
+        }
+
+        .stage.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== State 1：介紹說明 ==================== */
+        .stage-intro {
+            gap: 44px;
+        }
+
+        .intro-title {
+            font-size: 52px;
+            font-weight: 900;
+            color: #2d2a26;
+            letter-spacing: 0.15em;
+        }
+
+        .intro-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            color: #5a8fa8;
+            letter-spacing: 0.2em;
+            margin-top: -12px;
+        }
+
+        .intro-desc {
+            font-size: 20px;
+            font-weight: 500;
+            color: #4a4540;
+            line-height: 2.2;
+        }
+
+        .intro-labels {
+            display: flex;
+            gap: 28px;
+            margin-top: 24px;
+        }
+
+        .intro-label {
+            padding: 24px 40px;
+            background: #fff;
+            border-radius: 16px;
+            border: 2px solid rgba(90, 143, 168, 0.3);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+        }
+
+        .intro-label-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #5a8fa8;
+            letter-spacing: 0.12em;
+            margin-bottom: 8px;
+        }
+
+        .intro-label-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3a3632;
+        }
+
+        .start-btn {
+            padding: 22px 72px;
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Noto Serif TC', serif;
+            color: #fff;
+            background: linear-gradient(135deg, #5a8fa8 0%, #4a7590 100%);
+            border: none;
+            border-radius: 36px;
+            cursor: pointer;
+            letter-spacing: 0.15em;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 28px rgba(90, 143, 168, 0.35);
+            margin-top: 28px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #4a7590 0%, #3a6580 100%);
+            box-shadow: 0 10px 28px rgba(90, 143, 168, 0.4);
+        }
+
+        /* ==================== State 2：抽卡階段 ==================== */
+        .stage-draw {
+            gap: 40px;
+        }
+
+        .draw-progress {
+            font-size: 14px;
+            color: #a09a8a;
+            letter-spacing: 0.15em;
+        }
+
+        .draw-position {
+            font-size: 24px;
+            color: #6a665c;
+            letter-spacing: 0.1em;
+        }
+
+        .three-cards-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card-slot {
+            width: 180px;
+            height: 252px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 18px;
+            border: 3px dashed rgba(160, 154, 138, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+
+        .card-slot.active {
+            border-color: #5a8fa8;
+            border-style: solid;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 6px 24px rgba(90, 143, 168, 0.2);
+        }
+
+        .card-slot.filled {
+            border-style: solid;
+            border-color: rgba(196, 184, 154, 0.6);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .card-label {
+            position: absolute;
+            bottom: -40px;
+            font-size: 16px;
+            color: #6a655c;
+            letter-spacing: 0.12em;
+            font-weight: 600;
+        }
+
+        .card-seal {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            border-radius: 14px;
+            filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.12));
+        }
+
+        .draw-kin-display {
+            font-size: 52px;
+            font-weight: 300;
+            color: #6a665c;
+        }
+
+        .draw-btn {
+            padding: 18px 44px;
+            font-size: 17px;
+            font-weight: 500;
+            font-family: 'Noto Serif TC', serif;
+            color: #fff;
+            background: linear-gradient(135deg, #8a857a 0%, #6a665c 100%);
+            border: none;
+            border-radius: 36px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.12em;
+            box-shadow: 0 4px 18px rgba(106, 102, 92, 0.3);
+        }
+
+        .draw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(106, 102, 92, 0.4);
+            background: linear-gradient(135deg, #9a958a 0%, #7a756a 100%);
+        }
+
+        .draw-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 呼吸過渡階段 */
+        .stage-breathe {
+            gap: 40px;
+        }
+
+        .breath-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(180, 175, 160, 0.1) 0%, transparent 70%);
+            border: 2px solid rgba(160, 154, 138, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .breath-circle.inhale {
+            animation: breatheIn 4s ease-in-out forwards;
+        }
+
+        .breath-circle.exhale {
+            animation: breatheOut 4s ease-in-out forwards;
+        }
+
+        @keyframes breatheIn {
+            from { transform: scale(0.7); opacity: 0.4; border-color: rgba(160, 154, 138, 0.2); }
+            to { transform: scale(1.1); opacity: 1; border-color: rgba(160, 154, 138, 0.6); }
+        }
+
+        @keyframes breatheOut {
+            from { transform: scale(1.1); opacity: 1; border-color: rgba(160, 154, 138, 0.6); }
+            to { transform: scale(0.7); opacity: 0.4; border-color: rgba(160, 154, 138, 0.2); }
+        }
+
+        .breath-text {
+            font-size: 20px;
+            color: #8a857a;
+            letter-spacing: 0.25em;
+        }
+
+        .breath-hint {
+            font-size: 15px;
+            color: #a09a8a;
+            letter-spacing: 0.1em;
+        }
+
+        .breath-count {
+            font-size: 22px;
+            font-weight: 700;
+            color: #5a8fa8;
+            letter-spacing: 0.15em;
+        }
+
+        /* ==================== State 3：三張牌結果 ==================== */
+        .stage-result {
+            gap: 48px;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #5a8fa8;
+            letter-spacing: 0.15em;
+        }
+
+        .result-cards {
+            display: flex;
+            gap: 36px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-card {
+            text-align: center;
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px 28px 36px;
+            border: 3px solid rgba(90, 143, 168, 0.3);
+            min-width: 220px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 卡片顏色邊框 - 依圖騰屬性 */
+        .result-card.kin-red {
+            border-color: #c45a52;
+            box-shadow: 0 8px 28px rgba(196, 90, 82, 0.2);
+        }
+        .result-card.kin-white {
+            border-color: #a8a298;
+            box-shadow: 0 8px 28px rgba(168, 162, 152, 0.2);
+        }
+        .result-card.kin-blue {
+            border-color: #5a8fa8;
+            box-shadow: 0 8px 28px rgba(90, 143, 168, 0.2);
+        }
+        .result-card.kin-yellow {
+            border-color: #c4a855;
+            box-shadow: 0 8px 28px rgba(196, 168, 85, 0.2);
+        }
+
+        .result-card-label {
+            font-size: 16px;
+            color: #5a5650;
+            letter-spacing: 0.15em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .result-card-seal {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.15));
+        }
+
+        .result-card-kin {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .result-card-kin.kin-red { color: #c45a52; }
+        .result-card-kin.kin-white { color: #6a655c; }
+        .result-card-kin.kin-blue { color: #5a8fa8; }
+        .result-card-kin.kin-yellow { color: #b8a050; }
+
+        .result-card-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4a4540;
+        }
+
+        /* ==================== State 4：合盤結果 ==================== */
+        .stage-synthesis {
+            gap: 36px;
+        }
+
+        .synthesis-title {
+            font-size: 14px;
+            color: #8a857a;
+            letter-spacing: 0.2em;
+            font-weight: 500;
+        }
+
+        .synthesis-seal {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            border-radius: 16px;
+            filter: drop-shadow(0 0 25px rgba(180, 175, 160, 0.4));
+        }
+
+        .synthesis-kin {
+            font-size: 40px;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+        }
+
+        .synthesis-kin.kin-red { color: #c4706a; }
+        .synthesis-kin.kin-white { color: #6a665c; }
+        .synthesis-kin.kin-blue { color: #6a8fa0; }
+        .synthesis-kin.kin-yellow { color: #b8a860; }
+
+        .synthesis-name {
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+        }
+
+        .synthesis-name.kin-red { color: #c4706a; }
+        .synthesis-name.kin-white { color: #6a665c; }
+        .synthesis-name.kin-blue { color: #6a8fa0; }
+        .synthesis-name.kin-yellow { color: #b8a860; }
+
+        .synthesis-formula {
+            font-size: 13px;
+            color: #a09a8a;
+            margin-top: 8px;
+        }
+
+        .synthesis-message-box {
+            max-width: 480px;
+            padding: 28px 32px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .synthesis-message-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: #8a857a;
+            margin-bottom: 16px;
+            letter-spacing: 0.2em;
+        }
+
+        .synthesis-message {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.9;
+            color: #4a4540;
+        }
+
+        .restart-btn {
+            margin-top: 24px;
+            padding: 14px 40px;
+            font-size: 15px;
+            font-weight: 400;
+            font-family: 'Noto Serif TC', serif;
+            color: #8a857a;
+            background: transparent;
+            border: 1px solid rgba(138, 133, 122, 0.4);
+            border-radius: 28px;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: rgba(138, 133, 122, 0.05);
+            border-color: rgba(138, 133, 122, 0.6);
+        }
+
+        /* RWD */
+        @media (max-width: 520px) {
+            .intro-labels {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .three-cards-container {
+                gap: 12px;
+            }
+
+            .card-slot {
+                width: 100px;
+                height: 140px;
+            }
+
+            .card-seal {
+                width: 80px;
+                height: 80px;
+            }
+
+            .draw-kin-display {
+                font-size: 40px;
+            }
+
+            .draw-btn {
+                padding: 16px 36px;
+                font-size: 15px;
+            }
+
+            .breath-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .result-cards {
+                gap: 16px;
+            }
+
+            .result-card {
+                padding: 20px 16px;
+                min-width: 140px;
+            }
+
+            .result-card-seal {
+                width: 100px;
+                height: 100px;
+            }
+
+            .result-card-kin {
+                font-size: 18px;
+            }
+
+            .result-card-name {
+                font-size: 14px;
+            }
+
+            .synthesis-seal {
+                width: 130px;
+                height: 130px;
+            }
+
+            .synthesis-kin {
+                font-size: 32px;
+            }
+
+            .synthesis-name {
+                font-size: 18px;
+            }
+
+            .synthesis-message-box {
+                padding: 22px 20px;
+            }
+
+            .synthesis-message {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-link">返回</a>
+
+    <div class="container">
+        <!-- State 1：介紹說明 -->
+        <div class="stage stage-intro active" id="stageIntro">
+            <h1 class="intro-title">時光流轉</h1>
+            <p class="intro-subtitle">（蛻變）</p>
+            <p class="intro-desc">
+                抽取三張牌，<br>
+                連結過去、現在與未來的能量，<br>
+                讓宇宙為你揭示合盤訊息。
+            </p>
+            <div class="intro-labels">
+                <div class="intro-label">
+                    <p class="intro-label-title">第一張</p>
+                    <p class="intro-label-text">過去</p>
+                </div>
+                <div class="intro-label">
+                    <p class="intro-label-title">第二張</p>
+                    <p class="intro-label-text">現在</p>
+                </div>
+                <div class="intro-label">
+                    <p class="intro-label-title">第三張</p>
+                    <p class="intro-label-text">未來</p>
+                </div>
+            </div>
+            <button class="start-btn" onclick="startThreeCards()">開始抽牌</button>
+        </div>
+
+        <!-- State 1.5：呼吸過渡 -->
+        <div class="stage stage-breathe" id="stageBreathe">
+            <p class="breath-count" id="breathCount">第一次呼吸</p>
+            <p class="breath-hint">放鬆身心，準備接收訊息</p>
+            <div class="breath-circle" id="breathCircle">
+                <span class="breath-text" id="breathText">吸氣</span>
+            </div>
+        </div>
+
+        <!-- State 2：抽卡階段 -->
+        <div class="stage stage-draw" id="stageDraw">
+            <p class="draw-progress" id="drawProgress">第 1 張 / 共 3 張</p>
+            <p class="draw-position" id="drawPosition">過去</p>
+            <div class="three-cards-container">
+                <div class="card-slot active" id="cardSlot1">
+                    <span class="card-label">過去</span>
+                </div>
+                <div class="card-slot" id="cardSlot2">
+                    <span class="card-label">現在</span>
+                </div>
+                <div class="card-slot" id="cardSlot3">
+                    <span class="card-label">未來</span>
+                </div>
+            </div>
+            <div class="draw-kin-display rolling" id="drawKinDisplay">KIN 1</div>
+            <button class="draw-btn" onclick="stopDraw()">抽取印記</button>
+        </div>
+
+        <!-- State 3：三張牌結果 -->
+        <div class="stage stage-result" id="stageResult">
+            <div class="result-cards">
+                <div class="result-card">
+                    <p class="result-card-label">過去</p>
+                    <img class="result-card-seal" id="resultSeal1" src="" alt="">
+                    <p class="result-card-kin" id="resultKin1"></p>
+                    <p class="result-card-name" id="resultName1"></p>
+                </div>
+                <div class="result-card">
+                    <p class="result-card-label">現在</p>
+                    <img class="result-card-seal" id="resultSeal2" src="" alt="">
+                    <p class="result-card-kin" id="resultKin2"></p>
+                    <p class="result-card-name" id="resultName2"></p>
+                </div>
+                <div class="result-card">
+                    <p class="result-card-label">未來</p>
+                    <img class="result-card-seal" id="resultSeal3" src="" alt="">
+                    <p class="result-card-kin" id="resultKin3"></p>
+                    <p class="result-card-name" id="resultName3"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- State 4：合盤結果 -->
+        <div class="stage stage-synthesis" id="stageSynthesis">
+            <p class="synthesis-title">合盤印記</p>
+            <img class="synthesis-seal" id="synthesisSeal" src="" alt="合盤圖騰">
+            <div class="synthesis-kin" id="synthesisKin"></div>
+            <div class="synthesis-name" id="synthesisName"></div>
+            <p class="synthesis-formula" id="synthesisFormula"></p>
+            <div class="synthesis-message-box">
+                <p class="synthesis-message-title">合盤共時訊息</p>
+                <p class="synthesis-message" id="synthesisMessage">
+                    <!-- TODO: 未來加入合盤訊息文案 -->
+                    此訊息整合了過去、現在與未來的能量，為你揭示更深層的共時指引。
+                </p>
+            </div>
+            <button class="restart-btn" onclick="restart()">再來一次</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 資料定義 ====================
+
+        // 13 調性名稱
+        const toneNames = ["磁性的", "月亮的", "電力的", "自我存在的", "超頻的", "韻律的", "共振的", "銀河的", "太陽的", "行星的", "光譜的", "水晶的", "宇宙的"];
+
+        // 20 圖騰名稱
+        const sealNames = ["紅龍", "白風", "藍夜", "黃種子", "紅蛇", "白世界橋", "藍手", "黃星星", "紅月", "白狗", "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹", "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"];
+
+        // 位置名稱
+        const positionNames = ["過去", "現在", "未來"];
+
+        // ==================== 合盤訊息資料結構（待填充） ====================
+        // TODO: 未來可根據合盤 KIN 產生對應訊息
+        const synthesisMessages = {
+            // 預設訊息模板，未來可擴充為 260 條
+            default: "三股能量交匯於此刻，過去的智慧、現在的覺知、未來的可能，正在為你編織一個獨特的共時故事。"
+        };
+
+        // ==================== 工具函數 ====================
+
+        function getKinColorClass(kinNumber) {
+            const remainder = kinNumber % 4;
+            if (remainder === 1) return 'kin-red';
+            if (remainder === 2) return 'kin-white';
+            if (remainder === 3) return 'kin-blue';
+            return 'kin-yellow';
+        }
+
+        function getSealNumber(kinNumber) {
+            return ((kinNumber - 1) % 20) + 1;
+        }
+
+        function getToneNumber(kinNumber) {
+            return ((kinNumber - 1) % 13) + 1;
+        }
+
+        function getKinName(kinNumber) {
+            const toneIndex = getToneNumber(kinNumber) - 1;
+            const sealIndex = getSealNumber(kinNumber) - 1;
+            return toneNames[toneIndex] + sealNames[sealIndex];
+        }
+
+        // 合盤計算：三張 KIN 加總後對 260 取餘
+        function calculateSynthesisKin(kin1, kin2, kin3) {
+            const total = kin1 + kin2 + kin3;
+            let result = total % 260;
+            if (result === 0) result = 260;
+            return result;
+        }
+
+        // ==================== State 管理 ====================
+
+        let currentCardIndex = 0; // 0, 1, 2 對應三張牌
+        let drawnKins = [null, null, null];
+        let drawInterval = null;
+        let currentDrawKin = 1;
+
+        function switchStage(currentId, nextId, callback) {
+            const current = document.getElementById(currentId);
+            const next = document.getElementById(nextId);
+
+            current.style.animation = 'fadeOut 0.5s ease forwards';
+
+            setTimeout(() => {
+                current.classList.remove('active');
+                current.style.animation = '';
+                next.classList.add('active');
+                if (callback) callback();
+            }, 500);
+        }
+
+        // ==================== State 1：開始 ====================
+
+        function startThreeCards() {
+            currentCardIndex = 0;
+            drawnKins = [null, null, null];
+            switchStage('stageIntro', 'stageBreathe', initBreathe);
+        }
+
+        // ==================== State 1.5：呼吸過渡 ====================
+
+        let breathCountNum = 0;
+        const maxBreaths = 2;
+        const breathCountNames = ['第一次呼吸', '第二次呼吸', '第三次呼吸'];
+
+        function initBreathe() {
+            breathCountNum = 0;
+            document.getElementById('breathCount').textContent = breathCountNames[0];
+            breathCycle();
+        }
+
+        function breathCycle() {
+            if (breathCountNum >= maxBreaths) {
+                setTimeout(() => {
+                    switchStage('stageBreathe', 'stageDraw', initDraw);
+                }, 500);
+                return;
+            }
+
+            const circle = document.getElementById('breathCircle');
+            const text = document.getElementById('breathText');
+            const countEl = document.getElementById('breathCount');
+
+            // 更新呼吸次數提示
+            countEl.textContent = breathCountNames[breathCountNum];
+
+            // 吸氣
+            circle.className = 'breath-circle inhale';
+            text.textContent = '吸氣';
+
+            setTimeout(() => {
+                // 吐氣
+                circle.className = 'breath-circle exhale';
+                text.textContent = '吐氣';
+
+                setTimeout(() => {
+                    breathCountNum++;
+                    breathCycle();
+                }, 4000);
+            }, 4000);
+        }
+
+        // ==================== State 2：抽卡 ====================
+
+        function initDraw() {
+            updateDrawUI();
+            startKinRolling();
+        }
+
+        function updateDrawUI() {
+            document.getElementById('drawProgress').textContent = `第 ${currentCardIndex + 1} 張 / 共 3 張`;
+            document.getElementById('drawPosition').textContent = positionNames[currentCardIndex];
+
+            // 更新卡片槽狀態
+            for (let i = 1; i <= 3; i++) {
+                const slot = document.getElementById(`cardSlot${i}`);
+                slot.classList.remove('active');
+                if (i - 1 === currentCardIndex) {
+                    slot.classList.add('active');
+                }
+            }
+        }
+
+        function startKinRolling() {
+            const kinDisplay = document.getElementById('drawKinDisplay');
+            kinDisplay.classList.add('rolling');
+
+            drawInterval = setInterval(() => {
+                currentDrawKin = Math.floor(Math.random() * 260) + 1;
+                kinDisplay.textContent = `KIN ${currentDrawKin}`;
+            }, 80);
+        }
+
+        function stopDraw() {
+            if (!drawInterval) return;
+
+            clearInterval(drawInterval);
+            drawInterval = null;
+
+            const kinDisplay = document.getElementById('drawKinDisplay');
+            kinDisplay.classList.remove('rolling');
+
+            // 記錄抽到的 KIN
+            drawnKins[currentCardIndex] = currentDrawKin;
+
+            // 更新對應卡片槽
+            const slot = document.getElementById(`cardSlot${currentCardIndex + 1}`);
+            slot.classList.remove('active');
+            slot.classList.add('filled');
+
+            const sealNumber = getSealNumber(currentDrawKin);
+            const sealImageNum = sealNumber.toString().padStart(2, '0');
+            slot.innerHTML = `<img class="card-seal" src="../images/${sealImageNum}.png" alt=""><span class="card-label">${positionNames[currentCardIndex]}</span>`;
+
+            currentCardIndex++;
+
+            if (currentCardIndex < 3) {
+                // 繼續抽下一張
+                setTimeout(() => {
+                    updateDrawUI();
+                    startKinRolling();
+                }, 800);
+            } else {
+                // 三張都抽完，進入結果頁
+                setTimeout(() => {
+                    switchStage('stageDraw', 'stageResult', initResult);
+                }, 800);
+            }
+        }
+
+        // ==================== State 3：三張牌結果 ====================
+
+        function initResult() {
+            const resultCards = document.querySelectorAll('.result-card');
+
+            for (let i = 0; i < 3; i++) {
+                const kin = drawnKins[i];
+                const sealNumber = getSealNumber(kin);
+                const sealImageNum = sealNumber.toString().padStart(2, '0');
+                const colorClass = getKinColorClass(kin);
+
+                // 設定卡片顏色邊框
+                resultCards[i].className = `result-card ${colorClass}`;
+
+                document.getElementById(`resultSeal${i + 1}`).src = `../images/${sealImageNum}.png`;
+                const kinEl = document.getElementById(`resultKin${i + 1}`);
+                kinEl.textContent = `KIN ${kin}`;
+                kinEl.className = `result-card-kin ${colorClass}`;
+                document.getElementById(`resultName${i + 1}`).textContent = getKinName(kin);
+            }
+
+            // 3 秒後進入合盤結果
+            setTimeout(() => {
+                switchStage('stageResult', 'stageSynthesis', initSynthesis);
+            }, 3000);
+        }
+
+        // ==================== State 4：合盤結果 ====================
+
+        function initSynthesis() {
+            const synthesisKin = calculateSynthesisKin(drawnKins[0], drawnKins[1], drawnKins[2]);
+            const sealNumber = getSealNumber(synthesisKin);
+            const sealImageNum = sealNumber.toString().padStart(2, '0');
+            const colorClass = getKinColorClass(synthesisKin);
+
+            document.getElementById('synthesisSeal').src = `../images/${sealImageNum}.png`;
+
+            const kinEl = document.getElementById('synthesisKin');
+            kinEl.textContent = `KIN ${synthesisKin}`;
+            kinEl.className = `synthesis-kin ${colorClass}`;
+
+            const nameEl = document.getElementById('synthesisName');
+            nameEl.textContent = getKinName(synthesisKin);
+            nameEl.className = `synthesis-name ${colorClass}`;
+
+            document.getElementById('synthesisFormula').textContent =
+                `(${drawnKins[0]} + ${drawnKins[1]} + ${drawnKins[2]}) % 260 = ${synthesisKin}`;
+
+            // 設定合盤訊息（目前使用預設訊息，未來可擴充）
+            const message = synthesisMessages[synthesisKin] || synthesisMessages.default;
+            document.getElementById('synthesisMessage').textContent = message;
+        }
+
+        // ==================== 重新開始 ====================
+
+        function restart() {
+            currentCardIndex = 0;
+            drawnKins = [null, null, null];
+            currentDrawKin = 1;
+            breathCountNum = 0;
+
+            // 重置卡片槽
+            for (let i = 1; i <= 3; i++) {
+                const slot = document.getElementById(`cardSlot${i}`);
+                slot.classList.remove('active', 'filled');
+                slot.innerHTML = `<span class="card-label">${positionNames[i - 1]}</span>`;
+            }
+
+            // 重置呼吸圈
+            const breathCircle = document.getElementById('breathCircle');
+            if (breathCircle) {
+                breathCircle.className = 'breath-circle';
+            }
+
+            document.querySelectorAll('.stage').forEach(stage => {
+                stage.classList.remove('active');
+                stage.style.animation = '';
+            });
+
+            document.getElementById('stageIntro').classList.add('active');
+        }
+    </script>
+</body>
+</html>

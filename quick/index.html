@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>13月亮曆的小共時</title>
+    <title>快速共時 | 13月亮曆的小共時</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -17,73 +19,62 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background:
-                radial-gradient(circle at 20% 80%, rgba(120, 0, 200, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 165, 0, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(0, 150, 136, 0.2) 0%, transparent 70%),
-                linear-gradient(135deg, #1a0a2e 0%, #16213e 30%, #0d2137 60%, #1a0a2e 100%);
-            font-family: 'Arial', sans-serif;
-            color: white;
+            /* 身心靈配色：溫暖大地色調 */
+            background: linear-gradient(
+                165deg,
+                #e8e4df 0%,
+                #ddd8d2 25%,
+                #d5d0c8 50%,
+                #ddd8d2 75%,
+                #e8e4df 100%
+            );
+            font-family: 'Noto Serif TC', serif;
+            color: #3a3632;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* 馬雅幾何背景圖案 */
+        /* 柔和光暈背景 */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M50 0 L100 50 L50 100 L0 50 Z' fill='none' stroke='rgba(255,215,0,0.1)' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='20' fill='none' stroke='rgba(255,215,0,0.05)' stroke-width='1'/%3E%3C/svg%3E");
-            background-size: 100px 100px;
-            opacity: 0.5;
+            top: -20%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(
+                circle,
+                rgba(196, 90, 82, 0.08) 0%,
+                transparent 60%
+            );
             pointer-events: none;
             z-index: 0;
         }
 
-        /* 馬雅太陽裝飾 */
-        .mayan-sun {
-            position: fixed;
-            top: -150px;
-            right: -150px;
-            width: 400px;
-            height: 400px;
-            background:
-                radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,165,0,0.1) 40%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .mayan-sun::before {
+        body::after {
             content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            background:
-                conic-gradient(from 0deg, transparent 0deg, rgba(255,215,0,0.2) 15deg, transparent 30deg);
-            border-radius: 50%;
-            animation: rotateSun 60s linear infinite;
-        }
-
-        @keyframes rotateSun {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
+            position: fixed;
+            bottom: -15%;
+            left: -10%;
+            width: 45%;
+            height: 45%;
+            background: radial-gradient(
+                circle,
+                rgba(160, 150, 135, 0.1) 0%,
+                transparent 60%
+            );
+            pointer-events: none;
+            z-index: 0;
         }
 
         /* 返回連結 */
         .back-link {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            font-size: 0.85rem;
-            color: rgba(255, 215, 0, 0.5);
+            top: 24px;
+            left: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #7a756c;
             text-decoration: none;
             letter-spacing: 0.05em;
             transition: color 0.3s ease;
@@ -91,29 +82,33 @@
         }
 
         .back-link:hover {
-            color: rgba(255, 215, 0, 0.8);
+            color: #4a4540;
         }
 
         .back-link::before {
             content: '←';
-            margin-right: 6px;
+            margin-right: 8px;
         }
 
         h1 {
             margin-bottom: 10px;
             font-size: 2.2rem;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-            color: #ffd700;
+            font-weight: 700;
+            color: #2d2a26;
             z-index: 10;
             text-align: center;
+            letter-spacing: 0.08em;
         }
 
         .subtitle {
             font-size: 1rem;
-            color: rgba(255, 215, 0, 0.7);
+            color: #8a857a;
             margin-bottom: 15px;
             z-index: 10;
         }
+
+        /* 隱藏馬雅太陽 */
+        .mayan-sun { display: none; }
 
         .container {
             display: flex;
@@ -128,48 +123,28 @@
         .number-display {
             width: 300px;
             height: 120px;
-            background: linear-gradient(145deg, rgba(30, 30, 48, 0.9), rgba(42, 42, 69, 0.9));
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.5),
-                inset 0 2px 10px rgba(255, 215, 0, 0.1),
-                0 0 30px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             overflow: hidden;
             position: relative;
             transition: all 0.3s ease;
-            border: 2px solid rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         .number-display.winner {
-            animation: winnerGlow 0.5s ease infinite alternate;
-            border-color: rgba(255, 215, 0, 0.6);
-        }
-
-        @keyframes winnerGlow {
-            from {
-                box-shadow:
-                    0 0 30px rgba(255, 215, 0, 0.8),
-                    0 0 60px rgba(255, 215, 0, 0.4),
-                    0 10px 40px rgba(0, 0, 0, 0.5);
-            }
-            to {
-                box-shadow:
-                    0 0 50px rgba(255, 215, 0, 1),
-                    0 0 100px rgba(255, 215, 0, 0.6),
-                    0 10px 40px rgba(0, 0, 0, 0.5);
-            }
+            border-color: rgba(196, 184, 154, 0.6);
         }
 
         #number {
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: #ffd700;
-            text-shadow:
-                0 0 20px rgba(255, 215, 0, 0.8),
-                0 0 40px rgba(255, 215, 0, 0.4);
+            font-size: 3rem;
+            font-weight: 500;
+            color: #6a665c;
             transition: transform 0.1s ease;
             z-index: 1;
         }
@@ -197,77 +172,52 @@
 
         /* KIN 名稱顯示 */
         .kin-name {
-            font-size: 1.3rem;
-            color: #ffd700;
+            font-size: 1.2rem;
+            color: #6a665c;
             margin-top: 5px;
             text-align: center;
             min-height: 30px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         /* KIN 顏色區分 - 紅白藍黃 */
         .number-display.kin-red {
-            border-color: rgba(255, 80, 80, 0.8);
-            box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.5),
-                inset 0 2px 10px rgba(255, 80, 80, 0.2),
-                0 0 30px rgba(255, 80, 80, 0.3);
+            border-color: rgba(196, 112, 106, 0.5);
         }
         .number-display.kin-red #number {
-            color: #ff6b6b;
-            text-shadow: 0 0 20px rgba(255, 80, 80, 0.8);
+            color: #c4706a;
         }
         .kin-name.kin-red {
-            color: #ff6b6b;
-            text-shadow: 0 0 10px rgba(255, 80, 80, 0.8);
+            color: #c4706a;
         }
 
         .number-display.kin-white {
-            border-color: rgba(255, 255, 255, 0.8);
-            box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.5),
-                inset 0 2px 10px rgba(255, 255, 255, 0.2),
-                0 0 30px rgba(255, 255, 255, 0.3);
+            border-color: rgba(160, 154, 138, 0.5);
         }
         .number-display.kin-white #number {
-            color: #ffffff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            color: #6a665c;
         }
         .kin-name.kin-white {
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            color: #6a665c;
         }
 
         .number-display.kin-blue {
-            border-color: rgba(80, 150, 255, 0.8);
-            box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.5),
-                inset 0 2px 10px rgba(80, 150, 255, 0.2),
-                0 0 30px rgba(80, 150, 255, 0.3);
+            border-color: rgba(106, 143, 160, 0.5);
         }
         .number-display.kin-blue #number {
-            color: #5cb8ff;
-            text-shadow: 0 0 20px rgba(80, 150, 255, 0.8);
+            color: #6a8fa0;
         }
         .kin-name.kin-blue {
-            color: #5cb8ff;
-            text-shadow: 0 0 10px rgba(80, 150, 255, 0.8);
+            color: #6a8fa0;
         }
 
         .number-display.kin-yellow {
-            border-color: rgba(255, 215, 0, 0.8);
-            box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.5),
-                inset 0 2px 10px rgba(255, 215, 0, 0.2),
-                0 0 30px rgba(255, 215, 0, 0.3);
+            border-color: rgba(184, 168, 96, 0.5);
         }
         .number-display.kin-yellow #number {
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            color: #b8a860;
         }
         .kin-name.kin-yellow {
-            color: #ffd700;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            color: #b8a860;
         }
 
         /* 共時訊息 */
@@ -276,45 +226,46 @@
             max-width: 500px;
             min-height: 120px;
             padding: 20px;
-            background: linear-gradient(145deg, rgba(30, 30, 48, 0.8), rgba(42, 42, 69, 0.8));
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 15px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
         .message-box h3 {
-            color: #ffd700;
+            color: #8a857a;
             margin-bottom: 10px;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
         }
 
         #message {
-            font-size: 1.1rem;
+            font-size: 1rem;
             line-height: 1.8;
-            color: rgba(255, 255, 255, 0.9);
+            color: #4a4540;
         }
 
         .draw-btn {
-            padding: 18px 50px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #1a0a2e;
-            background: linear-gradient(145deg, #ffd700, #ffb300);
+            padding: 16px 44px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            font-family: 'Noto Serif TC', serif;
+            color: #fff;
+            background: #c4b89a;
             border: none;
-            border-radius: 50px;
+            border-radius: 28px;
             cursor: pointer;
-            box-shadow:
-                0 8px 25px rgba(255, 215, 0, 0.4),
-                0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
-            letter-spacing: 2px;
+            letter-spacing: 0.08em;
         }
 
         .draw-btn:hover {
-            transform: translateY(-3px);
-            box-shadow:
-                0 12px 35px rgba(255, 215, 0, 0.5),
-                0 6px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+            background: #b8aa8a;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
 
         .draw-btn:active {
@@ -322,7 +273,7 @@
         }
 
         .draw-btn:disabled {
-            background: linear-gradient(145deg, #666, #555);
+            background: #ccc;
             color: #999;
             cursor: not-allowed;
             box-shadow: none;
@@ -330,7 +281,7 @@
 
         .info {
             font-size: 0.9rem;
-            color: rgba(255, 215, 0, 0.6);
+            color: #a09a8a;
         }
 
         .result-history {
@@ -341,8 +292,9 @@
 
         .result-history h3 {
             margin-bottom: 15px;
-            color: rgba(255, 215, 0, 0.8);
-            font-size: 1rem;
+            color: #8a857a;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
         }
 
         .history-list {
@@ -356,34 +308,36 @@
 
         .history-item {
             padding: 8px 12px;
-            background: rgba(255, 215, 0, 0.1);
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 8px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            font-weight: bold;
-            color: #ffd700;
+            border: 1px solid rgba(160, 154, 138, 0.3);
+            font-weight: 500;
+            color: #6a665c;
             font-size: 0.85rem;
             animation: fadeIn 0.3s ease;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .history-item.kin-red {
-            background: rgba(255, 80, 80, 0.15);
-            border-color: rgba(255, 80, 80, 0.4);
-            color: #ff6b6b;
+            border-color: rgba(196, 112, 106, 0.4);
+            color: #c4706a;
         }
         .history-item.kin-white {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
-            color: #ffffff;
+            border-color: rgba(160, 154, 138, 0.4);
+            color: #6a665c;
         }
         .history-item.kin-blue {
-            background: rgba(80, 150, 255, 0.15);
-            border-color: rgba(80, 150, 255, 0.4);
-            color: #5cb8ff;
+            border-color: rgba(106, 143, 160, 0.4);
+            color: #6a8fa0;
         }
         .history-item.kin-yellow {
-            background: rgba(255, 215, 0, 0.15);
-            border-color: rgba(255, 215, 0, 0.4);
-            color: #ffd700;
+            border-color: rgba(184, 168, 96, 0.4);
+            color: #b8a860;
         }
 
         @keyframes fadeIn {
@@ -401,17 +355,18 @@
             margin-top: 15px;
             padding: 8px 25px;
             font-size: 0.85rem;
-            color: rgba(255, 215, 0, 0.7);
+            font-family: 'Noto Serif TC', serif;
+            color: #8a857a;
             background: transparent;
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(138, 133, 122, 0.4);
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .clear-btn:hover {
-            background: rgba(255, 215, 0, 0.1);
-            border-color: rgba(255, 215, 0, 0.5);
+            background: rgba(138, 133, 122, 0.05);
+            border-color: rgba(138, 133, 122, 0.6);
         }
 
         /* 音效控制按鈕 */
@@ -419,20 +374,20 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            color: #ffd700;
-            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(160, 154, 138, 0.3);
+            color: #8a857a;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
             z-index: 100;
         }
 
         .sound-toggle:hover {
-            background: rgba(255, 215, 0, 0.2);
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .sound-toggle.muted {
@@ -513,29 +468,148 @@
         .mayan-glyph:nth-child(3) { top: 30%; right: 5%; }
         .mayan-glyph:nth-child(4) { bottom: 15%; right: 10%; }
 
-        /* 設計者資訊 */
-        .designer-credit {
-            margin-top: 20px;
-            padding: 15px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: rgba(255, 215, 0, 0.6);
+        /* 詳細資訊彈窗 */
+        .detail-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
         }
 
-        .designer-credit a {
-            color: #ffd700;
-            text-decoration: none;
+        .detail-overlay.active {
+            display: flex;
+        }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 36px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            animation: slideUp 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-seal {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(180, 175, 160, 0.3));
+        }
+
+        .detail-kin-number {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #4a4540;
+        }
+
+        .detail-kin-name {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #6a665c;
+        }
+
+        .detail-message-box {
+            background: rgba(245, 243, 238, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-message-title {
+            font-size: 0.85rem;
+            color: #a09a8a;
+            margin-bottom: 12px;
+            letter-spacing: 0.1em;
+        }
+
+        .detail-message {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #4a4540;
+        }
+
+        .detail-body-box {
+            background: rgba(196, 184, 154, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(196, 184, 154, 0.2);
+        }
+
+        .detail-body-title {
+            font-size: 0.8rem;
+            color: #a09a8a;
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+        }
+
+        .detail-body-part {
+            font-size: 1rem;
+            color: #6a665c;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .detail-body-invitation {
+            font-size: 0.9rem;
+            color: #6a665c;
+            line-height: 1.6;
+        }
+
+        .detail-close-btn {
+            padding: 12px 36px;
+            font-size: 1rem;
+            font-family: 'Noto Serif TC', serif;
+            background: transparent;
+            border: 1px solid rgba(138, 133, 122, 0.4);
+            color: #8a857a;
+            border-radius: 25px;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .designer-credit a:hover {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        .detail-close-btn:hover {
+            background: rgba(138, 133, 122, 0.05);
+            border-color: rgba(138, 133, 122, 0.6);
         }
 
-        .designer-credit .kin-info {
-            font-weight: bold;
-            color: rgba(255, 215, 0, 0.8);
+        /* 可點擊提示 */
+        .number-display.clickable {
+            cursor: pointer;
+        }
+
+        .number-display.clickable:hover {
+            transform: scale(1.02);
+        }
+
+        .click-hint {
+            font-size: 0.75rem;
+            color: rgba(255, 215, 0, 0.5);
+            margin-top: 8px;
+            display: none;
+        }
+
+        .click-hint.visible {
+            display: block;
         }
 
         @media (max-width: 600px) {
@@ -581,14 +655,55 @@
             <div class="history-list" id="historyList"></div>
             <button class="clear-btn" onclick="clearHistory()">清除紀錄</button>
         </div>
+    </div>
 
-        <div class="designer-credit">
-            設計 | <span class="kin-info">KIN 74 太陽的白巫師</span> HIPER<br>
-            <a href="https://www.facebook.com/profile.php?id=100074630472925" target="_blank">波波日常數數</a>
+    <!-- 詳細資訊彈窗 -->
+    <div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+        <div class="detail-card" onclick="event.stopPropagation()">
+            <img class="detail-seal" id="detailSeal" src="" alt="圖騰">
+            <div class="detail-kin-number" id="detailKinNumber"></div>
+            <div class="detail-kin-name" id="detailKinName"></div>
+            <div class="detail-message-box">
+                <p class="detail-message-title">共時訊息</p>
+                <p class="detail-message" id="detailMessage"></p>
+            </div>
+            <div class="detail-body-box">
+                <p class="detail-body-title">身體連結</p>
+                <p class="detail-body-part" id="detailBodyPart"></p>
+                <p class="detail-body-invitation" id="detailBodyInvitation"></p>
+            </div>
+            <button class="detail-close-btn" onclick="closeDetail()">關閉</button>
         </div>
     </div>
 
     <script>
+        // 20 個圖騰的身體連結資料
+        const sealBodyParts = {
+            1:  { name: "紅龍", part: "右手食指", invitation: "如果你願意，輕觸右手食指，感受創造與誕生的力量。" },
+            2:  { name: "白風", part: "右手中指", invitation: "如果你願意，輕觸右手中指，讓呼吸與話語自然流動。" },
+            3:  { name: "藍夜", part: "右手無名指", invitation: "如果你願意，輕觸右手無名指，連結內在的夢想與直覺。" },
+            4:  { name: "黃種子", part: "右手小指", invitation: "如果你願意，輕觸右手小指，感受耐心與成長的力量。" },
+            5:  { name: "紅蛇", part: "右腳大拇趾", invitation: "如果你願意，感受右腳大拇趾，喚醒身體的生命力。" },
+            6:  { name: "白世界橋", part: "右腳食趾", invitation: "如果你願意，感受右腳食趾，讓連結與放下自然發生。" },
+            7:  { name: "藍手", part: "右腳中趾", invitation: "如果你願意，感受右腳中趾，啟動創造與療癒的能量。" },
+            8:  { name: "黃星星", part: "右腳無名趾", invitation: "如果你願意，感受右腳無名趾，讓內在的美自然綻放。" },
+            9:  { name: "紅月", part: "右腳小趾", invitation: "如果你願意，感受右腳小趾，讓情緒如水般流動。" },
+            10: { name: "白狗", part: "左手大拇指", invitation: "如果你願意，輕觸左手大拇指，感受愛與忠誠的力量。" },
+            11: { name: "藍猴", part: "左手食指", invitation: "如果你願意，輕觸左手食指，喚醒內在的遊戲與創意。" },
+            12: { name: "黃人", part: "左手中指", invitation: "如果你願意，輕觸左手中指，連結自由意志的智慧。" },
+            13: { name: "紅天行者", part: "左手無名指", invitation: "如果你願意，輕觸左手無名指，打開探索與可能性。" },
+            14: { name: "白巫師", part: "左手小指", invitation: "如果你願意，輕觸左手小指，安住於當下的魔法。" },
+            15: { name: "藍鷹", part: "左腳大拇趾", invitation: "如果你願意，感受左腳大拇趾，拓展你的視野與格局。" },
+            16: { name: "黃戰士", part: "左腳食趾", invitation: "如果你願意，感受左腳食趾，啟動無懼前行的勇氣。" },
+            17: { name: "紅地球", part: "左腳中趾", invitation: "如果你願意，感受左腳中趾，連結大地與同步的力量。" },
+            18: { name: "白鏡", part: "左腳無名趾", invitation: "如果你願意，感受左腳無名趾，看見真實的自己。" },
+            19: { name: "藍風暴", part: "左腳小趾", invitation: "如果你願意，感受左腳小趾，迎接蛻變與更新。" },
+            20: { name: "黃太陽", part: "右手大拇指", invitation: "如果你願意，輕觸右手大拇指，感受生命之光的溫暖。" }
+        };
+
+        // 當前抽到的 KIN（用於點擊顯示詳細）
+        let currentKinNumber = null;
+
         const kinData = {
             1: { name: "磁性的紅龍", message: "有意識的聚焦創造，新事物將從你手中誕生並得到滋養。" },
             2: { name: "月亮的白風", message: "你需要平衡你的表達，輕快風趣不用力地溝通，是個不錯的建議。" },
@@ -1062,6 +1177,11 @@
                     kinNameEl.textContent = kinInfo.name;
                     messageEl.textContent = kinInfo.message;
 
+                    // 記錄當前 KIN 並啟用點擊功能
+                    currentKinNumber = finalNumber;
+                    numberDisplay.classList.add('clickable');
+                    numberDisplay.onclick = showDetail;
+
                     triggerWinEffects();
                     addToHistory(finalNumber);
                 }
@@ -1071,20 +1191,119 @@
 
         function addToHistory(number) {
             history.unshift(number);
-            if (history.length > 15) history.pop();
+            if (history.length > 5) history.pop();
+            saveHistory();
             renderHistory();
         }
 
         function renderHistory() {
             historyList.innerHTML = history
-                .map(num => `<div class="history-item ${getKinColorClass(num)}">KIN ${num}</div>`)
+                .map(num => `<div class="history-item ${getKinColorClass(num)}" onclick="showHistoryDetail(${num})">KIN ${num}</div>`)
                 .join('');
         }
 
         function clearHistory() {
             history = [];
+            saveHistory();
             renderHistory();
         }
+
+        function saveHistory() {
+            localStorage.setItem('quickHistory', JSON.stringify(history));
+        }
+
+        function loadHistory() {
+            const saved = localStorage.getItem('quickHistory');
+            if (saved) {
+                history = JSON.parse(saved);
+                // 確保最多只有 5 筆
+                if (history.length > 5) {
+                    history = history.slice(0, 5);
+                    saveHistory();
+                }
+                renderHistory();
+            }
+        }
+
+        // 從歷史記錄點擊顯示詳細
+        function showHistoryDetail(kinNumber) {
+            const kinInfo = kinData[kinNumber];
+            const sealNumber = getSealNumber(kinNumber);
+            const bodyInfo = sealBodyParts[sealNumber];
+            const colorClass = getKinColorClass(kinNumber);
+
+            // 設定圖騰圖片
+            const sealImageNum = sealNumber.toString().padStart(2, '0');
+            document.getElementById('detailSeal').src = `../images/${sealImageNum}.png`;
+
+            // 設定 KIN 資訊
+            const detailKinNumber = document.getElementById('detailKinNumber');
+            detailKinNumber.textContent = `KIN ${kinNumber}`;
+            detailKinNumber.className = `detail-kin-number ${colorClass}`;
+
+            const detailKinName = document.getElementById('detailKinName');
+            detailKinName.textContent = kinInfo.name;
+            detailKinName.className = `detail-kin-name ${colorClass}`;
+
+            // 設定訊息
+            document.getElementById('detailMessage').textContent = kinInfo.message;
+
+            // 設定身體連結
+            document.getElementById('detailBodyPart').textContent = `${bodyInfo.name}｜${bodyInfo.part}`;
+            document.getElementById('detailBodyInvitation').textContent = bodyInfo.invitation;
+
+            // 顯示彈窗
+            document.getElementById('detailOverlay').classList.add('active');
+        }
+
+        // 獲取圖騰編號（1-20）
+        function getSealNumber(kinNumber) {
+            return ((kinNumber - 1) % 20) + 1;
+        }
+
+        // 顯示詳細資訊
+        function showDetail() {
+            if (!currentKinNumber) return;
+
+            const kinInfo = kinData[currentKinNumber];
+            const sealNumber = getSealNumber(currentKinNumber);
+            const bodyInfo = sealBodyParts[sealNumber];
+            const colorClass = getKinColorClass(currentKinNumber);
+
+            // 設定圖騰圖片
+            const sealImageNum = sealNumber.toString().padStart(2, '0');
+            document.getElementById('detailSeal').src = `../images/${sealImageNum}.png`;
+
+            // 設定 KIN 資訊
+            const detailKinNumber = document.getElementById('detailKinNumber');
+            detailKinNumber.textContent = `KIN ${currentKinNumber}`;
+            detailKinNumber.className = `detail-kin-number ${colorClass}`;
+
+            const detailKinName = document.getElementById('detailKinName');
+            detailKinName.textContent = kinInfo.name;
+            detailKinName.className = `detail-kin-name ${colorClass}`;
+
+            // 設定訊息
+            document.getElementById('detailMessage').textContent = kinInfo.message;
+
+            // 設定身體連結
+            document.getElementById('detailBodyPart').textContent = `${bodyInfo.name}｜${bodyInfo.part}`;
+            document.getElementById('detailBodyInvitation').textContent = bodyInfo.invitation;
+
+            // 顯示彈窗
+            document.getElementById('detailOverlay').classList.add('active');
+        }
+
+        // 關閉詳細資訊
+        function closeDetail(event) {
+            if (event && event.target !== document.getElementById('detailOverlay')) return;
+            document.getElementById('detailOverlay').classList.remove('active');
+        }
+
+        // 頁面載入時讀取歷史記錄
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHistory();
+        });
     </script>
 </body>
 </html>
