@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13月亮曆：神廟入口</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            /* 暖灰亞麻色背景 */
+            background: #E8E4DF;
+            font-family: 'Noto Serif TC', serif;
+            color: #3a3632;
+            overflow-x: hidden;
+            position: relative;
+            padding: 56px 32px 48px;
+        }
+
+        /* 細微紋理背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 48px;
+            z-index: 10;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* ========== HEADER 區域 ========== */
+        .header {
+            text-align: center;
+        }
+
+        .hunab-ku {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            margin: 0 auto 24px;
+        }
+
+        .hunab-ku img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+        }
+
+        .main-title {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            color: #2d2a26;
+            margin-bottom: 16px;
+            line-height: 1.3;
+            /* 內凹刻印效果 */
+            text-shadow:
+                1px 1px 1px rgba(255, 255, 255, 0.4),
+                -1px -1px 1px rgba(0, 0, 0, 0.15);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6a655c;
+            letter-spacing: 0.3em;
+            text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* ========== 今日能量橫幅 ========== */
+        .daily-kin-banner {
+            width: 100%;
+            max-width: 900px;
+            background: #D5D0C8;
+            border-radius: 20px;
+            padding: 24px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            border: 3px solid #c5c0b8;
+            box-shadow:
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                0 2px 8px rgba(0, 0, 0, 0.08);
+            background-image:
+                linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%, rgba(0,0,0,0.03) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-color: #D5D0C8;
+            background-blend-mode: overlay, soft-light;
+        }
+
+        .daily-kin-icon {
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .daily-kin-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .daily-kin-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .daily-kin-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6a655c;
+            letter-spacing: 0.15em;
+        }
+
+        .daily-kin-name {
+            font-size: 24px;
+            font-weight: 900;
+            color: #2d2a26;
+            letter-spacing: 0.06em;
+            text-shadow:
+                1px 1px 1px rgba(255, 255, 255, 0.3),
+                -1px -1px 1px rgba(0, 0, 0, 0.12);
+        }
+
+        .daily-kin-date {
+            font-size: 13px;
+            font-weight: 500;
+            color: #7a756c;
+            letter-spacing: 0.03em;
+        }
+
+        /* ========== 石板底襯 - Plate 結構 ========== */
+        .temple-stone {
+            background: #D5D0C8;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 960px;
+            border: 3px solid #c5c0b8;
+            box-shadow:
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                0 2px 8px rgba(0, 0, 0, 0.08);
+            background-image:
+                linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%, rgba(0,0,0,0.03) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-color: #D5D0C8;
+            background-blend-mode: overlay, soft-light;
+        }
+
+        /* ========== 四大門戶 (2x2 矩陣) ========== */
+        .portals-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            width: 100%;
+        }
+
+        /* 門戶卡片 - 石碑風格 */
+        .portal-card {
+            border-radius: 16px;
+            text-align: center;
+            border: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            background: #E8E4DF;
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.4),
+                0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 頂部色帶 */
+        .portal-header {
+            padding: 28px 24px 22px;
+            position: relative;
+        }
+
+        .portal-title {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            text-shadow:
+                1px 1px 1px rgba(255, 255, 255, 0.25),
+                -1px -1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .portal-keyword {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            opacity: 0.9;
+        }
+
+        /* 內容區 */
+        .portal-body {
+            padding: 24px 24px 28px;
+            background: #f5f3f0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 2px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .portal-desc {
+            font-size: 16px;
+            font-weight: 500;
+            color: #4a4540;
+            line-height: 1.9;
+            margin-bottom: 12px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .portal-subdesc {
+            font-size: 13px;
+            font-weight: 600;
+            color: #8a857a;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+        }
+
+        /* 按鈕 */
+        .portal-btn {
+            display: inline-block;
+            padding: 14px 36px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            text-shadow:
+                1px 1px 1px rgba(255, 255, 255, 0.2),
+                -1px -1px 1px rgba(0, 0, 0, 0.15);
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.2),
+                0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ========== 四色門戶配色 ========== */
+        /* 紅色門戶 - 啟動 */
+        .portal-red .portal-header {
+            background: linear-gradient(135deg, #A84840 0%, #8a3a34 100%);
+        }
+        .portal-red .portal-header .portal-title,
+        .portal-red .portal-header .portal-keyword {
+            color: #f5f0eb;
+        }
+        .portal-red .portal-btn {
+            background: linear-gradient(135deg, #A84840 0%, #8a3a34 100%);
+            color: #f5f0eb;
+        }
+        .portal-red:hover .portal-btn {
+            background: linear-gradient(135deg, #8a3a34 0%, #6a2a24 100%);
+        }
+
+        /* 白色門戶 - 精煉 */
+        .portal-white .portal-header {
+            background: linear-gradient(135deg, #8A847A 0%, #6a655c 100%);
+        }
+        .portal-white .portal-header .portal-title,
+        .portal-white .portal-header .portal-keyword {
+            color: #f5f3f0;
+        }
+        .portal-white .portal-btn {
+            background: linear-gradient(135deg, #8A847A 0%, #6a655c 100%);
+            color: #f5f3f0;
+        }
+        .portal-white:hover .portal-btn {
+            background: linear-gradient(135deg, #6a655c 0%, #5a554c 100%);
+        }
+
+        /* 藍色門戶 - 蛻變 */
+        .portal-blue .portal-header {
+            background: linear-gradient(135deg, #4A7590 0%, #3a5f78 100%);
+        }
+        .portal-blue .portal-header .portal-title,
+        .portal-blue .portal-header .portal-keyword {
+            color: #f0f4f6;
+        }
+        .portal-blue .portal-btn {
+            background: linear-gradient(135deg, #4A7590 0%, #3a5f78 100%);
+            color: #f0f4f6;
+        }
+        .portal-blue:hover .portal-btn {
+            background: linear-gradient(135deg, #3a5f78 0%, #2a4f68 100%);
+        }
+
+        /* 黃色門戶 - 收穫 */
+        .portal-yellow .portal-header {
+            background: linear-gradient(135deg, #A89040 0%, #887430 100%);
+        }
+        .portal-yellow .portal-header .portal-title,
+        .portal-yellow .portal-header .portal-keyword {
+            color: #faf8f0;
+        }
+        .portal-yellow .portal-btn {
+            background: linear-gradient(135deg, #A89040 0%, #887430 100%);
+            color: #faf8f0;
+        }
+        .portal-yellow:hover .portal-btn {
+            background: linear-gradient(135deg, #887430 0%, #685420 100%);
+        }
+
+        /* ========== FOOTER 設計者資訊 ========== */
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .designer-info {
+            font-size: 14px;
+            font-weight: 500;
+            color: #7a756c;
+            line-height: 2;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+            margin-bottom: 16px;
+        }
+
+        .designer-info a {
+            color: #5a5650;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .designer-info a:hover {
+            color: #3a3632;
+        }
+
+        .designer-info .kin-badge {
+            font-weight: 700;
+            color: #5a5650;
+        }
+
+        /* 社交圖示 */
+        .social-links {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #c8c0b5;
+            border-radius: 50%;
+            color: #5a5650;
+            font-size: 18px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.12),
+                inset 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .social-icon:hover {
+            background: #a89040;
+            color: #f8f6f2;
+            transform: translateY(-2px);
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.18);
+        }
+
+        /* ========== RWD 響應式設計 ========== */
+        @media (max-width: 820px) {
+            .portals-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .portal-card {
+                width: 90%;
+                max-width: 420px;
+                margin: 0 auto;
+            }
+
+            .temple-stone {
+                padding: 28px 20px;
+                border-radius: 16px;
+            }
+
+            .main-title {
+                font-size: 36px;
+            }
+
+            .daily-kin-banner {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 28px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            body {
+                padding: 36px 16px 32px;
+            }
+
+            .container {
+                gap: 36px;
+            }
+
+            .main-title {
+                font-size: 30px;
+                letter-spacing: 0.08em;
+            }
+
+            .subtitle {
+                font-size: 13px;
+                letter-spacing: 0.2em;
+            }
+
+            .hunab-ku {
+                width: 110px;
+                height: 110px;
+            }
+
+            .temple-stone {
+                padding: 24px 16px;
+            }
+
+            .daily-kin-banner {
+                padding: 20px 24px;
+            }
+
+            .daily-kin-name {
+                font-size: 20px;
+            }
+
+            .portal-header {
+                padding: 22px 20px 18px;
+            }
+
+            .portal-title {
+                font-size: 24px;
+            }
+
+            .portal-keyword {
+                font-size: 12px;
+            }
+
+            .portal-body {
+                padding: 20px 20px 24px;
+            }
+
+            .portal-desc {
+                font-size: 15px;
+            }
+
+            .portal-btn {
+                padding: 12px 28px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ========== HEADER ========== -->
+        <header class="header">
+            <div class="hunab-ku">
+                <img src="./images/hunab-ku-1.png" alt="Hunab Ku 宇宙中心">
+            </div>
+            <h1 class="main-title">13月亮曆的小共時</h1>
+            <p class="subtitle">DREAMSPELL SYNCHRONICITY</p>
+        </header>
+
+        <!-- ========== 今日能量橫幅 ========== -->
+        <section class="daily-kin-banner">
+            <div class="daily-kin-icon">
+                <img src="./images/hunab-ku-1.png" alt="載入中...">
+            </div>
+            <div class="daily-kin-info">
+                <p class="daily-kin-label">今日能量</p>
+                <h2 class="daily-kin-name">計算中...</h2>
+                <p class="daily-kin-date">載入中...</p>
+            </div>
+        </section>
+
+        <!-- ========== 重磅石板主體 ========== -->
+        <main class="temple-stone">
+            <!-- 四大門戶 -->
+            <div class="portals-grid">
+                <!-- 紅色門戶：快速共時 -->
+                <a href="./red-room/" class="portal-card portal-red">
+                    <div class="portal-header">
+                        <h3 class="portal-title">快速共時</h3>
+                        <p class="portal-keyword">啟動</p>
+                    </div>
+                    <div class="portal-body">
+                        <p class="portal-desc">
+                            跟著直覺，<br>
+                            快速抽一張今天的訊息。
+                        </p>
+                        <p class="portal-subdesc">簡單、直接、不多想</p>
+                        <span class="portal-btn">快速抽卡</span>
+                    </div>
+                </a>
+
+                <!-- 白色門戶：共時儀式 -->
+                <a href="./ritual/" class="portal-card portal-white">
+                    <div class="portal-header">
+                        <h3 class="portal-title">共時儀式</h3>
+                        <p class="portal-keyword">精煉</p>
+                    </div>
+                    <div class="portal-body">
+                        <p class="portal-desc">
+                            給自己一點時間，<br>
+                            讓訊息慢慢落到身體。
+                        </p>
+                        <p class="portal-subdesc">約 1–3 分鐘的靜心體驗</p>
+                        <span class="portal-btn">進入儀式</span>
+                    </div>
+                </a>
+
+                <!-- 藍色門戶：時光流轉 -->
+                <a href="./three-cards/" class="portal-card portal-blue">
+                    <div class="portal-header">
+                        <h3 class="portal-title">時光流轉</h3>
+                        <p class="portal-keyword">蛻變</p>
+                    </div>
+                    <div class="portal-body">
+                        <p class="portal-desc">
+                            過去、現在、未來，<br>
+                            三個印記交織成完整訊息。
+                        </p>
+                        <p class="portal-subdesc">三印記能量合盤</p>
+                        <span class="portal-btn">抽三張牌</span>
+                    </div>
+                </a>
+
+                <!-- 黃色門戶：主題指引 -->
+                <a href="./guidance/" class="portal-card portal-yellow">
+                    <div class="portal-header">
+                        <h3 class="portal-title">主題指引</h3>
+                        <p class="portal-keyword">智慧的果實</p>
+                    </div>
+                    <div class="portal-body">
+                        <p class="portal-desc">
+                            選擇一個主題，<br>
+                            獲取專屬的印記指引。
+                        </p>
+                        <p class="portal-subdesc">財務・事業・感情・健康・成長</p>
+                        <span class="portal-btn">選擇主題</span>
+                    </div>
+                </a>
+            </div>
+        </main>
+
+        <!-- ========== FOOTER 設計者資訊 ========== -->
+        <footer class="footer">
+            <div class="designer-info">
+                設計 | <span class="kin-badge">KIN 74 太陽的白巫師</span> HIPER<br>
+                <a href="https://www.facebook.com/profile.php?id=100074630472925" target="_blank">波波的日常數數</a>
+            </div>
+            <div class="social-links">
+                <a href="https://www.facebook.com/hiper.wu" target="_blank" class="social-icon" title="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.instagram.com/hiper.wu" target="_blank" class="social-icon" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== 13月亮曆 Kin 計算器 ====================
+        // 根據官方講義數據
+        
+        const MONTH_CONSTANTS = {
+            1: 0, 2: 31, 3: 59, 4: 90, 5: 120, 6: 151,
+            7: 181, 8: 212, 9: 243, 10: 13, 11: 44, 12: 74
+        };
+
+        const YEAR_CONSTANTS = {
+            2014: 62, 2015: 167, 2016: 12, 2017: 117, 2018: 222,
+            2019: 67, 2020: 172, 2021: 17, 2022: 122, 2023: 227,
+            2024: 72, 2025: 177, 2026: 22, 2027: 127, 2028: 232,
+            2029: 77, 2030: 182, 2031: 27, 2032: 132, 2033: 237,
+            2034: 82, 2035: 187
+        };
+
+        const SEAL_NAMES = [
+            "紅龍", "白風", "藍夜", "黃種子", "紅蛇",
+            "白世界橋", "藍手", "黃星星", "紅月", "白狗",
+            "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹",
+            "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"
+        ];
+
+        const TONE_NAMES = [
+            "磁性的", "月亮的", "電力的", "自我存在的", "超頻的",
+            "韻律的", "共振的", "銀河星系的", "太陽的", "行星的",
+            "光譜的", "水晶的", "宇宙的"
+        ];
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function calculateKin(year, month, day) {
+            // 特殊處理：2月29日顯示 Hunab Ku
+            if (month === 2 && day === 29) {
+                return {
+                    kin: null,
+                    isHunabKu: true,
+                    displayText: "Hunab Ku",
+                    imagePath: "./images/hunab-ku-1.png"
+                };
+            }
+
+            if (!YEAR_CONSTANTS[year]) {
+                console.warn(`年份 ${year} 的常數尚未定義`);
+                return null;
+            }
+
+            // 基本計算：Kin = 年份常數 + 月份常數 + 日期
+            let kin = YEAR_CONSTANTS[year] + MONTH_CONSTANTS[month] + day;
+
+            // 閏年特殊規則：3月1日之後需要 +1
+            if (isLeapYear(year) && (month > 2 || (month === 2 && day > 28))) {
+                kin += 1;
+            }
+
+            // 限制在 1-260 範圍
+            while (kin > 260) kin -= 260;
+            while (kin < 1) kin += 260;
+
+            // 計算圖騰和調性
+            const sealIndex = ((kin - 1) % 20);
+            const toneIndex = ((kin - 1) % 13);
+            
+            // 圖騰編號：1-20（對應圖片檔名）
+            const sealNumber = sealIndex + 1;
+
+            return {
+                kin: kin,
+                seal: SEAL_NAMES[sealIndex],
+                tone: TONE_NAMES[toneIndex],
+                sealNumber: sealNumber,
+                isHunabKu: false,
+                displayText: `${TONE_NAMES[toneIndex]}${SEAL_NAMES[sealIndex]}`,
+                imagePath: `./images/${String(sealNumber).padStart(2, '0')}.png`
+            };
+        }
+
+        // ==================== 更新今日能量橫幅 ====================
+        window.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+
+            console.log('=== 13月亮曆 Kin 計算 ===');
+            console.log(`日期: ${year}/${month}/${day}`);
+
+            const result = calculateKin(year, month, day);
+
+            if (!result) {
+                console.error('無法計算 Kin，年份數據可能未定義');
+                return;
+            }
+
+            // 更新圖騰圖片
+            const iconImg = document.querySelector('.daily-kin-icon img');
+            if (iconImg) {
+                iconImg.src = result.imagePath;
+                iconImg.alt = result.isHunabKu ? 'Hunab Ku' : `KIN ${result.kin}`;
+                iconImg.onerror = function() {
+                    console.warn(`圖片載入失敗: ${result.imagePath}`);
+                    this.src = './images/hunab-ku-1.png';
+                };
+            }
+
+            // 更新名稱
+            const nameElement = document.querySelector('.daily-kin-name');
+            if (nameElement) {
+                nameElement.textContent = result.displayText;
+                console.log('✅ 已更新名稱為:', result.displayText);
+            } else {
+                console.error('❌ 找不到 .daily-kin-name 元素');
+            }
+
+            // 更新日期與 KIN 編號
+            const dateElement = document.querySelector('.daily-kin-date');
+            if (dateElement) {
+                const formattedDate = `${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}`;
+                if (result.isHunabKu) {
+                    dateElement.textContent = formattedDate;
+                } else {
+                    dateElement.textContent = `KIN ${result.kin} · ${formattedDate}`;
+                }
+            }
+
+            // 輸出計算結果
+            if (!result.isHunabKu) {
+                console.log(`年份常數: ${YEAR_CONSTANTS[year]}`);
+                console.log(`月份常數: ${MONTH_CONSTANTS[month]}`);
+                console.log(`日期: ${day}`);
+                console.log(`閏年: ${isLeapYear(year) ? '是' : '否'}`);
+                console.log(`KIN: ${result.kin}`);
+                console.log(`圖騰編號: ${result.sealNumber} (${result.seal})`);
+                console.log(`完整名稱: ${result.displayText}`);
+                console.log(`圖片路徑: ${result.imagePath}`);
+                console.log('========================================');
+                console.log('✅ 今日能量已更新完成！');
+                console.log('請檢查頁面上的「今日能量」區塊');
+            } else {
+                console.log('今日為 2/29，顯示 Hunab Ku');
+            }
+        });
+    </script>
+</body>
+</html>

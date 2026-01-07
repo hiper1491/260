@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試 - 今日能量顯示</title>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .result-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #A84840;
+            padding-bottom: 10px;
+        }
+        .kin-display {
+            font-size: 36px;
+            font-weight: bold;
+            color: #A84840;
+            margin: 20px 0;
+        }
+        .debug-info {
+            background: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #4A7590;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 13月亮曆 - 今日能量測試</h1>
+    
+    <div class="result-box">
+        <h2>今日能量</h2>
+        <div class="kin-display" id="kinDisplay">計算中...</div>
+        <p id="kinInfo" style="font-size: 18px; color: #666;"></p>
+    </div>
+
+    <div class="result-box">
+        <h2>計算過程</h2>
+        <div class="debug-info" id="debugInfo">載入中...</div>
+    </div>
+
+    <script>
+        const MONTH_CONSTANTS = {
+            1: 0, 2: 31, 3: 59, 4: 90, 5: 120, 6: 151,
+            7: 181, 8: 212, 9: 243, 10: 13, 11: 44, 12: 74
+        };
+
+        const YEAR_CONSTANTS = {
+            2026: 22
+        };
+
+        const SEAL_NAMES = [
+            "紅龍", "白風", "藍夜", "黃種子", "紅蛇",
+            "白世界橋", "藍手", "黃星星", "紅月", "白狗",
+            "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹",
+            "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"
+        ];
+
+        const TONE_NAMES = [
+            "磁性的", "月亮的", "電力的", "自我存在的", "超頻的",
+            "韻律的", "共振的", "銀河星系的", "太陽的", "行星的",
+            "光譜的", "水晶的", "宇宙的"
+        ];
+
+        // 獲取今天日期
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+
+        // 計算 KIN
+        let kin = YEAR_CONSTANTS[year] + MONTH_CONSTANTS[month] + day;
+        const sealIndex = ((kin - 1) % 20);
+        const toneIndex = ((kin - 1) % 13);
+        const sealNumber = sealIndex + 1;
+
+        // 組合顯示文字
+        const tone = TONE_NAMES[toneIndex];
+        const seal = SEAL_NAMES[sealIndex];
+        const displayText = `${tone}${seal}`;
+
+        // 顯示結果
+        document.getElementById('kinDisplay').textContent = displayText;
+        document.getElementById('kinInfo').innerHTML = 
+            `KIN ${kin}<br>圖騰編號: ${sealNumber} (${String(sealNumber).padStart(2, '0')}.png)`;
+
+        // 顯示計算過程
+        const debugHTML = `
+日期: ${year}年${month}月${day}日
+<br><br>
+<strong>計算過程:</strong><br>
+年份常數: ${YEAR_CONSTANTS[year]}<br>
+月份常數: ${MONTH_CONSTANTS[month]}<br>
+日期: ${day}<br>
+────────────────<br>
+KIN 總和: ${YEAR_CONSTANTS[year]} + ${MONTH_CONSTANTS[month]} + ${day} = <strong>${kin}</strong>
+<br><br>
+<strong>圖騰計算:</strong><br>
+sealIndex = (${kin} - 1) % 20 = ${sealIndex}<br>
+圖騰編號 = ${sealIndex} + 1 = <strong>${sealNumber}</strong><br>
+圖騰名稱 = <strong>${seal}</strong>
+<br><br>
+<strong>調性計算:</strong><br>
+toneIndex = (${kin} - 1) % 13 = ${toneIndex}<br>
+調性名稱 = <strong>${tone}</strong>
+<br><br>
+<strong>完整名稱:</strong><br>
+displayText = "${tone}" + "${seal}" = <strong style="color: #A84840; font-size: 18px;">${displayText}</strong>
+        `;
+        
+        document.getElementById('debugInfo').innerHTML = debugHTML;
+
+        // 控制台輸出
+        console.log('='.repeat(50));
+        console.log('13月亮曆 - 今日能量計算結果');
+        console.log('='.repeat(50));
+        console.log(`日期: ${year}/${month}/${day}`);
+        console.log(`KIN: ${kin}`);
+        console.log(`圖騰: ${seal} (編號 ${sealNumber})`);
+        console.log(`調性: ${tone}`);
+        console.log(`完整顯示: ${displayText}`);
+        console.log('='.repeat(50));
+    </script>
+</body>
+</html>
