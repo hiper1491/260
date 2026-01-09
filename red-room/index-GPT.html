@@ -30,12 +30,6 @@
       transition: background-color 1.1s ease;
     }
 
-    /* ✅ 方案 A：補上 #root 高度，確保 flex 垂直置中以視窗為準 */
-    #root{
-      width:100%;
-      height:100%;
-    }
-
     body::before{
       content:"";
       position:fixed;
@@ -53,6 +47,7 @@
       position:fixed;
       top:32px;
       left:42px;
+      right:auto;
       width:64px;
       height:64px;
       border-radius:50%;
@@ -110,6 +105,7 @@
       width:min(760px,92vw);
       height:min(880px,90vh);
       margin:0 auto;
+      margin-top:60px;
       position:relative;
       border-radius:56px;
       background:linear-gradient(180deg,#F1EFE8,#E6E0D6);
@@ -488,7 +484,7 @@
       overflow:hidden;
     }
     .pre-card:hover{ transform: translateY(-4px); }
-    .pre-card:hover .pre-hunab{
+    .pre-card:hover .pre-hunab{ 
       transform: rotate(360deg) scale(1.08);
     }
     .pre-card:hover .pre-glow{
@@ -505,16 +501,22 @@
       justify-content:center;
       border-radius:50%;
       overflow:hidden;
+      box-shadow:
+        0 14px 26px rgba(0,0,0,.16),
+        inset 0 2px 10px rgba(0,0,0,.18),
+        inset 0 -1px 0 rgba(255,255,255,.36);
+      border:1px solid rgba(0,0,0,.12);
+      background:
+        radial-gradient(circle at 50% 45%, rgba(255,255,255,.22), transparent 62%),
+        rgba(255,255,255,.06);
     }
     .pre-hunab{
       width:100%;
       height:100%;
-      display:block;
-      border-radius:50%;
-      object-fit:cover;
-      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity:0.75;
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity:0.78;
       filter: drop-shadow(0 8px 20px rgba(0,0,0,.2));
+      clip-path: circle(50% at 50% 50%);
     }
 
     /* 光暈效果 */
@@ -529,8 +531,9 @@
       opacity:0.6;
       animation: pulse 3s ease-in-out infinite;
       transition: opacity 0.3s ease;
+      pointer-events:none;
     }
-
+    
     @keyframes pulse {
       0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
       50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
@@ -591,7 +594,7 @@
     }
 
     @media (max-height: 760px){
-      .tablet{ height:min(820px,90vh); }
+      .tablet{ height:min(820px,90vh); margin-top:40px; }
       .glyph-img{height:160px;}
       .compact .glyph-img{height:100px;}
       .tone-area{ height:64px; flex-basis:64px; }
@@ -609,7 +612,7 @@
       .pre-title{ font-size:1.7rem; letter-spacing:10px; }
       .pre-symbol{ width:90px; height:90px; }
       .content{ padding:clamp(24px, 3.5vh, 44px) clamp(20px, 3vw, 40px) clamp(20px, 2.5vh, 36px); }
-      .home-button{ top:24px; left:32px; width:58px; height:58px; font-size:1.55rem; }
+      .home-button{ top:24px; left:32px; right:auto; width:58px; height:58px; font-size:1.55rem; }
     }
   </style>
 </head>
@@ -714,6 +717,9 @@
 
       // 當天的 KIN（用於封面顯示）
       const todayKin = getTodayKin();
+      const todayToneId = (todayKin - 1) % 13 + 1;
+      const todayGlyphId = (todayKin - 1) % 20;
+      const todayWavespell = getWavespell(todayKin);
       const todayTheme = THEME[COLORS[(todayKin - 1) % 4]];
 
       const toneId = (kin - 1) % 13 + 1;
@@ -728,6 +734,7 @@
       };
 
       useEffect(()=>{
+        // 抽牌前用當天主題色，抽牌後用抽到的主題色
         const activeTheme = hasDrawn ? theme : todayTheme;
         document.documentElement.style.setProperty("--bg", activeTheme.bg);
         document.documentElement.style.setProperty("--theme", activeTheme.main);
@@ -787,7 +794,7 @@
           {hasDrawn && (
             <a href="../index.html" className="home-button" title="返回主頁">🏠</a>
           )}
-
+          
           <div className="history-sidebar">
             {history.map((k,i)=>(
               <div key={i} className="history-stone" onClick={()=>!spinning && setKin(k)}>{k}</div>
@@ -800,12 +807,16 @@
 
                 {!hasDrawn ? (
                   <>
+                    {/* ===== 封面入口：美化版 ===== */}
                     <div className="pre-card" onClick={toggle}>
+                      
+                      {/* Hunab Ku 符號 */}
                       <div className="pre-symbol">
                         <div className="pre-glow"></div>
                         <img className="pre-hunab" src="../images/hunab-ku.png" alt="Hunab Ku" />
                       </div>
 
+                      {/* 裝飾元素 */}
                       <div className="pre-ornament">
                         <div className="pre-ornament-line"></div>
                         <div className="pre-ornament-dot"></div>
@@ -814,7 +825,7 @@
 
                       <div className="pre-title">13月亮神諭</div>
                       <div className="pre-sub">跟著直覺，鎖定印記</div>
-
+                      
                       <div className="pre-ornament">
                         <div className="pre-ornament-dot"></div>
                         <div className="pre-ornament-line"></div>
@@ -830,6 +841,7 @@
                   </>
                 ) : (
                   <>
+                    {/* ===== 抽牌後：顯示抽到的印記 ===== */}
                     <ToneDisplay toneId={toneId} />
 
                     <div className="glyph-area">
@@ -841,6 +853,7 @@
                     <div className="kin-id" onClick={manualInput}>KIN {kin}</div>
                     <div className="kin-name">{TONE_NAMES[toneId-1]}{GLYPH_NAMES[glyphId]}</div>
 
+                    {/* 波符顯示 */}
                     <div className="wavespell-badge">
                       <img
                         className="wavespell-icon"

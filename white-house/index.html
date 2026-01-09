@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>白色房間：精煉 Refinement</title>
+    <script src="../kin-calculator.js"></script>
+    <style>
+        :root {
+            --pure-white: #ffffff;
+            --refine-silver: #e0e0e0;
+            --text-gray: #666;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #ffffff 0%, #f7f7f7 100%);
+            color: var(--text-gray); font-family: 'Optima', 'Noto Sans TC', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        /* 精煉之框：極簡磨砂 */
+        .refine-card {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            color: #ccc;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .kin-number {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #333;
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+
+        .seal-text {
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+        }
+
+        .divider {
+            width: 30px;
+            height: 1px;
+            background: #ddd;
+            margin: 0 auto 30px;
+        }
+
+        .action-text {
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #999;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="refine-card">
+        <div id="content">
+            <div class="label">Refining...</div>
+        </div>
+    </div>
+
+    <script>
+        // 取得今日日期與大腦計算結果
+        const now = new Date();
+        const k = calculateKin(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        
+        const content = document.getElementById('content');
+        
+        if (k.isHunabKu) {
+            content.innerHTML = `
+                <div class="label">Void</div>
+                <div class="kin-number">Hunab Ku</div>
+                <div class="divider"></div>
+                <div class="action-text">回歸宇宙中心點<br>在空性中精煉本質</div>
+            `;
+        } else {
+            content.innerHTML = `
+                <div class="label">White House</div>
+                <div class="kin-number">KIN ${k.kin}</div>
+                <div class="seal-text">${k.displayText}</div>
+                <div class="divider"></div>
+                <div class="action-text">
+                    今日任務：精煉「${k.seal}」的能量<br>
+                    謙遜地過濾，留下純粹的共時。
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

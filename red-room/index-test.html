@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>13月亮曆・神廟石碑（測試版）</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script src="./red-brain.js"></script>
+
+  <style>
+    :root{
+      --theme:#A5413F;
+      --bg:#F8E8E8;
+      --ink:#111;
+    }
+
+    /* 確保石碑絕對垂直水平置中 */
+    html, body {
+      width: 100%; height: 100%; margin: 0; padding: 0;
+      background: var(--bg);
+      font-family: 'Noto Serif TC', serif;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transition: background-color 1.1s ease;
+    }
+
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(900px 650px at 50% 32%, rgba(255,255,255,.42), transparent 60%),
+        radial-gradient(1200px 900px at 50% 92%, rgba(0,0,0,.14), transparent 66%);
+      mix-blend-mode: multiply; opacity: .9;
+    }
+
+    /* 歷史記錄側邊欄（加大） */
+    .history-sidebar {
+      position: fixed; left: 42px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 16px; z-index: 100;
+    }
+    .history-stone {
+      width: 76px; height: 70px;
+      border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%;
+      background: linear-gradient(180deg, #F5F2EC, #E6E1DA);
+      box-shadow:
+        0 18px 34px rgba(0,0,0,.22),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif; font-weight: 900; font-size: 1.12rem;
+      color: #222; cursor: pointer; user-select: none;
+      transition: all 0.18s ease;
+    }
+    .history-stone:hover { transform: translateY(-2px) scale(1.03); }
+
+    /* 石碑主體 */
+    .tablet {
+      width: min(760px, 92vw);
+      height: min(880px, 90vh);
+      position: relative; border-radius: 56px;
+      background: linear-gradient(180deg, #F1EFE8, #E6E0D6);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow: 0 60px 110px rgba(0,0,0,.32), 0 14px 22px rgba(0,0,0,.18);
+      overflow: hidden; display: flex; flex-direction: column; align-items: center;
+      z-index: 10;
+    }
+
+    .tablet::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+      opacity: .12; mix-blend-mode: multiply;
+    }
+
+    .content {
+      position: relative; z-index: 20; width: 100%; height: 100%;
+      padding: 40px clamp(24px, 3.4vw, 48px);
+      display: flex; flex-direction: column; align-items: center;
+      box-sizing: border-box;
+    }
+
+    /* 調性區：修正版（避免陰影） */
+    .tone-area {
+      height: 96px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;  /* ← 修正：改為 flex-start */
+      padding-top: 6px;              /* ← 修正：加上 padding-top */
+      gap: 10px;
+      flex: 0 0 96px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tone-dots { 
+      height: 28px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      gap: 14px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tone-bars { 
+      height: 42px;
+      display: flex; 
+      flex-direction: column; 
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tone-dot { 
+      width: 22px; 
+      height: 22px; 
+      background: #000; 
+      border-radius: 50%;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tone-bar { 
+      width: 190px; 
+      height: 16px; 
+      background: #000; 
+      border-radius: 8px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 圖騰區 */
+    .glyph-area {
+      width: 100%; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      margin-top: -2px;
+      margin-bottom: 6px;
+      flex: 0 0 200px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glyph-frame {
+      display: inline-flex; 
+      padding: 10px; 
+      border-radius: 24px;
+      background: rgba(255,255,255,.12); 
+      border: 1px solid rgba(0,0,0,.14);
+      box-shadow: 
+        inset 0 4px 20px rgba(0,0,0,.30),
+        inset 0 -6px 16px rgba(255,255,255,.24),
+        0 14px 28px rgba(0,0,0,.18);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glyph-frame:hover { transform: translateY(-2px); }
+    .glyph-img {
+      height: 180px; 
+      border-radius: 16px; 
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.24));
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 文字資訊 */
+    .kin-id { 
+      font-family: 'Cinzel', serif; 
+      font-size: clamp(2.8rem, 4.8vh, 3.8rem);
+      font-weight: 900;
+      line-height: 1;
+      margin-top: 2px;
+      min-width: 9ch;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      user-select: none;
+      cursor: pointer;
+      color: #0E0E0E;
+      flex: 0 0 auto;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .kin-name { 
+      font-size: clamp(1.8rem, 3.5vh, 2.6rem);
+      font-weight: 900;
+      letter-spacing: clamp(3px, .9vw, 7px);
+      margin-top: 4px;
+      text-align: center;
+      color: #111;
+      flex: 0 0 auto;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 波符標籤（放在名稱後面） */
+    .kin-wavespell {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: rgba(0,0,0,.06);
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #333;
+      letter-spacing: 1px;
+      margin-top: 4px;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,.08);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .wavespell-icon-inline {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      opacity: 0.9;
+    }
+    
+    .name-etch {
+      width: 64%;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent 0%, var(--theme) 50%, transparent 100%);
+      opacity: .64;
+      margin: 10px auto 12px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.14));
+      flex: 0 0 auto;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 縮小模式 */
+    .compact .tone-area { 
+      height: 60px;
+      flex-basis: 60px;
+      gap: 6px;
+      padding-top: 4px;
+      /* 重要：調性符號保持可見，不淡出！ */
+    }
+    .compact .tone-dots {
+      height: 18px;
+      gap: 10px;
+    }
+    .compact .tone-bars {
+      height: 26px;
+      gap: 6px;
+    }
+    .compact .tone-dot { 
+      width: 14px; 
+      height: 14px; 
+    }
+    .compact .tone-bar { 
+      width: 120px; 
+      height: 10px; 
+    }
+    
+    .compact .glyph-area {
+      flex-basis: 130px;
+      margin-bottom: 4px;
+    }
+    .compact .glyph-frame {
+      padding: 6px;
+    }
+    .compact .glyph-img { 
+      height: 118px; 
+    }
+    
+    .compact .kin-id { 
+      font-size: clamp(1.8rem, 3.2vh, 2.2rem);
+      margin-top: 0;
+    }
+    .compact .kin-name { 
+      font-size: clamp(1.25rem, 2.4vh, 1.7rem);
+      margin-top: 2px;
+      letter-spacing: clamp(2px, .6vw, 4px);
+    }
+    .compact .kin-wavespell {
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      gap: 6px;
+    }
+    .compact .wavespell-icon-inline {
+      width: 14px;
+      height: 14px;
+    }
+    .compact .name-etch { 
+      width: 50%; 
+      height: 8px;
+      margin: 6px auto 10px;
+    }
+
+    /* 訊息區 */
+    .msg-stack {
+      width: 92%;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(16px, 2vh, 22px);
+      margin-top: 0;
+      flex: 1 1 auto;
+      min-height: 0;
+      animation: slideInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity: 0;
+    }
+    @keyframes slideInUp { 
+      from { opacity: 0; transform: translateY(40px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+
+    .msg-box {
+      background: rgba(245,242,236,.66);
+      border-radius: 32px;
+      padding: clamp(20px, 2.4vh, 30px) clamp(22px, 2.6vw, 34px);
+      border: 1px solid rgba(0,0,0,.12);
+      box-shadow:
+        inset 0 3px 16px rgba(0,0,0,.24),
+        0 12px 20px rgba(0,0,0,.14);
+      backdrop-filter: blur(3px);
+      flex-shrink: 0;
+    }
+    .label { 
+      font-weight: 900;
+      opacity: .64;
+      margin-bottom: 12px;
+      display: block;
+      letter-spacing: 2px;
+      text-align: center;
+      color: #111;
+      font-size: 1rem;
+    }
+    .content-text { 
+      font-size: clamp(1.15rem, 2.15vh, 1.48rem);
+      line-height: 1.9;
+      font-weight: 900;
+      text-align: left;
+      color: #0B0B0B;
+      text-shadow: none;
+      word-break: break-word;
+    }
+
+    /* 調頻中提示 */
+    .spinning-placeholder {
+      width: 92%;
+      min-height: 200px;
+      margin: 0 auto;
+      border-radius: 32px;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(0,0,0,.12);
+      box-shadow: inset 0 2px 10px rgba(0,0,0,.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      letter-spacing: 3px;
+      opacity: .80;
+      color: #111;
+      flex: 1 1 auto;
+      font-size: 1.1rem;
+    }
+
+    /* ===== 封面樣式 ===== */
+    .pre-card {
+      width: min(680px, 88%);
+      border-radius: 56px;
+      background: rgba(255,255,255,.11);
+      border: 2px solid rgba(0,0,0,.09);
+      box-shadow:
+        0 52px 98px rgba(0,0,0,.24),
+        inset 0 3px 20px rgba(0,0,0,.20),
+        inset 0 -1px 0 rgba(255,255,255,.38);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      margin-top: clamp(20px, 4vh, 40px);
+      padding: clamp(32px, 5vh, 50px) 20px;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      transition: transform .25s ease;
+    }
+    .pre-card:hover { transform: translateY(-4px); }
+
+    .pre-inner {
+      width: 240px; height: 240px;
+      border-radius: 38px;
+      border: 3px solid rgba(0,0,0,.11);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 24px 42px rgba(0,0,0,.20), inset 0 2px 14px rgba(0,0,0,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--theme);
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-align: center;
+      padding: 12px;
+      font-size: 1.15rem;
+    }
+    .pre-title {
+      font-weight: 900;
+      letter-spacing: 12px;
+      color: #222;
+      font-size: 2rem;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .pre-sub {
+      opacity: .60;
+      font-weight: 800;
+      letter-spacing: 4px;
+      font-size: 1.18rem;
+      text-align: center;
+      margin-top: -6px;
+    }
+
+    /* 底部馬雅刻痕 */
+    .footer-indicator {
+      margin-top: auto;
+      padding-bottom: 30px;
+      width: min(240px, 62%);
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: radial-gradient(120px 22px at 50% 60%, rgba(255,255,255,.16), transparent 65%);
+      border-radius: 999px;
+      filter: drop-shadow(0 11px 19px rgba(0,0,0,.20));
+    }
+    .footer-indicator::before {
+      content: "";
+      width: 13px; height: 13px; border-radius: 50%;
+      background: var(--theme);
+      box-shadow: inset 0 -3px 5px rgba(0,0,0,.38), 0 9px 15px rgba(0,0,0,.18);
+    }
+    .footer-indicator::after {
+      content: "";
+      width: min(164px, 43vw); height: 13px;
+      border-radius: 13px;
+      background: var(--theme);
+      box-shadow: inset 0 -4px 6px rgba(0,0,0,.42), 0 11px 19px rgba(0,0,0,.18);
+    }
+
+    /* RWD */
+    @media (max-width: 680px) {
+      .kin-name { font-size: 2rem; letter-spacing: 4px; }
+      .compact .kin-name { font-size: 1.3rem; }
+    }
+
+    @media (max-height: 760px) {
+      .tablet { height: min(820px, 90vh); }
+      .glyph-img { height: 160px; }
+      .compact .glyph-img { height: 100px; }
+      .pre-inner { width: 200px; height: 200px; }
+      .tone-area { height: 88px; flex-basis: 88px; }
+      .compact .tone-area { height: 52px; flex-basis: 52px; }
+      .glyph-area { flex-basis: 184px; }
+      .compact .glyph-area { flex-basis: 116px; }
+      .kin-id { font-size: clamp(2.5rem, 4.2vh, 3.4rem); }
+      .compact .kin-id { font-size: clamp(1.6rem, 2.8vh, 2rem); }
+      .kin-name { font-size: clamp(1.6rem, 3vh, 2.2rem); }
+      .compact .kin-name { font-size: clamp(1.1rem, 2.1vh, 1.5rem); }
+      .content-text { font-size: clamp(1.05rem, 1.95vh, 1.32rem); line-height: 1.8; }
+      .msg-box { padding: clamp(16px, 2vh, 24px) clamp(18px, 2vw, 26px); }
+      .msg-stack { gap: clamp(12px, 1.6vh, 18px); }
+      .pre-card { padding: clamp(24px, 4vh, 40px) 16px; }
+      .pre-title { font-size: 1.7rem; letter-spacing: 10px; }
+      .content { padding: clamp(24px, 3.5vh, 44px) clamp(20px, 3vw, 40px) clamp(20px, 2.5vh, 36px); }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const TONE_NAMES = ["磁性的", "月亮的", "電力的", "自我存在的", "超頻的", "韻律的", "共鳴的", "銀河的", "太陽的", "行星的", "光譜的", "水晶的", "宇宙的"];
+    const GLYPH_NAMES = ["紅龍", "白風", "藍夜", "黃種子", "紅蛇", "白世界橋", "藍手", "黃星星", "紅月", "白狗", "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹", "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"];
+
+    // 波符資料
+    const WAVESPELL_DATA = [
+      { name: "紅龍波", glyphId: 0 },
+      { name: "白巫師波", glyphId: 13 },
+      { name: "藍手波", glyphId: 6 },
+      { name: "黃太陽波", glyphId: 19 },
+      { name: "紅天行者波", glyphId: 12 },
+      { name: "白世界橋波", glyphId: 5 },
+      { name: "藍風暴波", glyphId: 18 },
+      { name: "黃人波", glyphId: 11 },
+      { name: "紅蛇波", glyphId: 4 },
+      { name: "白鏡波", glyphId: 17 },
+      { name: "藍猴波", glyphId: 10 },
+      { name: "黃種子波", glyphId: 3 },
+      { name: "紅地球波", glyphId: 16 },
+      { name: "白狗波", glyphId: 9 },
+      { name: "藍夜波", glyphId: 2 },
+      { name: "黃戰士波", glyphId: 15 },
+      { name: "紅月波", glyphId: 8 },
+      { name: "白風波", glyphId: 1 },
+      { name: "藍鷹波", glyphId: 14 },
+      { name: "黃星星波", glyphId: 7 }
+    ];
+
+    const THEME = {
+      red: { main: "#A5413F", bg: "#F8E8E8" },
+      white: { main: "#666666", bg: "#F2F4F6" },
+      blue: { main: "#3D5A73", bg: "#E8F0F8" },
+      yellow: { main: "#B39B59", bg: "#F9F8E8" }
+    };
+
+    function getWavespell(kin) {
+      const wavespellIndex = Math.floor((kin - 1) / 13);
+      return WAVESPELL_DATA[wavespellIndex];
+    }
+
+    function RedRoom() {
+      const [kin, setKin] = useState(1);
+      const [history, setHistory] = useState([]);
+      const [spinning, setSpinning] = useState(false);
+      const [hasDrawn, setHasDrawn] = useState(false);
+      const [showMessage, setShowMessage] = useState(false);
+      const [isCompact, setIsCompact] = useState(false);
+      const timerRef = useRef(null);
+
+      const toneId = (kin - 1) % 13 + 1;
+      const glyphId = (kin - 1) % 20;
+      const wavespell = getWavespell(kin);
+      const theme = THEME[['red', 'white', 'blue', 'yellow'][(kin - 1) % 4]];
+
+      const brain = window.RED_BRAIN_DATA || {};
+      const data = brain[String(kin)] || { synchronicMessage: "能量調頻中...", alignment: "正在讀取訊息..." };
+
+      useEffect(() => {
+        document.documentElement.style.setProperty("--bg", theme.bg);
+        document.documentElement.style.setProperty("--theme", theme.main);
+      }, [theme]);
+
+      const startSpin = () => {
+        setHasDrawn(true); setSpinning(true); setShowMessage(false); setIsCompact(false);
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = setInterval(() => {
+          setKin(Math.floor(Math.random() * 260) + 1);
+        }, 70);
+      };
+
+      const stopSpin = () => {
+        clearInterval(timerRef.current);
+        setSpinning(false);
+        setTimeout(() => {
+          setIsCompact(true);
+          setTimeout(() => setShowMessage(true), 150);
+        }, 1000);
+        setHistory(prev => [kin, ...prev].slice(0, 5));
+      };
+
+      const manualInput = () => {
+        const num = prompt("召喚指定 KIN (1-260):", kin);
+        const n = parseInt(num, 10);
+        if (!Number.isNaN(n) && n >= 1 && n <= 260) {
+          setHasDrawn(true);
+          setKin(n);
+          setShowMessage(false);
+          setIsCompact(false);
+          setTimeout(() => {
+            setIsCompact(true);
+            setTimeout(() => setShowMessage(true), 150);
+          }, 1000);
+        }
+      };
+
+      return (
+        <>
+          <div className="history-sidebar">
+            {history.map((k, i) => (
+              <div key={i} className="history-stone" onClick={() => !spinning && setKin(k)}>{k}</div>
+            ))}
+          </div>
+
+          <div className="tablet">
+            <div className={`content ${isCompact ? 'compact' : ''}`}>
+              {!hasDrawn ? (
+                <>
+                  {/* 封面：漂亮框架，無當天印記 */}
+                  <div className="pre-card" onClick={startSpin}>
+                    <div className="pre-inner">調頻準備中…</div>
+                    <div className="pre-title">點擊開始調頻</div>
+                    <div className="pre-sub">跟著直覺，鎖定印記</div>
+                  </div>
+                  <div className="footer-indicator"></div>
+                </>
+              ) : (
+                <>
+                  {/* 調性（置中） */}
+                  <div className="tone-area">
+                    <div className="tone-dots">
+                      {[...Array(toneId % 5)].map((_, i) => <div key={i} className="tone-dot"></div>)}
+                    </div>
+                    {Math.floor(toneId / 5) > 0 && (
+                      <div className="tone-bars">
+                        {[...Array(Math.floor(toneId / 5))].map((_, i) => <div key={i} className="tone-bar"></div>)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 圖騰（置中） */}
+                  <div className="glyph-area">
+                    <div className="glyph-frame" onClick={spinning ? stopSpin : startSpin}>
+                      <img className="glyph-img" src={`../images/${String(glyphId + 1).padStart(2, '0')}.png`} />
+                    </div>
+                  </div>
+
+                  <div className="kin-id" onClick={manualInput}>KIN {kin}</div>
+
+                  {/* 修正：名稱在前 */}
+                  <div className="kin-name">{TONE_NAMES[toneId - 1]}{GLYPH_NAMES[glyphId]}</div>
+
+                  {/* 修正：波符在後 */}
+                  <div className="kin-wavespell">
+                    <img
+                      className="wavespell-icon-inline"
+                      src={`../images/${String(wavespell.glyphId + 1).padStart(2, '0')}.png`}
+                      alt={wavespell.name}
+                    />
+                    <span>{wavespell.name}</span>
+                  </div>
+
+                  <div className="name-etch"></div>
+
+                  {spinning ? (
+                    <div className="spinning-placeholder">
+                      調頻中… (停止後顯示完整訊息)
+                    </div>
+                  ) : showMessage && (
+                    <div className="msg-stack">
+                      <div className="msg-box">
+                        <span className="label">⚡ 能量感應</span>
+                        <div className="content-text">{data.synchronicMessage}</div>
+                      </div>
+                      <div className="msg-box">
+                        <span className="label">🌱 調頻建議</span>
+                        <div className="content-text">{data.alignment}</div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    window.onload = () => {
+      const rootElement = document.getElementById("root");
+      if (rootElement) {
+        ReactDOM.createRoot(rootElement).render(<RedRoom />);
+      }
+    };
+  </script>
+</body>
+</html>

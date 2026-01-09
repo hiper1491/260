@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>黃色房間：收割 Harvest</title>
+    <script src="../kin-calculator.js"></script>
+    <style>
+        body {
+            margin: 0; height: 100vh;
+            background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%); /* 暖金黃 */
+            color: #444; font-family: 'Optima', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .harvest-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 60px;
+            border-radius: 50% 50% 0 0; /* 拱門造型 */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="harvest-container">
+        <div id="content"></div>
+    </div>
+    <script>
+        const now = new Date();
+        const k = calculateKin(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        document.getElementById('content').innerHTML = `
+            <h2 style="letter-spacing:8px">YELLOW HARVEST</h2>
+            <h1>KIN ${k.kin}</h1>
+            <p>收割「${k.seal}」帶來的豐盛果實</p>
+        `;
+    </script>
+</body>
+</html>
