@@ -1,108 +1,1919 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <title>白色房間：精煉 Refinement</title>
-    <script src="../kin-calculator.js"></script>
-    <style>
-        :root {
-            --pure-white: #ffffff;
-            --refine-silver: #e0e0e0;
-            --text-gray: #666;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>13月亮曆・白色過渡殿｜共時儀式</title>
 
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #ffffff 0%, #f7f7f7 100%);
-            color: var(--text-gray); font-family: 'Optima', 'Noto Sans TC', sans-serif;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-        }
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 
-        /* 精煉之框：極簡磨砂 */
-        .refine-card {
-            text-align: center;
-            padding: 60px 40px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
-            width: 80%;
-            max-width: 400px;
-        }
+  <style>
+    :root{
+      --theme:#6A6A6A;
+      --bg:#F2F4F6;
+      --ink:#111;
 
-        .label {
-            font-size: 0.8rem;
-            letter-spacing: 6px;
-            color: #ccc;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
+      --stoneA:#F5F2EC;
+      --stoneB:#E6E1DA;
 
-        .kin-number {
-            font-size: 2.5rem;
-            font-weight: 300;
-            color: #333;
-            margin: 10px 0;
-            letter-spacing: 2px;
-        }
+      --shadowA: rgba(0,0,0,.24);
+      --shadowB: rgba(0,0,0,.14);
+      --shadowC: rgba(0,0,0,.08);
 
-        .seal-text {
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            margin-bottom: 30px;
-        }
+      --line: rgba(0,0,0,.10);
 
-        .divider {
-            width: 30px;
-            height: 1px;
-            background: #ddd;
-            margin: 0 auto 30px;
-        }
+      --red:#A5413F;
+      --white:#6A6A6A;
+      --blue:#3D5A73;
+      --yellow:#B39B59;
+    }
 
-        .action-text {
-            font-size: 0.9rem;
-            font-style: italic;
-            color: #999;
-            line-height: 1.8;
-        }
-    </style>
+    html,body{
+      width:100%;
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      font-family:'Noto Serif TC', serif;
+      overflow:hidden;
+      transition: background-color 1.1s ease;
+      color:var(--ink);
+    }
+
+    #app{
+      width:100%;
+      height:100%;
+      position:relative;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 650px at 50% 32%, rgba(255,255,255,.42), transparent 60%),
+        radial-gradient(1200px 900px at 50% 92%, rgba(0,0,0,.14), transparent 66%);
+      mix-blend-mode:multiply;
+      opacity:.92;
+    }
+
+    /* 返回按鈕（沿用紅屋語彙） */
+    .home-button{
+      position:fixed;
+      top:32px;
+      left:42px;
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      background:linear-gradient(180deg,var(--stoneA),var(--stoneB));
+      box-shadow:
+        0 8px 16px rgba(0,0,0,.18),
+        inset 0 1px 3px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      z-index:140;
+      transition:.2s;
+      text-decoration:none;
+      font-size:1.7rem;
+      user-select:none;
+    }
+    .home-button:hover{ transform:translateY(-2px) scale(1.05); }
+
+    /* 歷史側邊石（沿用紅屋語彙） */
+    .history-sidebar{
+      position:fixed;
+      left:42px;
+      top:50%;
+      transform:translateY(-50%);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      z-index:120;
+    }
+    .history-stone{
+      width:76px;
+      height:70px;
+      border-radius:40% 60% 70% 30% / 50% 40% 60% 50%;
+      background:linear-gradient(180deg,var(--stoneA),var(--stoneB));
+      box-shadow:
+        0 18px 34px rgba(0,0,0,.22),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      color:#222;
+      font-family:'Cinzel', serif;
+      font-weight:900;
+      font-size:1.06rem;
+      cursor:pointer;
+      user-select:none;
+      transition:.18s;
+      line-height:1.05;
+      gap:4px;
+    }
+    .history-stone:hover{ transform:translateY(-2px) scale(1.03); }
+    .history-stone small{
+      font-family:'Noto Serif TC', serif;
+      font-size:.72rem;
+      opacity:.72;
+      letter-spacing:1px;
+      font-weight:900;
+    }
+
+    /* 石碑本體（沿用紅屋語彙） */
+    .tablet{
+      width:min(860px,92vw);
+      height:min(920px,90vh);
+      margin:0 auto;
+      position:relative;
+      border-radius:56px;
+      background:linear-gradient(180deg,#F1EFE8,#E6E0D6);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 60px 110px rgba(0,0,0,.32), 0 14px 22px rgba(0,0,0,.18);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .tablet::after{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(0,0,0,.10), transparent 55%),
+        radial-gradient(circle at 70% 60%, rgba(0,0,0,.08), transparent 60%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+      opacity:.14;
+      mix-blend-mode:multiply;
+    }
+
+    .content{
+      position:relative;
+      z-index:5;
+      width:100%;
+      height:100%;
+      padding:clamp(28px, 4vh, 52px) clamp(24px, 3.4vw, 52px) clamp(24px, 3vh, 42px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:clamp(10px, 1.4vh, 16px);
+      min-height:0;
+    }
+
+    /* 過渡殿：退火（讓整體更白、更靜、更少） */
+    .fade-white{
+      animation: fadeWhite 1.2s ease forwards;
+      opacity:0;
+      transform: translateY(18px);
+    }
+    @keyframes fadeWhite{
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .title{
+      font-family:'Cinzel', serif;
+      font-weight:900;
+      letter-spacing:12px;
+      font-size:clamp(1.6rem, 3.2vh, 2.1rem);
+      margin:0;
+      text-align:center;
+      color:#1A1A1A;
+      text-shadow: 0 2px 8px rgba(0,0,0,.10);
+      user-select:none;
+    }
+    .sub{
+      opacity:.62;
+      font-weight:900;
+      letter-spacing:5px;
+      font-size:clamp(.95rem, 1.9vh, 1.1rem);
+      margin-top:-2px;
+      text-align:center;
+    }
+
+    .ritual-etch{
+      width:min(280px, 62%);
+      height:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      background: radial-gradient(120px 22px at 50% 60%, rgba(255,255,255,.16), transparent 65%);
+      border-radius:999px;
+      filter: drop-shadow(0 11px 19px rgba(0,0,0,.20));
+      margin-top:6px;
+      margin-bottom:8px;
+    }
+    .ritual-etch::before{
+      content:"";
+      width:13px;height:13px;border-radius:50%;
+      background:var(--theme);
+      box-shadow: inset 0 -3px 5px rgba(0,0,0,.38), 0 9px 15px rgba(0,0,0,.18);
+    }
+    .ritual-etch::after{
+      content:"";
+      width:min(190px, 48vw);
+      height:13px;
+      border-radius:13px;
+      background:var(--theme);
+      box-shadow: inset 0 -4px 6px rgba(0,0,0,.42), 0 11px 19px rgba(0,0,0,.18);
+    }
+
+    /* 祭壇器物：不要像設定頁，要像器物存在 */
+    .altar{
+      width:min(720px,92%);
+      border-radius:44px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: inset 0 3px 20px rgba(0,0,0,.18), inset 0 -1px 0 rgba(255,255,255,.38);
+      padding:clamp(18px, 2.8vh, 26px) clamp(16px, 2.4vw, 28px);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      overflow:hidden;
+    }
+
+    .altar-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .altar-label{
+      font-weight:900;
+      letter-spacing:3px;
+      opacity:.70;
+      font-size:0.95rem;
+      margin:0;
+      flex: 1 1 auto;
+      min-width: 160px;
+    }
+    .altar-note{
+      font-weight:900;
+      opacity:.55;
+      letter-spacing:2px;
+      font-size:0.86rem;
+      margin:0;
+      flex: 1 1 100%;
+    }
+
+    select{
+      appearance:none;
+      border-radius:999px;
+      padding:10px 14px;
+      border:1px solid rgba(0,0,0,.10);
+      background:linear-gradient(180deg,#F5F2EC,#E6E1DA);
+      box-shadow:
+        0 10px 18px rgba(0,0,0,.14),
+        inset 0 1px 3px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      font-family:'Noto Serif TC', serif;
+      font-weight:900;
+      letter-spacing:1px;
+      cursor:pointer;
+      min-width: 240px;
+    }
+
+    .chips{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+      flex: 1 1 auto;
+    }
+
+    .chip{
+      padding:10px 14px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#F5F2EC,#E6E1DA);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow:
+        0 10px 18px rgba(0,0,0,.14),
+        inset 0 1px 3px rgba(0,0,0,.12),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      font-weight:900;
+      letter-spacing:2px;
+      font-size:0.92rem;
+      cursor:pointer;
+      user-select:none;
+      transition:.18s;
+      opacity:.86;
+    }
+    .chip:hover{ transform: translateY(-2px) scale(1.02); }
+    .chip[aria-selected="true"]{
+      opacity:1;
+      border-color: rgba(0,0,0,.18);
+      box-shadow:
+        0 14px 24px rgba(0,0,0,.18),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+    }
+
+    /* 行動鈕：仍用石頭語彙 */
+    .btn-row{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+
+    .stone-btn{
+      border-radius:999px;
+      padding:14px 18px;
+      background:linear-gradient(180deg,#F5F2EC,#E6E1DA);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow:
+        0 18px 30px rgba(0,0,0,.18),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      font-weight:900;
+      letter-spacing:3px;
+      cursor:pointer;
+      user-select:none;
+      transition:.18s;
+      font-family:'Noto Serif TC', serif;
+      color:#111;
+      min-width: 240px;
+      text-align:center;
+    }
+    .stone-btn:hover{ transform: translateY(-2px) scale(1.02); }
+    .stone-btn.small{ min-width: 220px; opacity:.88; }
+    .stone-btn.ghost{
+      background:rgba(255,255,255,.06);
+      box-shadow: inset 0 2px 10px rgba(0,0,0,.16);
+      border:1px solid rgba(0,0,0,.12);
+      opacity:.86;
+    }
+    .stone-btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    /* 生命之花 overlay */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(242,244,246,.86);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:300;
+      backdrop-filter: blur(6px);
+    }
+    .overlay.hidden{ display:none; }
+
+    .breath-card{
+      width:min(760px,92vw);
+      border-radius:56px;
+      background:linear-gradient(180deg,#F1EFE8,#E6E0D6);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 60px 110px rgba(0,0,0,.32), 0 14px 22px rgba(0,0,0,.18);
+      overflow:hidden;
+      position:relative;
+    }
+    .breath-card::after{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(0,0,0,.10), transparent 55%),
+        radial-gradient(circle at 70% 60%, rgba(0,0,0,.08), transparent 60%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+      opacity:.12;
+      mix-blend-mode:multiply;
+    }
+
+    .breath-inner{
+      position:relative;
+      z-index:2;
+      padding:28px 22px 26px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+    .breath-phase{
+      font-family:'Cinzel', serif;
+      font-weight:900;
+      letter-spacing:10px;
+      font-size:1.3rem;
+      opacity:.78;
+      margin:0;
+    }
+    .breath-count{
+      font-weight:900;
+      letter-spacing:3px;
+      opacity:.62;
+      margin:0;
+    }
+    .flower-wrap{
+      width:min(360px, 74vw);
+      aspect-ratio: 1/1;
+      position:relative;
+      margin:10px 0 6px;
+    }
+    .pulse{
+      transform-origin:50% 50%;
+      animation: breathePulse 10s linear infinite; /* inhale 4s / exhale 6s */
+    }
+    @keyframes breathePulse{
+      0%   {transform:scale(0.92); opacity:.30;}
+      40%  {transform:scale(1.03); opacity:.86;}
+      100% {transform:scale(0.92); opacity:.30;}
+    }
+    svg{ width:100%; height:100%; }
+    .flowerStroke{
+      fill:none;
+      stroke:rgba(0,0,0,.58);
+      stroke-width:1.15;
+      opacity:.60;
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,.45));
+    }
+
+    .skip{
+      position:absolute;
+      right:16px;
+      bottom:16px;
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:900;
+      letter-spacing:3px;
+      font-size:.85rem;
+      background:linear-gradient(180deg,#F5F2EC,#E6E1DA);
+      border:1px solid rgba(0,0,0,.12);
+      box-shadow:
+        0 14px 24px rgba(0,0,0,.18),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      cursor:pointer;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .35s ease;
+      user-select:none;
+    }
+    .skip.show{ opacity:.68; pointer-events:auto; }
+
+    /* 卓爾金 260 */
+    .tzolkin-wrap{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+      min-height:0;
+    }
+
+    .tzolkin-top{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .kin-mini{
+      font-family:'Cinzel', serif;
+      font-weight:900;
+      letter-spacing:2px;
+      font-size:1.2rem;
+      opacity:.86;
+      user-select:none;
+    }
+
+    .tzolkin-grid{
+      width:100%;
+      max-width:720px;
+      border-radius:44px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: inset 0 3px 20px rgba(0,0,0,.18), inset 0 -1px 0 rgba(255,255,255,.38);
+      padding:18px 14px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(20, 1fr);
+      gap:6px;
+    }
+
+    .cell{
+      aspect-ratio: 1/1;
+      border-radius:12px;
+      background:rgba(255,255,255,.22);
+      border:1px solid rgba(0,0,0,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:'Cinzel', serif;
+      font-weight:900;
+      font-size:0.78rem;
+      color:rgba(0,0,0,.72);
+      user-select:none;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .cell::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(120px 90px at 50% 30%, rgba(255,255,255,.28), transparent 65%);
+      opacity:.8;
+      pointer-events:none;
+    }
+
+    .cell[data-color="red"]{ box-shadow: inset 0 -6px 12px rgba(165,65,63,.18); }
+    .cell[data-color="white"]{ box-shadow: inset 0 -6px 12px rgba(106,106,106,.16); }
+    .cell[data-color="blue"]{ box-shadow: inset 0 -6px 12px rgba(61,90,115,.18); }
+    .cell[data-color="yellow"]{ box-shadow: inset 0 -6px 12px rgba(179,155,89,.18); }
+
+    .cell.active{
+      border-color: rgba(0,0,0,.22);
+      box-shadow:
+        0 16px 26px rgba(0,0,0,.18),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      transform: translateY(-2px);
+    }
+
+    .dot{
+      position:absolute;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      background:var(--theme);
+      box-shadow:
+        0 10px 18px rgba(0,0,0,.18),
+        inset 0 -3px 6px rgba(0,0,0,.34);
+      pointer-events:none;
+      opacity:.95;
+    }
+
+    .lockBar{
+      margin-top:4px;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+
+    .ringWrap{
+      position:relative;
+      width:92px;
+      height:92px;
+    }
+    .ringBtn{
+      position:absolute;
+      inset:12px;
+      border-radius:50%;
+      background:linear-gradient(180deg,#F5F2EC,#E6E1DA);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow:
+        0 18px 30px rgba(0,0,0,.18),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      letter-spacing:3px;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .skip30{
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:900;
+      letter-spacing:3px;
+      font-size:.85rem;
+      background:linear-gradient(180deg,#F5F2EC,#E6E1DA);
+      border:1px solid rgba(0,0,0,.12);
+      box-shadow:
+        0 14px 24px rgba(0,0,0,.18),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      cursor:pointer;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .35s ease;
+      user-select:none;
+    }
+    .skip30.show{ opacity:.68; pointer-events:auto; }
+
+    /* 顯化門：放大轉場 */
+    .reveal{
+      width:min(780px,92%);
+      border-radius:56px;
+      background:rgba(255,255,255,.09);
+      border:1px solid rgba(0,0,0,.09);
+      box-shadow:
+        0 52px 98px rgba(0,0,0,.22),
+        inset 0 3px 20px rgba(0,0,0,.18),
+        inset 0 -1px 0 rgba(255,255,255,.38);
+      padding:22px 18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+      overflow:hidden;
+      transform:scale(.98);
+      opacity:0;
+      animation: revealIn .7s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes revealIn{
+      to{ opacity:1; transform:scale(1); }
+    }
+
+    /* 調性點槓（沿用紅屋） */
+    .tone-area{
+      height:72px;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      flex:0 0 72px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tone-dots{
+      height:28px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+    }
+    .tone-bars{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .tone-dot{
+      width:22px;
+      height:22px;
+      background:#000;
+      border-radius:50%;
+    }
+    .tone-bar{
+      width:190px;
+      height:16px;
+      background:#000;
+      border-radius:8px;
+    }
+
+    .glyph-area{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      margin-top:8px;
+      margin-bottom:6px;
+      flex:0 0 200px;
+      align-items:center;
+    }
+    .glyph-frame{
+      display:inline-flex;
+      padding:10px;
+      border-radius:24px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(0,0,0,.14);
+      box-shadow:
+        inset 0 4px 20px rgba(0,0,0,.30),
+        inset 0 -6px 16px rgba(255,255,255,.24),
+        0 14px 28px rgba(0,0,0,.18);
+      user-select:none;
+      transition:.18s;
+    }
+    .glyph-img{
+      height:180px;
+      border-radius:16px;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.24));
+      background:rgba(255,255,255,.14);
+    }
+
+    .kin-id{
+      font-family:'Cinzel', serif;
+      font-size:clamp(2.4rem, 4.2vh, 3.3rem);
+      font-weight:900;
+      line-height:1;
+      margin-top:2px;
+      min-width:9ch;
+      text-align:center;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings:"tnum" 1;
+      user-select:none;
+      color:#0E0E0E;
+    }
+    .kin-name{
+      font-size:clamp(1.6rem, 3.1vh, 2.2rem);
+      font-weight:900;
+      letter-spacing:clamp(3px, .9vw, 7px);
+      margin-top:4px;
+      text-align:center;
+      color:#111;
+    }
+
+    .wavespell-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 18px;
+      background:rgba(0,0,0,.06);
+      border-radius:999px;
+      font-size:0.95rem;
+      font-weight:900;
+      color:#333;
+      letter-spacing:1px;
+      margin-top:4px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,.08);
+    }
+    .wavespell-icon{
+      width:18px;
+      height:18px;
+      border-radius:4px;
+      opacity:0.9;
+    }
+
+    .name-etch{
+      width:64%;
+      height:12px;
+      border-radius:999px;
+      background:linear-gradient(90deg, transparent 0%, var(--theme) 50%, transparent 100%);
+      opacity:.52;
+      margin:10px auto 12px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.14));
+    }
+
+    /* U 型波符地圖（簡化但真的是 U 型） */
+    .uMapWrap{
+      width:min(780px,92%);
+      border-radius:40px;
+      background:rgba(245,242,236,.50);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: inset 0 3px 16px rgba(0,0,0,.18), 0 12px 20px rgba(0,0,0,.10);
+      padding:16px 14px 14px;
+      margin-top:8px;
+    }
+    .uTitle{
+      font-weight:900;
+      letter-spacing:3px;
+      opacity:.68;
+      text-align:center;
+      margin:0 0 12px;
+    }
+
+    .uGrid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:8px;
+      justify-items:stretch;
+      align-items:stretch;
+    }
+
+    .uCell{
+      border-radius:14px;
+      padding:10px 8px;
+      background:rgba(255,255,255,.22);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: inset 0 2px 10px rgba(0,0,0,.10);
+      text-align:center;
+      font-weight:900;
+      letter-spacing:1px;
+      font-size:.86rem;
+      color:rgba(0,0,0,.72);
+      user-select:none;
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .uCell.empty{
+      background:transparent;
+      border:1px solid transparent;
+      box-shadow:none;
+    }
+    .uCell.active{
+      color:#111;
+      border-color: rgba(0,0,0,.18);
+      box-shadow:
+        0 14px 24px rgba(0,0,0,.16),
+        inset 0 2px 10px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.55);
+      transform: translateY(-1px);
+    }
+
+    /* 沉默訊息區：留白大、字大 */
+    .msg-stack{
+      width:92%;
+      display:flex;
+      flex-direction:column;
+      gap:clamp(16px, 2vh, 22px);
+      margin-top:0;
+      flex:1 1 auto;
+      min-height:0;
+      animation: slideInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      opacity:0;
+    }
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-box{
+      background:rgba(245,242,236,.66);
+      border-radius:32px;
+      padding:clamp(20px, 2.4vh, 30px) clamp(22px, 2.6vw, 34px);
+      border:1px solid rgba(0,0,0,.12);
+      box-shadow:
+        inset 0 3px 16px rgba(0,0,0,.24),
+        0 12px 20px rgba(0,0,0,.14);
+      backdrop-filter: blur(3px);
+      flex-shrink:0;
+    }
+    .label{
+      font-weight:900;
+      opacity:.64;
+      margin-bottom:12px;
+      display:block;
+      letter-spacing:2px;
+      text-align:center;
+      color:#111;
+      font-size:1rem;
+    }
+    .content-text{
+      font-size:clamp(1.15rem, 2.15vh, 1.48rem);
+      line-height:1.9;
+      font-weight:900;
+      text-align:left;
+      color:#0B0B0B;
+      word-break:break-word;
+    }
+
+    /* 手機調整 */
+    @media (max-width: 520px){
+      .content{
+        overflow-y:auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom:56px;
+      }
+
+      .history-sidebar{
+        left:14px;
+        top:110px;
+        transform:none;
+        gap:12px;
+        z-index:180;
+      }
+      .history-sidebar:not(.open) .history-stone:not(:first-child){
+        display:none;
+      }
+      .history-stone{
+        width:62px;
+        height:58px;
+        font-size:1.0rem;
+      }
+      .home-button{
+        top:22px;
+        left:16px;
+        width:58px;
+        height:58px;
+        font-size:1.55rem;
+      }
+      .grid{ grid-template-columns: repeat(10, 1fr); }
+      .cell{ border-radius:10px; font-size:.75rem; }
+    }
+  </style>
 </head>
+
 <body>
+  <a href="../index.html" class="home-button" title="返回主頁">🏠</a>
 
-    <div class="refine-card">
-        <div id="content">
-            <div class="label">Refining...</div>
+  <div id="app"></div>
+
+  <!-- Breath Overlay -->
+  <div id="breathOverlay" class="overlay hidden" aria-modal="true" role="dialog">
+    <div class="breath-card">
+      <div class="breath-inner">
+        <h2 class="title" style="letter-spacing:10px; font-size:1.6rem; margin:0;">生命之花</h2>
+        <div class="sub">吸 4 秒 · 吐 6 秒</div>
+        <div class="ritual-etch" style="margin-top:8px;"></div>
+
+        <p class="breath-phase" id="breathPhase">吸氣</p>
+        <p class="breath-count" id="breathCount">第 1 / 3 輪</p>
+
+        <div class="flower-wrap">
+          <svg viewBox="0 0 200 200" aria-label="生命之花">
+            <g class="pulse">
+              <circle class="flowerStroke" cx="100" cy="100" r="36"></circle>
+              <circle class="flowerStroke" cx="100" cy="64"  r="36"></circle>
+              <circle class="flowerStroke" cx="131.2" cy="82" r="36"></circle>
+              <circle class="flowerStroke" cx="131.2" cy="118" r="36"></circle>
+              <circle class="flowerStroke" cx="100" cy="136" r="36"></circle>
+              <circle class="flowerStroke" cx="68.8" cy="118" r="36"></circle>
+              <circle class="flowerStroke" cx="68.8" cy="82"  r="36"></circle>
+              <circle class="flowerStroke" cx="100" cy="100" r="72" style="opacity:.42"></circle>
+            </g>
+          </svg>
+          <div id="breathSkip" class="skip">SKIP</div>
         </div>
-    </div>
 
-    <script>
-        // 取得今日日期與大腦計算結果
-        const now = new Date();
-        const k = calculateKin(now.getFullYear(), now.getMonth() + 1, now.getDate());
-        
-        const content = document.getElementById('content');
-        
-        if (k.isHunabKu) {
-            content.innerHTML = `
-                <div class="label">Void</div>
-                <div class="kin-number">Hunab Ku</div>
-                <div class="divider"></div>
-                <div class="action-text">回歸宇宙中心點<br>在空性中精煉本質</div>
-            `;
-        } else {
-            content.innerHTML = `
-                <div class="label">White House</div>
-                <div class="kin-number">KIN ${k.kin}</div>
-                <div class="seal-text">${k.displayText}</div>
-                <div class="divider"></div>
-                <div class="action-text">
-                    今日任務：精煉「${k.seal}」的能量<br>
-                    謙遜地過濾，留下純粹的共時。
+        <div class="sub" style="opacity:.62; letter-spacing:2px;">
+          覺察頸部／脊柱（7 共鳴）垂直中軸
+        </div>
+
+        <div class="btn-row" style="margin-top:10px;">
+          <div class="stone-btn ghost small" id="stopSoundBtn">停止聲音</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ======================
+   Data: Tone/Glyph/Waves
+   ====================== */
+const TONE_NAMES=["磁性的","月亮的","電力的","自我存在的","超頻的","韻律的","共鳴的","銀河的","太陽的","行星的","光譜的","水晶的","宇宙的"];
+const GLYPH_NAMES=["紅龍","白風","藍夜","黃種子","紅蛇","白世界橋","藍手","黃星星","紅月","白狗","藍猴","黃人","紅天行者","白巫師","藍鷹","黃戰士","紅地球","白鏡","藍風暴","黃太陽"];
+
+const WAVESPELL_DATA = [
+  { name: "紅龍波", startKin: 1, glyphId: 0 },
+  { name: "白巫師波", startKin: 14, glyphId: 13 },
+  { name: "藍手波", startKin: 27, glyphId: 6 },
+  { name: "黃太陽波", startKin: 40, glyphId: 19 },
+  { name: "紅天行者波", startKin: 53, glyphId: 12 },
+  { name: "白世界橋波", startKin: 66, glyphId: 5 },
+  { name: "藍風暴波", startKin: 79, glyphId: 18 },
+  { name: "黃人波", startKin: 92, glyphId: 11 },
+  { name: "紅蛇波", startKin: 105, glyphId: 4 },
+  { name: "白鏡波", startKin: 118, glyphId: 17 },
+  { name: "藍猴波", startKin: 131, glyphId: 10 },
+  { name: "黃種子波", startKin: 144, glyphId: 3 },
+  { name: "紅地球波", startKin: 157, glyphId: 16 },
+  { name: "白狗波", startKin: 170, glyphId: 9 },
+  { name: "藍夜波", startKin: 183, glyphId: 2 },
+  { name: "黃戰士波", startKin: 196, glyphId: 15 },
+  { name: "紅月波", startKin: 209, glyphId: 8 },
+  { name: "白風波", startKin: 222, glyphId: 1 },
+  { name: "藍鷹波", startKin: 235, glyphId: 14 },
+  { name: "黃星星波", startKin: 248, glyphId: 7 }
+];
+
+const COLORS=["red","white","blue","yellow"];
+const THEME={
+  red:{main:"#A5413F",bg:"#F8E8E8"},
+  white:{main:"#6A6A6A",bg:"#F2F4F6"},
+  blue:{main:"#3D5A73",bg:"#E8F0F8"},
+  yellow:{main:"#B39B59",bg:"#F9F8E8"}
+};
+
+function getWavespell(kin){
+  const idx = Math.floor((kin - 1) / 13);
+  return WAVESPELL_DATA[idx];
+}
+function getKinColor(kin){
+  return COLORS[(kin - 1) % 4];
+}
+function setThemeForKin(kin){
+  const t = THEME[getKinColor(kin)];
+  document.documentElement.style.setProperty("--bg", t.bg);
+  document.documentElement.style.setProperty("--theme", t.main);
+}
+
+/* ======================
+   Storage
+   ====================== */
+const KEY_FIRST = "WHITE_RITUAL_FIRST_DONE_V3";
+const KEY_PREFS = "WHITE_RITUAL_PREFS_V3";
+const KEY_HISTORY = "WHITE_RITUAL_HISTORY_V3";
+const MAX_HISTORY = 5;
+
+function loadJSON(key, fallback){
+  try{
+    const raw = localStorage.getItem(key);
+    if(!raw) return fallback;
+    return JSON.parse(raw);
+  }catch(e){ return fallback; }
+}
+function saveJSON(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+function isFirstDone(){ return localStorage.getItem(KEY_FIRST) === "1"; }
+function markFirstDone(){ localStorage.setItem(KEY_FIRST, "1"); }
+
+function getPrefs(){
+  return loadJSON(KEY_PREFS, { sound:"mute", breathGuided:true });
+}
+function setPrefs(p){ saveJSON(KEY_PREFS, p); }
+
+function getHistory(){ return loadJSON(KEY_HISTORY, []); }
+function pushHistory(item){
+  const h = getHistory();
+  h.unshift(item);
+  saveJSON(KEY_HISTORY, h.slice(0, MAX_HISTORY));
+}
+
+/* ======================
+   Audio (WebAudio)
+   ====================== */
+let audioCtx = null;
+let audioNodes = [];
+function ensureAudio(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === "suspended") audioCtx.resume();
+}
+function stopAudio(){
+  try{
+    audioNodes.forEach(n=>{
+      try{ n.stop && n.stop(); }catch(e){}
+      try{ n.disconnect && n.disconnect(); }catch(e){}
+    });
+  }catch(e){}
+  audioNodes = [];
+}
+function playSound(mode){
+  stopAudio();
+  if(mode === "mute") return;
+  ensureAudio();
+
+  if(mode === "earth432"){
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = 432;
+    gain.gain.value = 0.03;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    audioNodes.push(osc, gain);
+    return;
+  }
+
+  if(mode === "bowlDeep"){
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc1.type = "sine"; osc2.type = "sine";
+    osc1.frequency.value = 110;
+    osc2.frequency.value = 111.2;
+    g.gain.value = 0.024;
+    osc1.connect(g); osc2.connect(g);
+    g.connect(audioCtx.destination);
+    osc1.start(); osc2.start();
+    audioNodes.push(osc1, osc2, g);
+    return;
+  }
+
+  if(mode === "bowlCrystal"){
+    const osc = audioCtx.createOscillator();
+    const trem = audioCtx.createOscillator();
+    const tremGain = audioCtx.createGain();
+    const out = audioCtx.createGain();
+    osc.type = "triangle";
+    osc.frequency.value = 528;
+    trem.type = "sine";
+    trem.frequency.value = 6.2;
+    tremGain.gain.value = 0.018;
+    out.gain.value = 0.018;
+
+    trem.connect(tremGain);
+    tremGain.connect(out.gain);
+    osc.connect(out);
+    out.connect(audioCtx.destination);
+
+    osc.start(); trem.start();
+    audioNodes.push(osc, trem, tremGain, out);
+    return;
+  }
+
+  if(mode === "forest"){
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const out = noiseBuffer.getChannelData(0);
+    for (let i=0;i<bufferSize;i++) out[i] = (Math.random()*2-1) * 0.55;
+
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+
+    const biquad = audioCtx.createBiquadFilter();
+    biquad.type = "lowpass";
+    biquad.frequency.value = 650;
+
+    const g = audioCtx.createGain();
+    g.gain.value = 0.016;
+
+    noise.connect(biquad);
+    biquad.connect(g);
+    g.connect(audioCtx.destination);
+
+    noise.start();
+    audioNodes.push(noise, biquad, g);
+    return;
+  }
+}
+
+/* ======================
+   Breath (Flower of Life)
+   ====================== */
+const overlay = document.getElementById("breathOverlay");
+const breathPhaseEl = document.getElementById("breathPhase");
+const breathCountEl = document.getElementById("breathCount");
+const breathSkipEl = document.getElementById("breathSkip");
+const stopSoundBtn = document.getElementById("stopSoundBtn");
+
+stopSoundBtn.addEventListener("click", ()=> stopAudio());
+
+let breathPhaseTimer = null;
+let breathCycleTimer = null;
+let breathAfter = null;
+let breathSkipUnlocked = false;
+
+breathSkipEl.addEventListener("click", ()=>{
+  if(!breathSkipUnlocked) return;
+  endBreath(true);
+});
+
+function openBreath(onComplete){
+  breathAfter = onComplete;
+  overlay.classList.remove("hidden");
+  breathSkipUnlocked = false;
+  breathSkipEl.classList.remove("show");
+
+  // unlock skip after first full cycle (10s)
+  setTimeout(()=>{
+    breathSkipUnlocked = true;
+    breathSkipEl.classList.add("show");
+  }, 10000);
+
+  runBreathCycle(1);
+}
+
+function closeBreath(){
+  overlay.classList.add("hidden");
+  clearTimeout(breathPhaseTimer);
+  clearTimeout(breathCycleTimer);
+}
+
+function runBreathCycle(c){
+  breathPhaseEl.textContent = "吸氣";
+  breathCountEl.textContent = `第 ${c} / 3 輪`;
+
+  // inhale 4s
+  breathPhaseTimer = setTimeout(()=>{
+    breathPhaseEl.textContent = "吐氣";
+    // exhale 6s
+    breathCycleTimer = setTimeout(()=>{
+      if(c < 3){
+        runBreathCycle(c + 1);
+      }else{
+        endBreath(false);
+      }
+    }, 6000);
+  }, 4000);
+}
+
+function endBreath(skipped){
+  closeBreath();
+  if(typeof breathAfter === "function") breathAfter(!skipped);
+}
+
+/* ======================
+   Light hint (silent)
+   ====================== */
+const LIGHT_HINTS = [
+  "先讓視線停在象徵上，不急著命名。",
+  "看看你的呼吸，是否願意慢一點。",
+  "也許此刻，不需要理解。",
+  "留意身體哪裡有重量。",
+  "感覺一下：此刻的心是開的還是收的。",
+  "你可以同時看象徵，也看你自己。",
+  "先承認此刻的狀態，再看象徵。"
+];
+
+/* ======================
+   Build UI (single page states)
+   ====================== */
+const app = document.getElementById("app");
+
+let state = "altar"; // altar | tzolkin | reveal | silence | interpret
+let currentKin = 1;
+let currentBreathDone = false;
+
+// tzolkin animation
+let spinTimer = null;
+let activeIndex = 0;
+let locked = false;
+let lockTimer = null;
+let lockStart = 0;
+
+// silence timers
+let hintTimer = null;
+let doorTimer = null;
+
+function nowStamp(){
+  const d = new Date();
+  const pad = (x)=>String(x).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function newRitualId(){
+  return Math.floor(Date.now()/1000);
+}
+
+function resetAllTimers(){
+  if(spinTimer) clearInterval(spinTimer);
+  if(lockTimer) clearInterval(lockTimer);
+  if(hintTimer) clearTimeout(hintTimer);
+  if(doorTimer) clearTimeout(doorTimer);
+  spinTimer = null; lockTimer=null; hintTimer=null; doorTimer=null;
+}
+
+function render(){
+  resetAllTimers();
+  const prefs = getPrefs();
+  setThemeForKin(currentKin);
+
+  const history = getHistory();
+
+  // History sidebar
+  const historySidebar = `
+    <div class="history-sidebar">
+      ${history.map((h,i)=>`
+        <div class="history-stone" data-kin="${h.kin}" title="點擊回看">
+          ${h.kin}
+          <small>${h.breathDone ? "呼吸✓" : "呼吸-"}</small>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  // Main tablet content based on state
+  let main = "";
+  if(state === "altar"){
+    const firstDone = isFirstDone();
+    const hasHistory = history.length > 0;
+
+    main = `
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div class="tablet">
+          <div class="content fade-white">
+
+            <h1 class="title">共時儀式</h1>
+            <div class="sub">白色過渡殿 · 退火入靜</div>
+            <div class="ritual-etch"></div>
+
+            <div class="altar">
+              <div class="altar-row">
+                <p class="altar-label">聲音（陪伴）</p>
+                <select id="soundSelect">
+                  <option value="mute">靜音</option>
+                  <option value="earth432">大地 432Hz</option>
+                  <option value="bowlDeep">深層頌缽</option>
+                  <option value="bowlCrystal">水晶缽</option>
+                  <option value="forest">森林流水</option>
+                </select>
+                <p class="altar-note">聲音只是陪伴，不改變儀式規矩。</p>
+              </div>
+
+              <div class="altar-row">
+                <p class="altar-label">呼吸引導</p>
+                <div class="chips">
+                  <div class="chip" id="chipOn" aria-selected="${prefs.breathGuided ? "true":"false"}">開啟引導（3 次呼吸）</div>
+                  <div class="chip" id="chipOff" aria-selected="${!prefs.breathGuided ? "true":"false"}">直接進入</div>
                 </div>
-            `;
+                <p class="altar-note">身體同步：覺察頸部／脊柱（7 共鳴）垂直中軸。</p>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              ${
+                !firstDone
+                ? `<div class="stone-btn" id="firstBreathBtn">第一次來到白色房間：先完成 3 次呼吸</div>`
+                : hasHistory
+                  ? `
+                    <div class="stone-btn" id="redrawBreathBtn">再次對頻（呼吸後抽）</div>
+                    <div class="stone-btn ghost" id="redrawDirectBtn">再次啟動（直接抽）</div>
+                  `
+                  : `
+                    <div class="stone-btn" id="enterBtn">${prefs.breathGuided ? "開始呼吸後抽象徵" : "進入卓爾金抽取"}</div>
+                    <div class="stone-btn ghost ${prefs.breathGuided ? "":"hidden"}" id="directBtn">直接進入</div>
+                  `
+              }
+            </div>
+
+            <div class="btn-row" style="margin-top:4px;">
+              <div class="stone-btn ghost small" id="resetBtn">重置本機記憶（測試用）</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(state === "tzolkin"){
+    main = `
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div class="tablet">
+          <div class="content fade-white">
+
+            <h1 class="title">卓爾金曆</h1>
+            <div class="sub">260 · 光點跳動</div>
+            <div class="ritual-etch"></div>
+
+            <div class="tzolkin-wrap">
+              <div class="tzolkin-top">
+                <div class="kin-mini">KIN <span id="kinNow">—</span></div>
+                <div class="kin-mini" style="opacity:.62;">停止後鎖定 30 秒沉澱</div>
+              </div>
+
+              <div class="tzolkin-grid">
+                <div class="grid" id="grid"></div>
+              </div>
+
+              <div class="lockBar" id="lockBar">
+                <div class="btn-row">
+                  <div class="stone-btn" id="stopBtn">停止光點</div>
+                  <div class="stone-btn ghost" id="backBtn">回靜室</div>
+                </div>
+
+                <div id="lockUI" class="hidden" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+                  <div class="ringWrap">
+                    <svg width="92" height="92" viewBox="0 0 92 92" style="position:absolute; inset:0;">
+                      <circle cx="46" cy="46" r="38" stroke="rgba(0,0,0,.10)" stroke-width="8" fill="none"></circle>
+                      <circle id="ring" cx="46" cy="46" r="38" stroke="var(--theme)" stroke-width="8" fill="none"
+                        stroke-linecap="round"
+                        stroke-dasharray="${2*Math.PI*38}"
+                        stroke-dashoffset="${2*Math.PI*38}"
+                        style="transition: stroke-dashoffset .18s linear;"></circle>
+                    </svg>
+                    <div class="ringBtn" id="doorBtn">門</div>
+                  </div>
+                  <div id="skip30" class="skip30">SKIP</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(state === "reveal"){
+    const toneId = (currentKin - 1) % 13 + 1;
+    const glyphId = (currentKin - 1) % 20; // 0-19
+    const wavespell = getWavespell(currentKin);
+
+    main = `
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div class="tablet">
+          <div class="content fade-white" style="gap:12px;">
+
+            <h1 class="title">門已開</h1>
+            <div class="sub">顯化 KIN 組合圖</div>
+            <div class="ritual-etch"></div>
+
+            <div class="reveal">
+              <div class="tone-area">${toneMarkup(toneId)}</div>
+
+              <div class="glyph-area">
+                <div class="glyph-frame">
+                  <img class="glyph-img" src="../images/${String(glyphId+1).padStart(2,'0')}.png"
+                    onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;height:180px;width:180px;display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-weight:900;letter-spacing:4px;opacity:.7;&quot;>GLYPH</div>';"
+                    alt="${GLYPH_NAMES[glyphId]}"/>
+                </div>
+              </div>
+
+              <div class="kin-id">KIN ${currentKin}</div>
+              <div class="kin-name">${TONE_NAMES[toneId-1]}${GLYPH_NAMES[glyphId]}</div>
+
+              <div class="wavespell-badge">
+                <img class="wavespell-icon"
+                  src="../images/${String(wavespell.glyphId + 1).padStart(2,'0')}.png"
+                  onerror="this.style.display='none';"
+                  alt="${wavespell.name}"/>
+                ${wavespell.name}
+              </div>
+
+              <div class="name-etch"></div>
+
+              ${uMapMarkup(wavespell.name)}
+
+              <div class="btn-row" style="margin-top:6px;">
+                <div class="stone-btn" id="toSilenceBtn">進入沉默</div>
+                <div class="stone-btn ghost" id="backToTzolkinBtn">回到卓爾金（重抽）</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(state === "silence"){
+    main = `
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div class="tablet">
+          <div class="content fade-white" style="gap:12px;">
+            <h1 class="title">沉默</h1>
+            <div class="sub">被邀請的內在觀看</div>
+            <div class="ritual-etch"></div>
+
+            <div class="msg-stack" style="opacity:1; animation:none;">
+              <div class="msg-box">
+                <span class="label">🜁 內在觀看</span>
+                <div class="content-text">
+                  請看著象徵，<br>
+                  也感覺此刻的自己。<br><br>
+                  你可以同時觀看：身體、情緒、象徵。
+                </div>
+              </div>
+
+              <div class="msg-box hidden" id="lightHintBox">
+                <span class="label">⋯ 輕提示</span>
+                <div class="content-text" id="lightHintText"></div>
+              </div>
+
+              <div class="msg-box hidden" id="doorBox">
+                <span class="label">門</span>
+                <div class="content-text">
+                  門在那裡。<br>
+                  你可以繼續，也可以再站一下。
+                </div>
+                <div class="btn-row" style="margin-top:14px;">
+                  <div class="stone-btn" id="toInterpretBtn">進入解讀</div>
+                  <div class="stone-btn ghost" id="backAltarBtn">回靜室（再抽一次）</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if(state === "interpret"){
+    const toneId = (currentKin - 1) % 13 + 1;
+    const glyphId = (currentKin - 1) % 20;
+    const wavespell = getWavespell(currentKin);
+
+    main = `
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div class="tablet">
+          <div class="content fade-white" style="gap:12px;">
+            <h1 class="title">解讀入口</h1>
+            <div class="sub">FULL INTERPRETATION</div>
+            <div class="ritual-etch"></div>
+
+            <div class="reveal">
+              <div class="kin-id">KIN ${currentKin}</div>
+              <div class="kin-name">${TONE_NAMES[toneId-1]}${GLYPH_NAMES[glyphId]}</div>
+              <div class="wavespell-badge">${wavespell.name}</div>
+
+              ${uMapMarkup(wavespell.name)}
+
+              <div class="msg-box" style="width:92%;">
+                <span class="label">（占位）</span>
+                <div class="content-text">
+                  這裡將接上大腦的深度解讀：<br>
+                  高頻／低頻／調頻建議、身體連結、波符標記。<br><br>
+                  目前先完成「生命之花＋卓爾金抽取＋沉默＋波符」主流程。
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <div class="stone-btn ghost" id="backAltarBtn2">回靜室（再抽一次）</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  app.innerHTML = historySidebar + main;
+  wireHistoryClicks();
+  wireStateHandlers();
+  wireAltarControls();
+
+  // sound apply each render
+  playSound(prefs.sound);
+
+  if(state === "tzolkin") initTzolkin();
+  if(state === "silence") initSilenceTimers();
+}
+
+function toneMarkup(toneId){
+  const dots = toneId % 5;
+  const bars = Math.floor(toneId / 5);
+  return `
+    <div class="tone-dots">
+      ${Array.from({length:dots}).map(()=>`<div class="tone-dot"></div>`).join("")}
+    </div>
+    <div class="tone-bars">
+      ${Array.from({length:bars}).map(()=>`<div class="tone-bar"></div>`).join("")}
+    </div>
+  `;
+}
+
+// U-map layout: 20 waves arranged into a U (7 cols x 5 rows with empties)
+function uMapMarkup(activeName){
+  // We map positions to form U shape (approx): top row 1-7, left column down, bottom row, right column up
+  // We'll place 20 items into these positions:
+  // row0: 0..6 (7)
+  // row1: col0 and col6 (2) -> waves 7,8
+  // row2: col0 and col6 (2) -> waves 9,10
+  // row3: col0 and col6 (2) -> waves 11,12
+  // row4: 13..19 (7) -> waves 13..19 (7)  => total 7+2+2+2+7 = 20
+  const cells = new Array(35).fill(null); // 5 rows x 7 cols
+  const names = WAVESPELL_DATA.map(w=>w.name);
+
+  // row0
+  for(let i=0;i<7;i++) cells[i] = names[i];
+  // row1-3 sides
+  cells[7 + 0] = names[7];  cells[7 + 6] = names[8];
+  cells[14 + 0] = names[9]; cells[14 + 6] = names[10];
+  cells[21 + 0] = names[11];cells[21 + 6] = names[12];
+  // row4 bottom
+  for(let i=0;i<7;i++) cells[28+i] = names[13+i];
+
+  return `
+    <div class="uMapWrap">
+      <div class="uTitle">U 型波符地圖（已標亮）</div>
+      <div class="uGrid">
+        ${cells.map((n)=>{
+          if(!n) return `<div class="uCell empty"></div>`;
+          const active = n === activeName ? "active" : "";
+          return `<div class="uCell ${active}">${n}</div>`;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
+
+/* ======================
+   History
+   ====================== */
+function wireHistoryClicks(){
+  document.querySelectorAll(".history-stone").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const kin = parseInt(el.getAttribute("data-kin"),10);
+      if(!Number.isNaN(kin)){
+        currentKin = kin;
+        state = "reveal";
+        render();
+      }
+    });
+  });
+}
+
+function wireAltarControls(){
+  if(state !== "altar") return;
+
+  const prefs = getPrefs();
+
+  const soundSelect = document.getElementById("soundSelect");
+  const chipOn = document.getElementById("chipOn");
+  const chipOff = document.getElementById("chipOff");
+
+  if(soundSelect){
+    soundSelect.value = prefs.sound;
+    soundSelect.addEventListener("change", ()=>{
+      const p = getPrefs();
+      p.sound = soundSelect.value;
+      setPrefs(p);
+      playSound(p.sound);
+    });
+  }
+
+  function setChip(b){
+    chipOn.setAttribute("aria-selected", b ? "true" : "false");
+    chipOff.setAttribute("aria-selected", b ? "false" : "true");
+  }
+
+  if(chipOn && chipOff){
+    chipOn.addEventListener("click", ()=>{
+      const p = getPrefs();
+      p.breathGuided = true;
+      setPrefs(p);
+      setChip(true);
+    });
+    chipOff.addEventListener("click", ()=>{
+      const p = getPrefs();
+      p.breathGuided = false;
+      setPrefs(p);
+      setChip(false);
+    });
+  }
+}
+
+function wireStateHandlers(){
+  if(state === "altar"){
+    const prefs = getPrefs();
+    const firstDone = isFirstDone();
+    const history = getHistory();
+    const hasHistory = history.length > 0;
+
+    const resetBtn = document.getElementById("resetBtn");
+    if(resetBtn){
+      resetBtn.addEventListener("click", ()=>{
+        localStorage.removeItem(KEY_FIRST);
+        localStorage.removeItem(KEY_PREFS);
+        localStorage.removeItem(KEY_HISTORY);
+        stopAudio();
+        alert("本機記憶已重置。");
+        render();
+      });
+    }
+
+    const firstBreathBtn = document.getElementById("firstBreathBtn");
+    if(firstBreathBtn){
+      firstBreathBtn.addEventListener("click", ()=>{
+        openBreath((done)=>{
+          if(done){
+            markFirstDone();
+            currentBreathDone = true;
+            state = "tzolkin";
+            render();
+          }else{
+            currentBreathDone = false;
+            alert("第一次進入建議完成 3 次呼吸後再進入卓爾金抽取。");
+            render();
+          }
+        });
+      });
+    }
+
+    const enterBtn = document.getElementById("enterBtn");
+    const directBtn = document.getElementById("directBtn");
+    const redrawBreathBtn = document.getElementById("redrawBreathBtn");
+    const redrawDirectBtn = document.getElementById("redrawDirectBtn");
+
+    if(enterBtn && firstDone && !hasHistory){
+      enterBtn.addEventListener("click", ()=>{
+        const p = getPrefs();
+        if(p.breathGuided){
+          openBreath((done)=>{
+            currentBreathDone = done;
+            state = "tzolkin";
+            render();
+          });
+        }else{
+          currentBreathDone = false;
+          state = "tzolkin";
+          render();
         }
-    </script>
+      });
+    }
+
+    if(directBtn){
+      directBtn.addEventListener("click", ()=>{
+        currentBreathDone = false;
+        state = "tzolkin";
+        render();
+      });
+    }
+
+    if(redrawBreathBtn){
+      redrawBreathBtn.addEventListener("click", ()=>{
+        openBreath((done)=>{
+          currentBreathDone = done;
+          state = "tzolkin";
+          render();
+        });
+      });
+    }
+    if(redrawDirectBtn){
+      redrawDirectBtn.addEventListener("click", ()=>{
+        currentBreathDone = false;
+        state = "tzolkin";
+        render();
+      });
+    }
+  }
+
+  if(state === "reveal"){
+    const toSilenceBtn = document.getElementById("toSilenceBtn");
+    const backToTzolkinBtn = document.getElementById("backToTzolkinBtn");
+
+    if(toSilenceBtn){
+      toSilenceBtn.addEventListener("click", ()=>{
+        state = "silence";
+        render();
+      });
+    }
+    if(backToTzolkinBtn){
+      backToTzolkinBtn.addEventListener("click", ()=>{
+        state = "tzolkin";
+        render();
+      });
+    }
+  }
+
+  if(state === "silence"){
+    const toInterpretBtn = document.getElementById("toInterpretBtn");
+    const backAltarBtn = document.getElementById("backAltarBtn");
+
+    if(toInterpretBtn){
+      toInterpretBtn.addEventListener("click", ()=>{
+        state = "interpret";
+        render();
+      });
+    }
+    if(backAltarBtn){
+      backAltarBtn.addEventListener("click", ()=>{
+        state = "altar";
+        render();
+      });
+    }
+  }
+
+  if(state === "interpret"){
+    const backAltarBtn2 = document.getElementById("backAltarBtn2");
+    if(backAltarBtn2){
+      backAltarBtn2.addEventListener("click", ()=>{
+        state = "altar";
+        render();
+      });
+    }
+  }
+}
+
+/* ======================
+   Tzolkin 260 jump
+   ====================== */
+function initTzolkin(){
+  const gridEl = document.getElementById("grid");
+  const kinNowEl = document.getElementById("kinNow");
+  const stopBtn = document.getElementById("stopBtn");
+  const backBtn = document.getElementById("backBtn");
+
+  const lockUI = document.getElementById("lockUI");
+  const ring = document.getElementById("ring");
+  const skip30 = document.getElementById("skip30");
+  const doorBtn = document.getElementById("doorBtn");
+
+  // build 260 cells
+  const cells = [];
+  for(let i=1;i<=260;i++){
+    const color = getKinColor(i);
+    cells.push(`<div class="cell" data-idx="${i-1}" data-kin="${i}" data-color="${color}">${i}</div>`);
+  }
+  gridEl.innerHTML = cells.join("");
+
+  // moving dot
+  const dot = document.createElement("div");
+  dot.className = "dot";
+  gridEl.parentElement.appendChild(dot);
+
+  function placeDot(idx){
+    const cell = gridEl.querySelector(`.cell[data-idx="${idx}"]`);
+    gridEl.querySelectorAll(".cell.active").forEach(c=>c.classList.remove("active"));
+    cell.classList.add("active");
+
+    const rect = cell.getBoundingClientRect();
+    const parentRect = gridEl.parentElement.getBoundingClientRect();
+    const cx = rect.left - parentRect.left + rect.width/2 - 7;
+    const cy = rect.top - parentRect.top + rect.height/2 - 7;
+    dot.style.left = `${cx}px`;
+    dot.style.top = `${cy}px`;
+
+    const kin = parseInt(cell.getAttribute("data-kin"),10);
+    kinNowEl.textContent = kin;
+    // theme follows moving
+    setThemeForKin(kin);
+  }
+
+  // start spin
+  activeIndex = Math.floor(Math.random()*260);
+  placeDot(activeIndex);
+
+  spinTimer = setInterval(()=>{
+    if(locked) return;
+    activeIndex = (activeIndex + 1 + Math.floor(Math.random()*7)) % 260;
+    placeDot(activeIndex);
+  }, 75);
+
+  function startLock(){
+    locked = true;
+    stopBtn.style.display = "none";
+    lockUI.classList.remove("hidden");
+    lockUI.style.display = "flex";
+
+    // chosen kin
+    const chosenKin = parseInt(gridEl.querySelector(`.cell[data-idx="${activeIndex}"]`).getAttribute("data-kin"),10);
+    currentKin = chosenKin;
+    setThemeForKin(currentKin);
+
+    // 30s countdown ring
+    const r = 38;
+    const total = 2*Math.PI*r;
+    ring.style.strokeDasharray = `${total}`;
+    ring.style.strokeDashoffset = `${total}`;
+
+    lockStart = Date.now();
+
+    // skip appears after 5s
+    skip30.classList.remove("show");
+    setTimeout(()=> skip30.classList.add("show"), 5000);
+
+    lockTimer = setInterval(()=>{
+      const t = (Date.now() - lockStart) / 1000;
+      const p = Math.min(t / 30, 1);
+      ring.style.strokeDashoffset = `${total * (1 - p)}`;
+      if(p >= 1){
+        clearInterval(lockTimer);
+        lockTimer = null;
+        openDoor();
+      }
+    }, 120);
+  }
+
+  function openDoor(){
+    // door effect: go reveal
+    locked = false;
+    lockUI.classList.add("hidden");
+    stopBtn.style.display = "";
+
+    // push history at the moment "door opens" (this is the ritual settle completion)
+    pushHistory({
+      id: newRitualId(),
+      kin: currentKin,
+      stamp: nowStamp(),
+      breathDone: !!currentBreathDone
+    });
+
+    state = "reveal";
+    render();
+  }
+
+  stopBtn.addEventListener("click", startLock);
+  backBtn.addEventListener("click", ()=>{
+    state = "altar";
+    render();
+  });
+
+  skip30.addEventListener("click", openDoor);
+  doorBtn.addEventListener("click", openDoor);
+}
+
+/* ======================
+   Silence timers
+   ====================== */
+function initSilenceTimers(){
+  const hintBox = document.getElementById("lightHintBox");
+  const hintText = document.getElementById("lightHintText");
+  const doorBox = document.getElementById("doorBox");
+
+  hintBox.classList.add("hidden");
+  doorBox.classList.add("hidden");
+
+  // light hint after a while
+  hintTimer = setTimeout(()=>{
+    const line = LIGHT_HINTS[Math.floor(Math.random()*LIGHT_HINTS.length)];
+    hintText.textContent = line;
+    hintBox.classList.remove("hidden");
+  }, 6500);
+
+  // door after a while
+  doorTimer = setTimeout(()=>{
+    doorBox.classList.remove("hidden");
+  }, 14000);
+}
+
+/* ======================
+   Init
+   ====================== */
+(function init(){
+  const prefs = getPrefs();
+  if(!prefs || typeof prefs !== "object"){
+    setPrefs({ sound:"mute", breathGuided:true });
+  }
+  setThemeForKin(1);
+  render();
+})();
+</script>
 </body>
 </html>
