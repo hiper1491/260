@@ -30,7 +30,7 @@
       transition: background-color 1.1s ease;
     }
 
-    /* ✅ 方案 A：補上 #root 高度，確保 flex 垂直置中以視窗為準 */
+    /* ✅ 確保 React 外層可以吃滿視窗，垂直置中才會真的生效 */
     #root{
       width:100%;
       height:100%;
@@ -495,7 +495,7 @@
       opacity: 0.9;
     }
 
-    /* Hunab Ku 符號 */
+    /* Hunab Ku 符號（正圓） */
     .pre-symbol{
       width:120px;
       height:120px;
@@ -529,8 +529,8 @@
       opacity:0.6;
       animation: pulse 3s ease-in-out infinite;
       transition: opacity 0.3s ease;
+      pointer-events:none;
     }
-
     @keyframes pulse {
       0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
       50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
@@ -588,6 +588,55 @@
       font-size:0.9rem;
       text-align:center;
       margin-top:8px;
+    }
+
+    /* ========== 手機版：C2 可收合記錄石 + 上移 + 陰影舒緩（不影響電腦版） ========== */
+    @media (max-width: 520px){
+
+      /* 手機：記錄石往上移（避免壓到訊息） */
+      .history-sidebar{
+        left:14px;
+        top:120px;
+        transform:none;
+        gap:12px;
+        z-index:120;
+      }
+
+      /* 手機：收合時只顯示第一顆（最新那顆） */
+      .history-sidebar:not(.open) .history-stone:not(:first-child){
+        display:none;
+      }
+
+      /* 手機：石頭尺寸縮小，避免擋內容 */
+      .history-stone{
+        width:62px;
+        height:58px;
+        font-size:1.02rem;
+        box-shadow:
+          0 14px 26px rgba(0,0,0,.18),
+          inset 0 2px 10px rgba(0,0,0,.12),
+          inset 0 1px 0 rgba(255,255,255,.55);
+      }
+
+      /* 手機：紅框處陰影壓迫感舒緩（留白 + 陰影收斂） */
+      .glyph-area{
+        margin-bottom:16px;
+      }
+      .glyph-img{
+        filter: drop-shadow(0 8px 12px rgba(0,0,0,.18));
+      }
+      .kin-id{
+        margin-top:8px;
+      }
+
+      /* 手機：home 按鈕微縮 */
+      .home-button{
+        top:22px;
+        left:16px;
+        width:58px;
+        height:58px;
+        font-size:1.55rem;
+      }
     }
 
     @media (max-height: 760px){
@@ -657,9 +706,8 @@
 
     // 計算當天的 KIN（銀河印記）
     // 參考日期：2025年7月26日 = KIN 169（磁性紅月，紅月波符開始）
-    // 這是 13 月亮曆新年（白光譜巫師年開始）
     function getTodayKin() {
-      const referenceDate = new Date(2025, 6, 26); // 2025年7月26日
+      const referenceDate = new Date(2025, 6, 26);
       const referenceKin = 169;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -674,13 +722,11 @@
       return todayKin;
     }
 
-    // 獲取波符資訊
     function getWavespell(kin) {
       const wavespellIndex = Math.floor((kin - 1) / 13);
       return WAVESPELL_DATA[wavespellIndex];
     }
 
-    // 調性馬雅數字渲染
     function ToneDisplay({ toneId, size = "normal" }) {
       const dots = toneId % 5;
       const bars = Math.floor(toneId / 5);
@@ -709,10 +755,13 @@
       const [hasDrawn,setHasDrawn] = useState(false);
       const [showMessage,setShowMessage] = useState(false);
       const [isCompact,setIsCompact] = useState(false);
+
+      /* ✅ C2：手機版可收合（只改 class，不新增區塊） */
+      const [historyOpen,setHistoryOpen] = useState(false);
+
       const timerRef = useRef(null);
       const contentRef = useRef(null);
 
-      // 當天的 KIN（用於封面顯示）
       const todayKin = getTodayKin();
       const todayTheme = THEME[COLORS[(todayKin - 1) % 4]];
 
@@ -782,15 +831,35 @@
         }
       };
 
+      /* 手機版才允許收合/展開（桌機不受影響） */
+      const toggleHistoryMobile = ()=>{
+        if (window.innerWidth <= 520) setHistoryOpen(v=>!v);
+      };
+
+      const onPickHistory = (k, e)=>{
+        if(e) e.stopPropagation();  // 避免點石頭時又收合
+        if(!spinning) setKin(k);
+      };
+
       return (
         <>
           {hasDrawn && (
             <a href="../index.html" className="home-button" title="返回主頁">🏠</a>
           )}
 
-          <div className="history-sidebar">
+          <div
+            className={`history-sidebar ${historyOpen ? 'open' : ''}`}
+            onClick={toggleHistoryMobile}
+            title={window.innerWidth <= 520 ? "點一下展開/收合" : ""}
+          >
             {history.map((k,i)=>(
-              <div key={i} className="history-stone" onClick={()=>!spinning && setKin(k)}>{k}</div>
+              <div
+                key={i}
+                className="history-stone"
+                onClick={(e)=>onPickHistory(k,e)}
+              >
+                {k}
+              </div>
             ))}
           </div>
 
@@ -800,6 +869,7 @@
 
                 {!hasDrawn ? (
                   <>
+                    {/* ===== 封面入口：美化版 ===== */}
                     <div className="pre-card" onClick={toggle}>
                       <div className="pre-symbol">
                         <div className="pre-glow"></div>
@@ -830,6 +900,7 @@
                   </>
                 ) : (
                   <>
+                    {/* ===== 抽牌後：顯示抽到的印記 ===== */}
                     <ToneDisplay toneId={toneId} />
 
                     <div className="glyph-area">
