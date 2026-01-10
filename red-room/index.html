@@ -30,7 +30,7 @@
       transition: background-color 1.1s ease;
     }
 
-    /* ✅ 確保 React 外層可以吃滿視窗，垂直置中才會真的生效 */
+    /* ✅ 確保 React 外層可吃滿視窗：flex 置中才會真的生效 */
     #root{
       width:100%;
       height:100%;
@@ -65,14 +65,12 @@
       align-items:center;
       justify-content:center;
       cursor:pointer;
-      z-index:100;
+      z-index:140;
       transition:.2s;
       text-decoration:none;
       font-size:1.7rem;
     }
-    .home-button:hover{
-      transform:translateY(-2px) scale(1.05);
-    }
+    .home-button:hover{ transform:translateY(-2px) scale(1.05); }
 
     .history-sidebar{
       position:fixed;
@@ -82,7 +80,7 @@
       display:flex;
       flex-direction:column;
       gap:16px;
-      z-index:50;
+      z-index:120;
     }
     .history-stone{
       width:76px;
@@ -312,12 +310,8 @@
       margin-bottom:4px;
       margin-top:4px;
     }
-    .compact .glyph-frame{
-      padding:6px;
-    }
-    .compact .glyph-img{
-      height:118px;
-    }
+    .compact .glyph-frame{ padding:6px; }
+    .compact .glyph-img{ height:118px; }
 
     .compact .kin-id{
       font-size:clamp(1.8rem, 3.2vh, 2.2rem);
@@ -357,14 +351,8 @@
     }
 
     @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .msg-box{
@@ -488,14 +476,10 @@
       overflow:hidden;
     }
     .pre-card:hover{ transform: translateY(-4px); }
-    .pre-card:hover .pre-hunab{
-      transform: rotate(360deg) scale(1.08);
-    }
-    .pre-card:hover .pre-glow{
-      opacity: 0.9;
-    }
+    .pre-card:hover .pre-hunab{ transform: rotate(360deg) scale(1.08); }
+    .pre-card:hover .pre-glow{ opacity: 0.9; }
 
-    /* Hunab Ku 符號（正圓） */
+    /* Hunab Ku（正圓） */
     .pre-symbol{
       width:120px;
       height:120px;
@@ -517,7 +501,6 @@
       filter: drop-shadow(0 8px 20px rgba(0,0,0,.2));
     }
 
-    /* 光暈效果 */
     .pre-glow{
       position:absolute;
       top:50%;
@@ -536,7 +519,6 @@
       50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
     }
 
-    /* 裝飾元素 */
     .pre-ornament{
       display:flex;
       align-items:center;
@@ -553,13 +535,6 @@
       width:60px;
       height:1px;
       background:linear-gradient(90deg, transparent, rgba(0,0,0,.2), transparent);
-    }
-
-    .pre-divider{
-      width:60%;
-      height:2px;
-      background:linear-gradient(90deg, transparent, rgba(0,0,0,.15), transparent);
-      margin:4px 0;
     }
 
     .pre-title{
@@ -590,24 +565,31 @@
       margin-top:8px;
     }
 
-    /* ========== 手機版：C2 可收合記錄石 + 上移 + 陰影舒緩（不影響電腦版） ========== */
+    /* ========== 手機版：A（石碑內部可滑）+ C2 可收合 + 上移 + 陰影舒緩 ========== */
     @media (max-width: 520px){
+
+      /* ✅ A：石碑內部可滑（不動整頁背景） */
+      .content{
+        overflow-y:auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom:56px;
+      }
 
       /* 手機：記錄石往上移（避免壓到訊息） */
       .history-sidebar{
         left:14px;
-        top:120px;
+        top:110px;
         transform:none;
         gap:12px;
-        z-index:120;
+        z-index:160;
       }
 
-      /* 手機：收合時只顯示第一顆（最新那顆） */
+      /* 收合：只顯示第一顆（最新那顆） */
       .history-sidebar:not(.open) .history-stone:not(:first-child){
         display:none;
       }
 
-      /* 手機：石頭尺寸縮小，避免擋內容 */
+      /* 手機：石頭縮小 */
       .history-stone{
         width:62px;
         height:58px;
@@ -618,18 +600,12 @@
           inset 0 1px 0 rgba(255,255,255,.55);
       }
 
-      /* 手機：紅框處陰影壓迫感舒緩（留白 + 陰影收斂） */
-      .glyph-area{
-        margin-bottom:16px;
-      }
-      .glyph-img{
-        filter: drop-shadow(0 8px 12px rgba(0,0,0,.18));
-      }
-      .kin-id{
-        margin-top:8px;
-      }
+      /* 紅框壓迫感：留白 + 陰影收斂 */
+      .glyph-area{ margin-bottom:18px; }
+      .glyph-img{ filter: drop-shadow(0 8px 12px rgba(0,0,0,.18)); }
+      .kin-id{ margin-top:10px; }
 
-      /* 手機：home 按鈕微縮 */
+      /* home 按鈕微縮 */
       .home-button{
         top:22px;
         left:16px;
@@ -672,7 +648,6 @@
     const TONE_NAMES=["磁性的","月亮的","電力的","自我存在的","超頻的","韻律的","共鳴的","銀河的","太陽的","行星的","光譜的","水晶的","宇宙的"];
     const GLYPH_NAMES=["紅龍","白風","藍夜","黃種子","紅蛇","白世界橋","藍手","黃星星","紅月","白狗","藍猴","黃人","紅天行者","白巫師","藍鷹","黃戰士","紅地球","白鏡","藍風暴","黃太陽"];
 
-    // 波符對應表：每個波符的起始 KIN 及其圖騰
     const WAVESPELL_DATA = [
       { name: "紅龍波", startKin: 1, glyphId: 0 },
       { name: "白巫師波", startKin: 14, glyphId: 13 },
@@ -704,8 +679,6 @@
       yellow:{main:"#B39B59",bg:"#F9F8E8"}
     };
 
-    // 計算當天的 KIN（銀河印記）
-    // 參考日期：2025年7月26日 = KIN 169（磁性紅月，紅月波符開始）
     function getTodayKin() {
       const referenceDate = new Date(2025, 6, 26);
       const referenceKin = 169;
@@ -718,7 +691,6 @@
 
       let todayKin = ((referenceKin - 1 + diffDays) % 260) + 1;
       if (todayKin <= 0) todayKin += 260;
-
       return todayKin;
     }
 
@@ -756,7 +728,7 @@
       const [showMessage,setShowMessage] = useState(false);
       const [isCompact,setIsCompact] = useState(false);
 
-      /* ✅ C2：手機版可收合（只改 class，不新增區塊） */
+      /* ✅ C2：手機版可收合 */
       const [historyOpen,setHistoryOpen] = useState(false);
 
       const timerRef = useRef(null);
@@ -831,13 +803,12 @@
         }
       };
 
-      /* 手機版才允許收合/展開（桌機不受影響） */
       const toggleHistoryMobile = ()=>{
         if (window.innerWidth <= 520) setHistoryOpen(v=>!v);
       };
 
       const onPickHistory = (k, e)=>{
-        if(e) e.stopPropagation();  // 避免點石頭時又收合
+        if(e) e.stopPropagation();
         if(!spinning) setKin(k);
       };
 
@@ -850,7 +821,6 @@
           <div
             className={`history-sidebar ${historyOpen ? 'open' : ''}`}
             onClick={toggleHistoryMobile}
-            title={window.innerWidth <= 520 ? "點一下展開/收合" : ""}
           >
             {history.map((k,i)=>(
               <div
@@ -869,7 +839,6 @@
 
                 {!hasDrawn ? (
                   <>
-                    {/* ===== 封面入口：美化版 ===== */}
                     <div className="pre-card" onClick={toggle}>
                       <div className="pre-symbol">
                         <div className="pre-glow"></div>
@@ -900,7 +869,6 @@
                   </>
                 ) : (
                   <>
-                    {/* ===== 抽牌後：顯示抽到的印記 ===== */}
                     <ToneDisplay toneId={toneId} />
 
                     <div className="glyph-area">
