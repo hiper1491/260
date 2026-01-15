@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>藍色114-1｜內頁 (v12)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg0:#08121f; --bg1:#0c1f33; --blue:#79bcff;
+      --ink:#dbe7ef; --muted:rgba(219,231,239,.6);
+      --line:rgba(167,220,255,.15);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:'Noto Serif TC', serif; color:var(--ink);
+      background: var(--bg0); min-height:100vh; overflow-x:hidden;
+    }
+    /* 背景星辰與星雲 */
+    .nebula {
+      position: fixed; inset: 0; pointer-events: none;
+      background: radial-gradient(circle at 20% 30%, rgba(121,188,255,0.05) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 70%, rgba(111,140,255,0.05) 0%, transparent 50%);
+      z-index: 0;
+    }
+
+    .wrap{ position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:60px 20px; }
+    .mast{ text-align:center; margin-bottom:50px; }
+    .mast h1{ font-size:2.4rem; color:var(--blue); letter-spacing:.2em; font-weight:900; margin-bottom:10px; }
+    .mast .sub{ color:var(--muted); font-size:1.1rem; line-height:1.8; }
+
+    .three{ display:grid; grid-template-columns: repeat(3, 1fr); gap:25px; }
+    @media(max-width:850px){ .three{ grid-template-columns:1fr; } }
+
+    .slot{
+      background: rgba(255,255,255,0.03); border: 1px solid var(--line);
+      border-radius:30px; padding:40px 20px; text-align:center;
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      backdrop-filter: blur(10px); display:flex; flex-direction:column; min-height:680px;
+    }
+    .slot:hover { border-color: rgba(121,188,255,0.3); background: rgba(255,255,255,0.05); }
+
+    .label{ font-size:1.4rem; color:var(--blue); font-weight:900; letter-spacing:4px; margin-bottom:8px; }
+    .subline{ font-size:0.85rem; color:var(--muted); margin-bottom:30px; height:2.5em; }
+
+    /* 儀式門戶 */
+    .gateWrap{ position:relative; height:220px; display:flex; align-items:center; justify-content:center; }
+    .disc{
+      width:160px; height:160px; border-radius:50%; border:1px solid var(--line);
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition: all 0.5s; background: rgba(0,0,0,0.2);
+    }
+    .disc:hover{ transform: scale(1.05) rotate(5deg); border-color: var(--blue); }
+    .disc img{ width:75%; opacity:0.8; }
+
+    .slot.revealed .gateWrap{ display:none; }
+
+    /* KIN 卡片質地優化 */
+    .core-card {
+      background: #f8f7f2; border-radius: 12px; color: #1a1a1a;
+      padding: 25px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      animation: cardReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+    @keyframes cardReveal {
+      from { opacity:0; transform: scale(0.9) translateY(20px); }
+      to { opacity:1; transform: scale(1) translateY(0); }
+    }
+
+    .glyph-img { width: 130px; margin: 15px 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
+    .kin-id { font-family: 'Cormorant Garamond'; font-size: 2rem; font-weight: 700; border-bottom: 1px solid #ddd; width: 80%; margin: 0 auto 10px; }
+    .kin-name { font-size: 1.1rem; font-weight: 800; color: #333; }
+    
+    .wave-pill {
+      margin-top:20px; padding:8px 15px; border-radius:20px;
+      background: #ededed; font-size:0.85rem; display:inline-flex; align-items:center; gap:8px;
+    }
+
+    .spinLine { margin-top:15px; font-size:0.9rem; color:var(--blue); font-weight:600; min-height:1.2em;}
+    .ver { position: fixed; bottom: 15px; right: 20px; font-size: 10px; opacity: 0.3; }
+  </style>
+</head>
+<body>
+  <div class="nebula"></div>
+  <div class="wrap">
+    <div class="mast">
+      <div class="kicker" style="letter-spacing:0.5em; opacity:0.6; margin-bottom:10px;">TRINITY CONSCIOUSNESS</div>
+      <h1>三位一體</h1>
+      <div class="sub">三種同時存在的意識流，在此交會、轉煉。</div>
+    </div>
+
+    <div class="three">
+      <div class="slot" id="slot-past">
+        <div class="label">過去</div>
+        <div class="subline">已內化的推動力</div>
+        <div class="gateWrap">
+          <div class="disc" onclick="handleReveal(this, 'past')">
+            <img src="../images/hunab-ku-1.png" alt="Hunab-Ku">
+          </div>
+        </div>
+        <div class="spinLine"></div>
+        <div class="face"></div>
+      </div>
+
+      <div class="slot" id="slot-present">
+        <div class="label">現在</div>
+        <div class="subline">正在燃燒的核心</div>
+        <div class="gateWrap">
+          <div class="disc" onclick="handleReveal(this, 'present')">
+            <img src="../images/hunab-ku-1.png" alt="Hunab-Ku">
+          </div>
+        </div>
+        <div class="spinLine"></div>
+        <div class="face"></div>
+      </div>
+
+      <div class="slot" id="slot-future">
+        <div class="label">未來</div>
+        <div class="subline">尚未成形的門檻</div>
+        <div class="gateWrap">
+          <div class="disc" onclick="handleReveal(this, 'future')">
+            <img src="../images/hunab-ku-1.png" alt="Hunab-Ku">
+          </div>
+        </div>
+        <div class="spinLine"></div>
+        <div class="face"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ver">inner v12 - Western Alchemy</div>
+
+  <script src="./temple_brain_final.js"></script>
+  <script>
+    function handleReveal(el, pos) {
+      const slot = el.closest('.slot');
+      if(slot.classList.contains('revealed')) return;
+      
+      const spinLine = slot.querySelector('.spinLine');
+      const kin = window.TEMPLE_BRAIN.drawRandomKIN();
+      
+      // 模擬轉動能量
+      let count = 0;
+      const timer = setInterval(() => {
+        const tempKin = Math.floor(Math.random()*260)+1;
+        spinLine.textContent = `尋找頻率... ${tempKin}`;
+        count++;
+        if(count > 15) {
+          clearInterval(timer);
+          renderKinCard(slot, kin);
+        }
+      }, 60);
+    }
+
+    function renderKinCard(slot, kin) {
+      slot.classList.add('revealed');
+      const b = window.TEMPLE_BRAIN;
+      const face = slot.querySelector('.face');
+      const sealId = ((kin-1)%20)+1;
+      const wave = b.getWavespell(kin);
+      
+      face.innerHTML = `
+        <div class="core-card">
+          <div class="kin-id">KIN ${kin}</div>
+          <img src="../images/${String(sealId).padStart(2,'0')}.png" class="glyph-img">
+          <div class="kin-name">${b.getFullName(kin)}</div>
+          <div class="wave-pill">
+            <span>${wave.seal}波符</span>
+          </div>
+        </div>
+      `;
+      slot.querySelector('.spinLine').textContent = "顯形完畢";
+      postHeight();
+    }
+
+    function postHeight(){
+      parent.postMessage({type:'HEIGHT', id:'inner', height: document.documentElement.scrollHeight}, '*');
+    }
+    window.onload = postHeight;
+  </script>
+</body>
+</html>

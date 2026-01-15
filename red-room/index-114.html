@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!-- 114-13版｜母版=114-11｜只加 Level 3 神廟閱讀層（A＋B）｜不滾動｜不改抽卡/內頁結構 -->
-  <title>13月亮曆・神廟石碑（測試版）</title>
+  <title>誕生行動的第一道火光</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,7 +13,7 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- ✅ 你說封面計算大腦 -->
-  <script src="./kin-calculator.js"></script>
+  <script src="../kin-calculator.js"></script>
   <script src="./red-brain.js"></script>
 
   <style>
@@ -423,7 +423,7 @@
       min-height: min(560px, 64vh);
     }
     .pre-card:hover{ transform: translateY(-4px); }
-    .pre-card:hover .pre-hunab{ transform: rotate(360deg) scale(1.06); }
+    .pre-card:hover .pre-hunab.spin{ transform: rotate(360deg) scale(1.06); opacity:.62; }
 
     .cover-top{
       width:100%;
@@ -496,7 +496,8 @@
       object-fit:cover;
       opacity:.80;
       filter: drop-shadow(0 12px 22px rgba(0,0,0,.22));
-      transition: transform .8s cubic-bezier(.4,0,.2,1);
+      transition: all 2.05s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
     }
 
     .pre-ornament{ display:flex; align-items:center; gap:16px; margin:0; }
@@ -572,8 +573,8 @@
 
     @media (max-width: 520px){
       .history-sidebar{ left:14px; top:110px; transform:none; gap:12px; z-index:180; }
-      .history-sidebar:not(.open) .history-stone:not(:first-child){ display:none; }
-      .history-stone{ width:62px; height:58px; font-size:1.02rem; }
+      .history-sidebar:not(.open) .history-stone:not(:first-child){ display:none !important; }
+      .history-stone{ width:56px; height:52px; font-size:0.95rem; }
       .home-button{ top:22px; left:16px; width:58px; height:58px; font-size:1.55rem; }
       .content{ overflow:hidden; }
 
@@ -585,7 +586,46 @@
 
       .cover-middle{ margin-top: 28px; } /* 手機少一點 */
       .cover-etch-below{ margin-top: 10px; }
-    }
+    
+      /* ======= ✅ red-115 手機歷史記錄石（最終規格覆蓋） ======= */
+      .history-stone{
+        width:56px;           /* 76→56 */
+        height:52px;          /* 70→52 */
+        font-size:0.95rem;    /* 1.12→0.95 */
+      }
+
+      /* 預設收合：只顯示第一顆（其餘完全消失） */
+      .history-sidebar:not(.open) .history-stone:not(:first-child){
+        display:none !important;
+      }
+
+      /* 展開：顯示全部 + 從第一顆下方滑出 */
+      .history-sidebar.open .history-stone{
+        display:flex !important;
+        animation: slideDown 0.3s ease;
+      }
+
+      @keyframes slideDown{
+        from{ opacity:0; transform: translateY(-10px); }
+        to  { opacity:1; transform: translateY(0); }
+      }
+
+      /* 解除你舊版 secondary 的收合動畫殘留（避免衝突） */
+      .history-sidebar:not(.open) .history-stone.secondary{
+        opacity:1 !important;
+        transform:none !important;
+        pointer-events:auto !important;
+        max-height:none !important;
+        margin-top:0 !important;
+      }
+      .history-sidebar.open .history-stone.secondary{
+        opacity:1 !important;
+        transform:none !important;
+        pointer-events:auto !important;
+        max-height:none !important;
+        margin-top:0 !important;
+      }
+}
     .cover-bottom{ margin-top: 10px; }
   </style>
 </head>
@@ -884,19 +924,26 @@
 
       const onHistoryStoneClick = (k, i, e)=>{
         if(e) e.stopPropagation();
+
         if(!isMobile()){
+          // 電腦版：直接切換 KIN
           if(!spinning) setKin(k);
           return;
         }
-        if(!historyOpen){
-          if(i === 0) setHistoryOpen(true);
+
+        // 手機版：第一顆永遠是 toggle（只管展開/收合，不選 KIN）
+        if(i === 0){
+          setHistoryOpen(prev => !prev);
           return;
         }
+
+        // 手機版：其他顆只有在展開狀態才可選，選完自動收合
+        if(!historyOpen) return;
         if(!spinning) setKin(k);
         setHistoryOpen(false);
       };
 
-      const onSidebarClick = ()=>{ if(isMobile() && historyOpen) setHistoryOpen(false); };
+      
 
       const manualInput = ()=>{
         const num = prompt("召喚指定 KIN (1-260):", kin);
@@ -926,11 +973,15 @@
         const field = document.getElementById('hunabField');
 
         if(!source || !flip || !tint || !field){
+          try{ source.classList.remove('spin'); }catch(e){}
+
           setCoverAnimating(false);
           startSpin();
           return;
         }
 
+        // ✅ 讓封面上的 Hunab Ku 圖也同步旋轉/淡化（跟轉場同節奏）
+        source.classList.add('spin');
         const DURATION = 2050;
         const r = source.getBoundingClientRect();
 
@@ -1008,11 +1059,12 @@
         <>
           {hasDrawn && (<a href="../index.html" className="home-button" title="返回主頁">🏠</a>)}
 
-          <div className={`history-sidebar ${historyOpen ? 'open' : ''}`} onClick={onSidebarClick}>
+          <div className={`history-sidebar ${historyOpen ? 'open' : ''}`}>
             {history.map((k,i)=>(
               <div
                 key={i}
                 className="history-stone"
+                style={((isMobile() && !historyOpen && i>0) ? {display:'none'} : undefined)}
                 onClick={(e)=>onHistoryStoneClick(k,i,e)}
               >
                 {k}

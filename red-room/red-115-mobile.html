@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- 114-11版｜基於你貼的版本｜不自動滾動｜自動縮排版階梯：normal → tight-msg → ultra-msg（避免文字被切） -->
-  <title>13月亮曆・神廟石碑（測試版）</title>
+  <!-- 114-13版｜母版=114-11｜只加 Level 3 神廟閱讀層（A＋B）｜不滾動｜不改抽卡/內頁結構 -->
+  <title>13月亮曆・神廟石碑（115-2）</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,7 +13,7 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <!-- ✅ 你說封面計算大腦 -->
-  <script src="./kin-calculator.js"></script>
+  <script src="../kin-calculator.js"></script>
   <script src="./red-brain.js"></script>
 
   <style>
@@ -21,7 +21,7 @@
       --theme:#A5413F;
       --bg:#F8E8E8;
       --ink:#111;
-      --themeRGB:165,65,63; /* ✅ JS 同步更新，避免黃底跳紅髒感 */
+      --themeRGB:165,65,63;
     }
 
     html,body{
@@ -52,27 +52,52 @@
     }
 
     /* =========================
-       ✅ 封面 ONLY：A 為骨 + B 為光（保持你原版）
+       ✅ 轉場：整版「單色」同色幕布（淺 → 更淺 → 無）
        ========================= */
-    .hunab-flip{
+    .cover-curtain{
+      position:fixed;
+      inset:0;
+      z-index:9996;
+      pointer-events:none;
+    }
+    .cover-curtain::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: rgba(var(--themeRGB), 0.00);
+      opacity:0;
+      will-change: opacity, background;
+    }
+    body.cover-transiting .cover-curtain::before{
+      animation: curtainMono 2.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes curtainMono{
+      0%   { opacity:0; background: rgba(var(--themeRGB), 0.00); }
+      14%  { opacity:1; background: rgba(var(--themeRGB), 0.16); } /* 淺 */
+      72%  { opacity:1; background: rgba(var(--themeRGB), 0.06); } /* 更淺 */
+      100% { opacity:0; background: rgba(var(--themeRGB), 0.00); }
+    }
+
+    /* =========================
+       ✅ 放大旋進 Hunab Ku（同色線條）
+       - 深→淺→0 由 JS 控制 tint opacity
+       ========================= */
+    .hunab-flip-svg{
       position:fixed;
       left:0; top:0;
       width:120px; height:120px;
-      border-radius:50%;
       z-index:9998;
       pointer-events:none;
       opacity:0;
       transform-origin:center;
-      will-change: transform, opacity, filter;
-      filter:
-        grayscale(1)
-        contrast(1.22)
-        brightness(1.08)
-        saturate(0)
-        drop-shadow(0 0 10px rgba(255,255,255,0.12));
-      mix-blend-mode: normal;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.10));
     }
-    .hunab-flip.show{ opacity:0.82; }
+    .hunab-flip-svg.show{ opacity:1; }
+    .hunab-flip-svg .tint{
+      fill: rgb(var(--themeRGB));
+      opacity: .26;
+    }
 
     .hunab-field{
       position:fixed;
@@ -89,29 +114,109 @@
       position:absolute; inset:0;
       background:
         radial-gradient(900px 650px at 50% 48%,
-          rgba(var(--themeRGB),0.22),
-          rgba(var(--themeRGB),0.10) 48%,
+          rgba(var(--themeRGB),0.20),
+          rgba(var(--themeRGB),0.08) 48%,
           rgba(var(--themeRGB),0.00) 74%),
         radial-gradient(900px 650px at 50% 48%,
-          rgba(255,255,255,0.42),
-          rgba(255,255,255,0.12) 55%,
+          rgba(255,255,255,0.22),
+          rgba(255,255,255,0.08) 55%,
           rgba(255,255,255,0.00) 78%);
       opacity:0;
       filter: blur(0px);
       will-change: opacity, filter;
     }
-
     body.flip-activating .hunab-field::before{
       animation: fieldIn 1.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     @keyframes fieldIn{
       0%{ opacity:0; filter: blur(0px); }
-      40%{ opacity:0.24; filter: blur(0px); }
-      100%{ opacity:0.62; filter: blur(1px); }
+      40%{ opacity:0.18; filter: blur(0px); }
+      100%{ opacity:0.44; filter: blur(1px); }
     }
 
     /* =========================
-       ✅ 內頁（不拖不跳）保持你指定那版
+       ✅ Level 3：神廟閱讀層（A＋B）（只加這一塊，不動內頁）
+       ========================= */
+    .reading-overlay{
+      position:fixed;
+      inset:0;
+      z-index:2500;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(18,14,12,0.58);
+      backdrop-filter: blur(2px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .55s ease;
+    }
+    .reading-overlay.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .reading-stone{
+      width:min(760px,92vw);
+      border-radius:64px;
+      background:linear-gradient(180deg,#ECE7DE,#DED6C9);
+      box-shadow:
+        0 80px 140px rgba(0,0,0,.45),
+        inset 0 4px 18px rgba(0,0,0,.28),
+        inset 0 -2px 4px rgba(255,255,255,.4);
+      padding:clamp(30px,4.6vh,52px);
+      position:relative;
+    }
+    .reading-inner{
+      background:rgba(245,242,236,.94);
+      border-radius:36px;
+      padding:clamp(22px,3.8vh,38px);
+      box-shadow: inset 0 3px 12px rgba(0,0,0,.18);
+    }
+    .reading-title{
+      font-family:'Cinzel',serif;
+      font-size:1.25rem;
+      letter-spacing:6px;
+      text-align:center;
+      margin-bottom:16px;
+      opacity:.78;
+      user-select:none;
+    }
+    .reading-block-title{
+      font-weight:900;
+      letter-spacing:2px;
+      opacity:.70;
+      margin:16px 0 10px;
+    }
+    .reading-text{
+      font-size:1.16rem;
+      line-height:1.9;
+      font-weight:800;
+      color:#111;
+      word-break:break-word;
+      white-space:pre-wrap;
+    }
+    .reading-exit{
+      text-align:center;
+      margin-top:18px;
+      font-size:.9rem;
+      letter-spacing:3px;
+      opacity:.55;
+      cursor:pointer;
+      user-select:none;
+    }
+    .reading-exit:hover{ opacity:.85; }
+    .reading-entry{
+      text-align:center;
+      margin-top:14px;
+      font-size:.9rem;
+      letter-spacing:3px;
+      opacity:.55;
+      cursor:pointer;
+      user-select:none;
+    }
+    .reading-entry:hover{ opacity:.85; }
+
+    /* =========================
+       ✅ 內頁（保持你原本）——以下照你母版（不動）
        ========================= */
 
     .home-button{
@@ -277,9 +382,6 @@
       position:relative;
       overflow:hidden;
     }
-    .spinning-placeholder::before{ content:""; position:absolute; left:18px; right:18px; top:18px; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,.18), transparent); opacity:.85; }
-    .spinning-placeholder::after{ content:""; position:absolute; left:18px; right:18px; bottom:18px; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,.18), transparent); opacity:.85; }
-    .tight-spin .spinning-placeholder{ border-radius:26px; letter-spacing:2px; font-size:.98rem; padding:14px 16px; }
 
     .msg-stack{ width:100%; flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:clamp(16px, 2vh, 22px); animation: slideInUp .7s cubic-bezier(.4,0,.2,1) forwards; opacity:0; }
     @keyframes slideInUp{ from{opacity:0; transform:translateY(40px)} to{opacity:1; transform:translateY(0)} }
@@ -287,23 +389,12 @@
     .label{ font-weight:900; opacity:.64; margin-bottom:12px; display:block; letter-spacing:2px; text-align:center; color:#111; font-size:1rem; }
     .content-text{ font-size:clamp(1.15rem,2.15vh,1.48rem); line-height:1.9; font-weight:900; text-align:left; color:#0B0B0B; text-shadow:none; word-break:break-word; }
 
-    /* ====== 114-11 新增：ultra-msg（第三階）只縮訊息呈現，不滾動 ====== */
     .ultra-msg .msg-stack{ gap:10px; }
-    .ultra-msg .msg-box{
-      border-radius:24px;
-      padding:14px 16px;
-    }
-    .ultra-msg .label{
-      font-size:0.88rem;
-      margin-bottom:8px;
-      letter-spacing:1px;
-    }
-    .ultra-msg .content-text{
-      font-size:1.02rem;
-      line-height:1.65;
-    }
+    .ultra-msg .msg-box{ border-radius:24px; padding:14px 16px; }
+    .ultra-msg .label{ font-size:0.88rem; margin-bottom:8px; letter-spacing:1px; }
+    .ultra-msg .content-text{ font-size:1.02rem; line-height:1.65; }
 
-    /* 封面 */
+    /* 封面卡片（Fix-05：回到正中間） */
     .pre-card{
       width:min(680px,88%);
       border-radius:56px;
@@ -316,82 +407,168 @@
         0 52px 98px rgba(0,0,0,.24),
         inset 0 3px 20px rgba(0,0,0,.20),
         inset 0 -1px 0 rgba(255,255,255,.38);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:22px;
-      margin-top:clamp(16px, 3vh, 32px);
-      padding:clamp(38px, 5vh, 56px) 20px;
       cursor:pointer;
       user-select:none;
       position:relative;
-      transition: transform .25s ease;
       overflow:hidden;
+      transition: transform .25s ease;
+
+      display:grid;
+      grid-template-rows: 1fr auto 1fr;
+      align-items:center;
+      justify-items:center;
+      padding:clamp(34px, 4.6vh, 54px) 20px;
+
+      /* ✅ Fix-05：降低卡片高度，避免整組被往上擠 */
+      min-height: min(560px, 64vh);
     }
     .pre-card:hover{ transform: translateY(-4px); }
-    .pre-card:hover .pre-hunab{ transform: rotate(360deg) scale(1.08); }
-    .pre-card:hover .pre-glow{ opacity: 0.9; }
+    .pre-card:hover .pre-hunab.spin{ transform: rotate(360deg) scale(1.06); opacity:.62; }
 
-    .pre-symbol{ width:120px; height:120px; position:relative; display:flex; align-items:center; justify-content:center; border-radius:50%; overflow:hidden; }
-    .pre-hunab{ width:100%; height:100%; display:block; border-radius:50%; object-fit:cover; transition: transform .8s cubic-bezier(.4,0,.2,1); opacity:.75; filter: drop-shadow(0 8px 20px rgba(0,0,0,.2)); }
-    .pre-glow{
-      position:absolute;
-      top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      width:200px; height:200px;
-      background:radial-gradient(circle, rgba(255,255,255,.5), transparent 65%);
-      opacity:.6;
-      animation: pulse 3s ease-in-out infinite;
-      transition: opacity .3s ease;
-      pointer-events:none;
-    }
-    @keyframes pulse{ 0%,100%{ transform:translate(-50%,-50%) scale(1); opacity:.6 } 50%{ transform:translate(-50%,-50%) scale(1.2); opacity:.3 } }
-
-    .pre-ornament{ display:flex; align-items:center; gap:16px; margin:8px 0; }
-    .pre-ornament-dot{ width:6px; height:6px; background:rgba(0,0,0,.2); border-radius:50%; }
-    .pre-ornament-line{ width:60px; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,.2), transparent); }
-
-    .pre-title{ font-weight:900; letter-spacing:12px; color:#1A1A1A; font-size:2.1rem; text-align:center; margin-top:8px; text-shadow:0 2px 8px rgba(0,0,0,.1); font-family:'Cinzel', serif; }
-    .pre-sub{ opacity:.65; font-weight:800; letter-spacing:5px; font-size:1.15rem; text-align:center; margin-top:-2px; color:#333; }
-    .pre-hint{ opacity:.45; font-weight:700; letter-spacing:2px; font-size:.9rem; text-align:center; margin-top:8px; }
-
-    .footer{
+    .cover-top{
       width:100%;
-      margin-top:auto;
-      padding-top:12px;
-      padding-bottom:14px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:center;
-      gap:0;
-      flex:0 0 auto;
+      justify-content:flex-end;
+      gap:14px;
+      padding-top:6px;
     }
+
+    /* ✅ Fix-05：中間圖往下推 */
+    .cover-middle{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-top: 30px; /* 可調 12~28 */
+    }
+
+    .cover-bottom{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      gap:14px;
+      padding-bottom:6px;
+    }
+.cover-bottom{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:14px;
+  padding-bottom:6px;
+  margin-top:  px; /* ✅ 文字往下：可調 10~22 */
+}
+
+    .pre-symbol{
+      width:140px;
+      height:140px;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      overflow:hidden;
+    }
+    .pre-glow{
+      position:absolute;
+      inset:-40px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,.42), transparent 62%);
+      opacity:.50;
+      animation: pulse 3s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes pulse{
+      0%,100%{ transform:scale(1); opacity:.46; }
+      50%{ transform:scale(1.08); opacity:.62; }
+    }
+
+    .pre-hunab{
+      width:100%;
+      height:100%;
+      display:block;
+      border-radius:50%;
+      object-fit:cover;
+      opacity:.80;
+      filter: drop-shadow(0 12px 22px rgba(0,0,0,.22));
+      transition: all 2.05s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
+    }
+
+    .pre-ornament{ display:flex; align-items:center; gap:16px; margin:0; }
+    .pre-ornament-dot{ width:6px; height:6px; background:rgba(0,0,0,.2); border-radius:50%; }
+    .pre-ornament-line{ width:66px; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,.2), transparent); }
+
+    .pre-title{
+      font-weight:900;
+      letter-spacing:12px;
+      color:#1A1A1A;
+      font-size:2.2rem;
+      text-align:center;
+      text-shadow:0 2px 8px rgba(0,0,0,.1);
+      font-family:'Cinzel', serif;
+    }
+    .pre-sub{
+      opacity:.66;
+      font-weight:800;
+      letter-spacing:5px;
+      font-size:1.12rem;
+      text-align:center;
+      color:#333;
+    }
+    .pre-hint{
+      opacity:.50;
+      font-weight:700;
+      letter-spacing:2px;
+      font-size:.92rem;
+      text-align:center;
+    }
+
+    /* ✅ Fix-05：刻印離框框更近，避免把整體撐高 */
+    .cover-etch-below{
+      margin-top: 12px; /* 原本偏大 → 拉近 */
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      pointer-events:none;
+    }
+
     .ritual-etch{
-      width:min(240px, 62%);
+      width:min(260px, 64%);
       height:34px;
       display:flex;
       align-items:center;
       justify-content:center;
       gap:12px;
-      background: radial-gradient(120px 22px at 50% 60%, rgba(255,255,255,.16), transparent 65%);
       border-radius:999px;
-      filter: drop-shadow(0 11px 19px rgba(0,0,0,.20));
+      background: radial-gradient(140px 18px at 50% 35%, rgba(255,255,255,.10), transparent 65%);
+      filter: drop-shadow(0 14px 22px rgba(0,0,0,.18));
     }
     .ritual-etch::before{
       content:"";
       width:13px;height:13px;border-radius:50%;
-      background:var(--theme);
-      box-shadow: inset 0 -3px 5px rgba(0,0,0,.38), 0 9px 15px rgba(0,0,0,.18);
+      background: var(--theme);
+      box-shadow:
+        inset 0 -4px 6px rgba(0,0,0,.34),
+        0 10px 16px rgba(0,0,0,.16);
+      opacity:.96;
     }
     .ritual-etch::after{
       content:"";
-      width:min(164px, 43vw);
+      width:min(170px, 44vw);
       height:13px;
       border-radius:13px;
-      background:var(--theme);
-      box-shadow: inset 0 -4px 6px rgba(0,0,0,.42), 0 11px 19px rgba(0,0,0,.18);
+      background: var(--theme);
+      box-shadow:
+        inset 0 -5px 7px rgba(0,0,0,.36),
+        0 12px 18px rgba(0,0,0,.16);
+      opacity:.94;
     }
 
     @media (max-width: 520px){
@@ -399,16 +576,111 @@
       .history-sidebar:not(.open) .history-stone:not(:first-child){ display:none; }
       .history-stone{ width:62px; height:58px; font-size:1.02rem; }
       .home-button{ top:22px; left:16px; width:58px; height:58px; font-size:1.55rem; }
-      .content{ overflow:hidden; } /* ✅ 依你要求：不啟用任何自動滾動 */
-    }
+      .content{ overflow:hidden; }
+
+      .pre-card{ min-height:min(540px, 62svh); }
+
+      .pre-title{ font-size:2.0rem; letter-spacing:10px; }
+      .pre-sub{ font-size:1.05rem; letter-spacing:4px; }
+      .pre-symbol{ width:132px; height:132px; }
+
+      .cover-middle{ margin-top: 28px; } /* 手機少一點 */
+      .cover-etch-below{ margin-top: 10px; }
+    
+      /* ======= ✅ red-115 手機歷史記錄石（最終規格覆蓋） ======= */
+      .history-stone{
+        width:56px;           /* 76→56 */
+        height:52px;          /* 70→52 */
+        font-size:0.95rem;    /* 1.12→0.95 */
+      }
+
+      /* 預設收合：只顯示第一顆（其餘完全消失） */
+      .history-sidebar:not(.open) .history-stone:not(:first-child){
+        display:none !important;
+      }
+
+      /* 展開：顯示全部 + 從第一顆下方滑出 */
+      .history-sidebar.open .history-stone{
+        display:flex !important;
+        animation: slideDown 0.3s ease;
+      }
+
+      @keyframes slideDown{
+        from{ opacity:0; transform: translateY(-10px); }
+        to  { opacity:1; transform: translateY(0); }
+      }
+
+      /* 解除你舊版 secondary 的收合動畫殘留（避免衝突） */
+      .history-sidebar:not(.open) .history-stone.secondary{
+        opacity:1 !important;
+        transform:none !important;
+        pointer-events:auto !important;
+        max-height:none !important;
+        margin-top:0 !important;
+      }
+      .history-sidebar.open .history-stone.secondary{
+        opacity:1 !important;
+        transform:none !important;
+        pointer-events:auto !important;
+        max-height:none !important;
+        margin-top:0 !important;
+      }
+}
+    .cover-bottom{ margin-top: 10px; }
   </style>
 </head>
 
 <body>
   <div id="root"></div>
 
+  <!-- ✅ 整版單色幕布 -->
+  <div class="cover-curtain" id="coverCurtain" aria-hidden="true"></div>
+
+  <!-- ✅ Level 3 Overlay（疊加層，不碰內頁） -->
+  <div class="reading-overlay" id="readingOverlay" aria-hidden="true">
+    <div class="reading-stone">
+      <div class="reading-inner">
+        <div class="reading-title">靜室閱讀</div>
+
+        <div class="reading-block-title">⚡ 能量感應</div>
+        <div class="reading-text" id="readingTextA"></div>
+
+        <div class="reading-block-title">🌱 調頻建議</div>
+        <div class="reading-text" id="readingTextB"></div>
+
+        <div class="reading-exit" id="readingExit">◦ 回到石碑 ◦</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 封面 ONLY：原本就有 -->
   <div class="hunab-field" id="hunabField" aria-hidden="true"></div>
-  <img class="hunab-flip" id="hunabFlip" src="../images/hunab-ku.png" alt="Hunab Ku line">
+
+  <!-- ✅ 放大旋進用（SVG luminance mask：顯示「同色線條」） -->
+  <svg class="hunab-flip-svg" id="hunabFlip" viewBox="0 0 100 100" aria-hidden="true">
+    <defs>
+      <filter id="hunabMaskFilter">
+        <feColorMatrix type="matrix" values="
+          0.2126 0.7152 0.0722 0 0
+          0.2126 0.7152 0.0722 0 0
+          0.2126 0.7152 0.0722 0 0
+          0      0      0      1 0" />
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="1 0"/>
+          <feFuncG type="table" tableValues="1 0"/>
+          <feFuncB type="table" tableValues="1 0"/>
+        </feComponentTransfer>
+      </filter>
+
+      <mask id="hunabLineMask" maskUnits="objectBoundingBox">
+        <image href="../images/hunab-ku.png" x="0" y="0" width="100" height="100"
+               preserveAspectRatio="xMidYMid slice"
+               filter="url(#hunabMaskFilter)"/>
+      </mask>
+    </defs>
+
+    <rect class="tint" x="0" y="0" width="100" height="100" mask="url(#hunabLineMask)"></rect>
+  </svg>
 
   <script type="text/babel">
     const {useState,useEffect,useRef,useLayoutEffect} = React;
@@ -506,9 +778,8 @@
 
       const [tightSpin,setTightSpin] = useState(false);
       const [tightMsg,setTightMsg] = useState(false);
-
-      // ✅ 114-11：第三階 ultra-msg
       const [ultraMsg,setUltraMsg] = useState(false);
+      const [needReading,setNeedReading] = useState(false);
 
       const [coverAnimating,setCoverAnimating] = useState(false);
 
@@ -525,10 +796,33 @@
       const wavespell = getWavespell(kin);
 
       const brain = window.RED_BRAIN_DATA || {};
-      const data = brain[String(kin)] || {
-        synchronicMessage: "宇宙訊息對頻中...",
-        alignment: "資料讀取失敗，請確認 red-brain.js 格式。"
+      const data = brain[String(kin)] || { synchronicMessage: "", alignment: "" };
+
+      const openReading = ()=>{
+        const overlay = document.getElementById('readingOverlay');
+        const a = document.getElementById('readingTextA');
+        const b = document.getElementById('readingTextB');
+        if(!overlay || !a || !b) return;
+        a.textContent = data.synchronicMessage || "";
+        b.textContent = data.alignment || "";
+        overlay.classList.add('show');
       };
+      const closeReading = ()=>{
+        const overlay = document.getElementById('readingOverlay');
+        if(!overlay) return;
+        overlay.classList.remove('show');
+      };
+
+      useEffect(()=>{
+        const exit = document.getElementById('readingExit');
+        const overlay = document.getElementById('readingOverlay');
+        if(exit) exit.onclick = closeReading;
+        if(overlay){
+          overlay.addEventListener('click', (e)=>{
+            if(e.target === overlay) closeReading();
+          });
+        }
+      },[]);
 
       useEffect(()=>{
         const activeTheme = hasDrawn ? theme : todayTheme;
@@ -539,7 +833,6 @@
 
       const isMobile = ()=> window.innerWidth <= 520;
 
-      // ✅ 階梯判斷（不滾動）：normal → tight-msg → ultra-msg
       const measureOverflow = ()=>{
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
         rafRef.current = requestAnimationFrame(()=>{
@@ -552,23 +845,29 @@
             setTightSpin(overflowPx > 10);
             setTightMsg(false);
             setUltraMsg(false);
+            setNeedReading(false);
             return;
           }
 
           if(showMessage){
-            // Level 1
             const needTight = overflowPx > 10;
             setTightSpin(false);
             setTightMsg(needTight);
 
-            // 下一幀再量一次（等 tight-msg 生效），決定 Level 2
             requestAnimationFrame(()=>{
               const el2 = contentRef.current;
               if(!el2) return;
               const overflow2 = el2.scrollHeight - el2.clientHeight;
 
-              // Level 2（更緊）只有真的還溢出才開
-              setUltraMsg(overflow2 > 8);
+              const needUltra = overflow2 > 8;
+              setUltraMsg(needUltra);
+
+              requestAnimationFrame(()=>{
+                const el3 = contentRef.current;
+                if(!el3) return;
+                const overflow3 = el3.scrollHeight - el3.clientHeight;
+                setNeedReading(needUltra && overflow3 > 6);
+              });
             });
 
             return;
@@ -577,6 +876,7 @@
           setTightSpin(false);
           setTightMsg(false);
           setUltraMsg(false);
+          setNeedReading(false);
         });
       };
 
@@ -595,6 +895,7 @@
         setTightSpin(false);
         setTightMsg(false);
         setUltraMsg(false);
+        setNeedReading(false);
 
         clearInterval(timerRef.current);
         timerRef.current = setInterval(()=>{
@@ -623,19 +924,24 @@
 
       const onHistoryStoneClick = (k, i, e)=>{
         if(e) e.stopPropagation();
+
         if(!isMobile()){
+          // 電腦版：直接切換 KIN
           if(!spinning) setKin(k);
           return;
         }
 
-        if(!historyOpen){
-          if(i === 0) setHistoryOpen(true);
+        // 手機版：第一顆永遠是 toggle（只管展開/收合，不選 KIN）
+        if(i === 0){
+          setHistoryOpen(prev => !prev);
           return;
         }
 
+        // 手機版：其他顆只有在展開狀態才可選，選完自動收合
+        if(!historyOpen) return;
         if(!spinning) setKin(k);
         setHistoryOpen(false);
-      };
+      };;
 
       const onSidebarClick = ()=>{ if(isMobile() && historyOpen) setHistoryOpen(false); };
 
@@ -663,25 +969,40 @@
 
         const source = document.querySelector('.pre-hunab');
         const flip = document.getElementById('hunabFlip');
+        const tint = flip ? flip.querySelector('.tint') : null;
         const field = document.getElementById('hunabField');
 
-        if(!source || !flip || !field){
+        if(!source || !flip || !tint || !field){
+          try{ source.classList.remove('spin'); }catch(e){}
+
           setCoverAnimating(false);
-          toggle();
+          startSpin();
           return;
         }
 
-        const DURATION = 1900;
-
+        // ✅ 讓封面上的 Hunab Ku 圖也同步旋轉/淡化（跟轉場同節奏）
+        source.classList.add('spin');
+        const DURATION = 2050;
         const r = source.getBoundingClientRect();
+
+        document.body.classList.add('cover-transiting');
+        field.classList.add('show');
+        document.body.classList.add('flip-activating');
+
         flip.style.left = r.left + 'px';
         flip.style.top = r.top + 'px';
         flip.style.width = r.width + 'px';
         flip.style.height = r.height + 'px';
         flip.classList.add('show');
 
-        field.classList.add('show');
-        document.body.classList.add('flip-activating');
+        const tintAnim = tint.animate(
+          [
+            { opacity: 0.26, offset: 0.00 },
+            { opacity: 0.10, offset: 0.78 },
+            { opacity: 0.00, offset: 1.00 }
+          ],
+          { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+        );
 
         const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
@@ -691,29 +1012,39 @@
         const dy = cy - sy;
 
         const scale = Math.max(window.innerWidth, window.innerHeight) / r.width * 1.02;
+        const midScale = Math.min(scale, 2.9);
+        const endScale = Math.min(scale, 7.4);
 
         let finished = false;
         const finish = ()=>{
           if(finished) return;
           finished = true;
+
           flip.classList.remove('show');
           field.classList.remove('show');
           document.body.classList.remove('flip-activating');
+          document.body.classList.remove('cover-transiting');
+
+          try{ tintAnim.cancel(); }catch(e){}
+          try{ tint.style.opacity = ""; }catch(e){}
+
           setCoverAnimating(false);
-          toggle();
+          startSpin();
         };
 
-        const anim = flip.animate(
-          [
-            { transform: `translate(${dx}px, ${dy}px) scale(1) rotate(0deg)`, opacity: 0.82 },
-            { transform: `translate(${dx}px, ${dy}px) scale(${Math.min(scale, 2.7)}) rotate(270deg)`, opacity: 0.56, offset: 0.50 },
-            { transform: `translate(${dx}px, ${dy}px) scale(${Math.min(scale, 7.2)}) rotate(540deg)`, opacity: 0 }
-          ],
-          { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
-        );
+        requestAnimationFrame(()=>{
+          const anim = flip.animate(
+            [
+              { transform: `translate(${dx}px, ${dy}px) scale(1) rotate(0deg)` },
+              { transform: `translate(${dx}px, ${dy}px) scale(${midScale}) rotate(300deg)`, offset: 0.58 },
+              { transform: `translate(${dx}px, ${dy}px) scale(${endScale}) rotate(640deg)` }
+            ],
+            { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+          );
 
-        anim.onfinish = finish;
-        setTimeout(finish, DURATION + 90);
+          anim.onfinish = finish;
+          setTimeout(finish, DURATION + 120);
+        });
       };
 
       const contentClass = [
@@ -747,30 +1078,29 @@
                 {!hasDrawn ? (
                   <>
                     <div className="pre-card" onClick={handleCoverClick}>
-                      <div className="pre-symbol">
-                        <div className="pre-glow"></div>
-                        <img className="pre-hunab" src="../images/hunab-ku.png" alt="Hunab Ku" />
+                      <div className="cover-top">
+                        <div className="pre-title">東方・火種</div>
+                        <div className="pre-sub">誕生行動的第一道火光</div>
+                        <div className="pre-ornament">
+                          <div className="pre-ornament-line"></div>
+                          <div className="pre-ornament-dot"></div>
+                          <div className="pre-ornament-line"></div>
+                        </div>
                       </div>
 
-                      <div className="pre-ornament">
-                        <div className="pre-ornament-line"></div>
-                        <div className="pre-ornament-dot"></div>
-                        <div className="pre-ornament-line"></div>
+                      <div className="cover-middle">
+                        <div className="pre-symbol">
+                          <div className="pre-glow"></div>
+                          <img className="pre-hunab" src="../images/hunab-ku.png" alt="Hunab Ku" />
+                        </div>
                       </div>
 
-                      <div className="pre-title">13月亮神諭</div>
-                      <div className="pre-sub">跟著直覺，鎖定印記</div>
-
-                      <div className="pre-ornament">
-                        <div className="pre-ornament-dot"></div>
-                        <div className="pre-ornament-line"></div>
-                        <div className="pre-ornament-dot"></div>
+                      <div className="cover-bottom">
+                        <div className="pre-hint">跟著直覺，鎖定印記</div>
                       </div>
-
-                      <div className="pre-hint">點擊開始對頻</div>
                     </div>
 
-                    <div className="footer">
+                    <div className="cover-etch-below" aria-hidden="true">
                       <div className="ritual-etch"></div>
                     </div>
                   </>
@@ -802,17 +1132,25 @@
                       {spinning ? (
                         <div className="spinning-placeholder">對頻中…（停止後顯示完整訊息）</div>
                       ) : showMessage && (
-                        <div className="msg-stack">
-                          <div className="msg-box">
-                            <span className="label">⚡ 能量感應</span>
-                            <div className="content-text">{data.synchronicMessage}</div>
+                        <>
+                          <div className="msg-stack">
+                            <div className="msg-box">
+                              <span className="label">⚡ 能量感應</span>
+                              <div className="content-text">{data.synchronicMessage}</div>
+                            </div>
+
+                            <div className="msg-box">
+                              <span className="label">🌱 調頻建議</span>
+                              <div className="content-text">{data.alignment}</div>
+                            </div>
                           </div>
 
-                          <div className="msg-box">
-                            <span className="label">🌱 調頻建議</span>
-                            <div className="content-text">{data.alignment}</div>
-                          </div>
-                        </div>
+                          {needReading && (
+                            <div className="reading-entry" onClick={openReading}>
+                              ◦ 進入靜室閱讀 ◦
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </>
