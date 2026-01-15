@@ -24,8 +24,46 @@
     }
     .state.active{opacity:1;pointer-events:auto;}
 
-    /* ===== 呼吸頁 ===== */
-    #state-breath{ gap:44px; }
+    /* ====== 階段1：靜心提示（3秒） ====== */
+    #state-welcome{ gap:26px; }
+    .welcome-title{
+      font-family:'Cinzel', serif;
+      font-weight:900;
+      letter-spacing:10px;
+      font-size:22px;
+      color: rgba(55,55,55,0.88);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.55), 0 10px 28px rgba(0,0,0,0.10);
+      text-align:center;
+    }
+    .welcome-sub{
+      font-weight:700;
+      letter-spacing:3px;
+      font-size:16px;
+      line-height:1.8;
+      color: rgba(90,80,65,0.78);
+      text-align:center;
+      padding: 0 22px;
+      max-width: 680px;
+    }
+    .welcome-ornament{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      opacity:0.75;
+      margin-top:8px;
+    }
+    .welcome-orn-dot{
+      width:7px;height:7px;border-radius:50%;
+      background: rgba(199,163,107,0.38);
+      box-shadow: 0 0 14px rgba(199,163,107,0.24);
+    }
+    .welcome-orn-line{
+      width:88px;height:1px;
+      background: linear-gradient(90deg, transparent, rgba(199,163,107,0.36), transparent);
+    }
+
+    /* ===== 呼吸頁（階段2） ===== */
+    #state-breath{ gap:30px; }
 
     .flower-container{
       position:relative;
@@ -41,14 +79,9 @@
         rgba(199,163,107,0.18) 0%,
         rgba(199,163,107,0.10) 40%,
         transparent 70%);
-      animation: breatheAura 8s ease-in-out infinite;
       filter: blur(22px);
       transition: opacity .16s ease;
       opacity:1;
-    }
-    @keyframes breatheAura{
-      0%,100%{ transform: scale(0.92); opacity:0.55; }
-      50%{ transform: scale(1.10); opacity:1; }
     }
 
     .flower-svg{
@@ -60,6 +93,63 @@
       transform: scale(1);
       transition: filter .16s ease;
       cursor: default;
+    }
+
+    /* ✅ 呼吸文字提示 */
+    .breath-text{
+      font-weight:900;
+      letter-spacing:6px;
+      color: rgba(115, 92, 66, 0.82);
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.45),
+        0 10px 28px rgba(0,0,0,0.10);
+      font-size:18px;
+      opacity:0;
+      transform: translateY(-2px) scale(1);
+      transition: opacity .35s ease;
+      user-select:none;
+    }
+    .breath-text.show{ opacity:1; }
+
+    /* ✅ 進出氣動畫（由 JS 觸發加 class） */
+    #state-breath.inhale .flower-svg{ animation: flowerIn 4s ease-in-out forwards; }
+    #state-breath.exhale .flower-svg{ animation: flowerOut 6s ease-in-out forwards; }
+
+    #state-breath.inhale .aura{ animation: breatheIn 4s ease-in-out forwards; }
+    #state-breath.exhale .aura{ animation: breatheOut 6s ease-in-out forwards; }
+
+    #state-breath.inhale .breath-text{
+      animation: textIn 4s ease-in-out forwards;
+    }
+    #state-breath.exhale .breath-text{
+      animation: textOut 6s ease-in-out forwards;
+    }
+
+    @keyframes flowerIn{
+      0%{ transform: scale(1.00); }
+      100%{ transform: scale(1.30); }
+    }
+    @keyframes flowerOut{
+      0%{ transform: scale(1.30); }
+      100%{ transform: scale(1.00); }
+    }
+
+    @keyframes breatheIn{
+      0%{ transform: scale(0.92); opacity:0.55; }
+      100%{ transform: scale(1.10); opacity:1; }
+    }
+    @keyframes breatheOut{
+      0%{ transform: scale(1.10); opacity:1; }
+      100%{ transform: scale(0.92); opacity:0.55; }
+    }
+
+    @keyframes textIn{
+      0%{ transform: translateY(-2px) scale(0.98); opacity:0.62; }
+      100%{ transform: translateY(-2px) scale(1.10); opacity:0.95; }
+    }
+    @keyframes textOut{
+      0%{ transform: translateY(-2px) scale(1.10); opacity:0.95; }
+      100%{ transform: translateY(-2px) scale(0.98); opacity:0.72; }
     }
 
     .breath-circles{
@@ -86,6 +176,7 @@
         transparent 100%);
     }
 
+    /* ===== 階段3：準備完成提示 ===== */
     .enter-hint{
       position: fixed;
       bottom: 70px;
@@ -121,6 +212,7 @@
       50%{ transform: scale(1.015); }
     }
 
+    /* ===== 進入卓爾金：沿用你原本 bloom ===== */
     body.activating .flower-svg{
       animation: bloomTransform 1.5s ease-out forwards;
       filter: drop-shadow(0 0 60px rgba(199,163,107,0.8));
@@ -234,7 +326,7 @@
       text-shadow: 0 0 12px rgba(212,175,55,0.70), 0 1px 0 rgba(255,255,255,0.45);
     }
 
-    /* ===== 快速檢查面板（重點：用 core 的 show/hide，不重寫） ===== */
+    /* ===== 快速檢查面板（用 core 的 show/hide） ===== */
     .debug-btn{
       position: fixed;
       top: 16px;
@@ -299,6 +391,8 @@
     @media (max-width:520px){
       .flower-container{ width:360px; height:360px; }
       .flower-svg{ width:320px; height:320px; }
+      .breath-text{ font-size:16px; letter-spacing:5px; }
+
       .enter-hint{ bottom:58px; font-size:13px; letter-spacing:5px; color: rgba(115,92,66,0.82); }
 
       #tzBoard{ width:94vw; height:92vh; }
@@ -307,13 +401,37 @@
       .lock-indicator{ font-size:16px; bottom:-26px; }
 
       .debug-panel{ width: 240px; right: 10px; }
+      .welcome-title{ font-size:20px; letter-spacing:9px; }
+      .welcome-sub{ font-size:15px; }
+      .welcome-orn-line{ width:72px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- Scene A：生命之花 -->
-  <div id="state-breath" class="state active">
+  <!-- ✅ 階段1：靜心提示（3秒） -->
+  <div id="state-welcome" class="state active">
+    <div class="welcome-title">靜 心 入 殿</div>
+
+    <div class="welcome-ornament" aria-hidden="true">
+      <div class="welcome-orn-line"></div>
+      <div class="welcome-orn-dot"></div>
+      <div class="welcome-orn-line"></div>
+    </div>
+
+    <div class="welcome-sub">請先靜下心來，準備進入神聖空間</div>
+
+    <div class="welcome-ornament" aria-hidden="true" style="opacity:0.62;">
+      <div class="welcome-orn-dot"></div>
+      <div class="welcome-orn-line"></div>
+      <div class="welcome-orn-dot"></div>
+    </div>
+  </div>
+
+  <!-- ✅ 階段2：呼吸引導（3輪 × 10秒） -->
+  <div id="state-breath" class="state">
+    <div class="breath-text" id="breathText">吸氣...</div>
+
     <div class="flower-container">
       <div class="aura" id="aura"></div>
 
@@ -368,7 +486,8 @@
     </div>
   </div>
 
-  <div class="enter-hint" id="enterHint">凝 視 · 或 · 觸 碰</div>
+  <!-- ✅ 階段3：準備完成（3輪後顯示） -->
+  <div class="enter-hint" id="enterHint">點 擊 生 命 之 花 進 入</div>
 
   <!-- Scene B：卓爾金 -->
   <div id="state-tzolkin" class="state">
@@ -424,54 +543,79 @@
       galacticTones
     });
 
-    /* ===== 呼吸三輪 ===== */
+    /* ===== 三階段：welcome -> breath -> ready(click) ===== */
     const flowerSvg = document.getElementById('flowerSvg');
     const aura = document.getElementById('aura');
     const dots = document.querySelectorAll('.breath-circle');
     const enterHint = document.getElementById('enterHint');
+    const breathText = document.getElementById('breathText');
+
+    const stateWelcome = document.getElementById('state-welcome');
+    const stateBreath = document.getElementById('state-breath');
 
     let breathRound = 0;
-    let flowerAnim = null;
     let activated = false;
-
-    function playBreathOnce(){
-      if (flowerAnim) flowerAnim.cancel();
-      flowerAnim = flowerSvg.animate(
-        [
-          { transform: 'scale(1)' },
-          { transform: 'scale(1.30)', offset: 0.25 },
-          { transform: 'scale(1.30)', offset: 0.50 },
-          { transform: 'scale(1)',   offset: 0.75 },
-          { transform: 'scale(1)' }
-        ],
-        { duration: 8000, easing: 'ease-in-out', fill: 'forwards' }
-      );
-    }
-
-    function breatheCycle(){
-      if (breathRound >= 3){
-        enterHint.classList.add('show');
-        flowerSvg.classList.add('ready');
-        flowerSvg.addEventListener('click', activateAndEnterTzolkin, { once:true });
-        return;
-      }
-      dots[breathRound].classList.add('active');
-      playBreathOnce();
-      breathRound += 1;
-      setTimeout(breatheCycle, 8000);
-    }
+    let phaseTimer = null;
 
     function switchState(target){
       document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
       document.getElementById(`state-${target}`).classList.add('active');
     }
 
+    function clearTimers(){
+      if (phaseTimer) clearTimeout(phaseTimer);
+      phaseTimer = null;
+    }
+
+    function setBreathPhase(phase){
+      stateBreath.classList.remove('inhale','exhale');
+      stateBreath.classList.add(phase);
+
+      breathText.classList.add('show');
+      breathText.textContent = (phase === 'inhale') ? '吸氣...' : '吐氣...';
+    }
+
+    function startBreathRounds(){
+      breathRound = 0;
+      dots.forEach(d => d.classList.remove('active'));
+      breathText.classList.add('show');
+
+      runOneRound();
+    }
+
+    function runOneRound(){
+      if (breathRound >= 3){
+        // ✅ 階段3：準備完成
+        breathText.classList.remove('show');
+        enterHint.classList.add('show');
+        flowerSvg.classList.add('ready');
+        flowerSvg.style.cursor = 'pointer';
+        flowerSvg.addEventListener('click', activateAndEnterTzolkin, { once:true });
+        return;
+      }
+
+      dots[breathRound].classList.add('active');
+
+      // 吸氣 4s
+      setBreathPhase('inhale');
+      phaseTimer = setTimeout(() => {
+        // 吐氣 6s
+        setBreathPhase('exhale');
+        phaseTimer = setTimeout(() => {
+          breathRound += 1;
+          runOneRound();
+        }, 6000);
+      }, 4000);
+    }
+
     function activateAndEnterTzolkin(){
       if (activated) return;
       activated = true;
+      clearTimers();
 
       enterHint.classList.remove('show');
-      if (flowerAnim) flowerAnim.cancel();
+      flowerSvg.classList.remove('ready');
+      flowerSvg.style.cursor = 'default';
 
       // 160ms 舒服緩衝
       flowerSvg.style.filter = 'drop-shadow(0 0 46px rgba(199,163,107,0.62))';
@@ -572,7 +716,6 @@
     dbgClose.addEventListener('click', () => dbgPanel.classList.remove('show'));
 
     dbgGoto.addEventListener('click', () => {
-      // 不等呼吸：直接跳到卓爾金並初始化
       if (!document.getElementById('state-tzolkin').classList.contains('active')){
         switchState('tzolkin');
       }
@@ -583,7 +726,6 @@
       const k = clampKin(dbgKin.value);
       dbgKin.value = String(k);
 
-      // 保險：若還沒進卓爾金，也能直接顯示（卡牌掛在 tzBoard）
       if (!document.getElementById('state-tzolkin').classList.contains('active')){
         switchState('tzolkin');
         initTzolkin();
@@ -593,9 +735,15 @@
 
     dbgHide.addEventListener('click', () => kinCard.hide());
 
-    /* ===== 啟動 ===== */
+    /* ===== 啟動：welcome 3 秒後 -> breath -> 3輪 ===== */
     window.addEventListener('load', () => {
-      setTimeout(breatheCycle, 900);
+      setTimeout(() => {
+        switchState('breath');
+        // 初始狀態先進入 inhale（避免第一次無動畫）
+        stateBreath.classList.remove('inhale','exhale');
+        void stateBreath.offsetWidth; // reflow，確保 keyframes 乾淨觸發
+        startBreathRounds();
+      }, 3000);
     });
   </script>
 </body>

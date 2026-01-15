@@ -92,8 +92,12 @@ window.RED_BRAIN_DATA = {
 
   "81": { synchronicMessage: "今天適合重新對齊生活重心。你不需要面面俱到。", alignment: "把注意力拉回一件最重要的事。" },
   "82": { synchronicMessage: "今天說清楚會省很多力氣。", alignment: "直接問，不要猜。" },
-  "83": { synchronicMessage: "今天適合把夢想縮成可行版本。", alignment: "替想做的事寫一個『簡化版』。" },
-  "84": { synchronicMessage: "今天適合建立清楚界線。", alignment: "為時間或情緒設一條界線。" },
+ "83": { 
+  synchronicMessage: "今天可能會一直想『如果能那樣就好了』，但一想到怎麼做就卡住。別急著想全局。", 
+  alignment: "選一個你最有感的想法，做一個不完美但能開始的小動作。" 
+},
+
+"84": { synchronicMessage: "今天適合建立清楚界線。", alignment: "為時間或情緒設一條界線。" },
   "85": { synchronicMessage: "今天身體狀態是關鍵指標。", alignment: "優先照顧身體，再談效率。" },
   "86": { synchronicMessage: "今天適合放下不再適合的角色。", alignment: "對一件事說『到這裡就好』。" },
   "87": { synchronicMessage: "今天完成感會帶來穩定。", alignment: "把一件事做到真正完成。" },

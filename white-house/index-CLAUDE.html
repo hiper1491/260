@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白色小屋 - 靜化殿</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Serif+TC:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Noto Serif TC', serif;
+            background: radial-gradient(ellipse at center, #F8F8F8 0%, #E0E0E0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 石碑容器 */
+        .temple-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: 
+                radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.4) 100%),
+                linear-gradient(135deg, #F5F5F5 0%, #E8E8E8 100%);
+        }
+
+        /* 首頁按鈕 - 固定左上 */
+        .home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.9) 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .state {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+        }
+
+        .state.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Scene 0: 入殿 - 更大氣的封面 */
+        #state-entrance {
+            gap: 50px;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.98) 0%, rgba(245,245,245,0.95) 100%);
+        }
+
+        .entrance-flower {
+            width: 350px;
+            height: 350px;
+            position: relative;
+            opacity: 0.7;
+            animation: gentleRotate 60s linear infinite;
+        }
+
+        @keyframes gentleRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .entrance-flower svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.15));
+        }
+
+        .temple-title {
+            font-family: 'Cinzel', serif;
+            font-size: 42px;
+            color: #444;
+            letter-spacing: 10px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            margin-top: -30px;
+        }
+
+        .sound-altar {
+            display: flex;
+            gap: 20px;
+            padding: 25px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 20px;
+            box-shadow: 
+                inset 0 2px 4px rgba(255,255,255,0.9),
+                0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .sound-stone {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #FFF 0%, #F5F5F5 100%);
+            border: none;
+            border-radius: 10px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .sound-stone:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .sound-stone.active {
+            background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%);
+            transform: translateY(1px);
+        }
+
+        .enter-button {
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #FFF 0%, #F8F8F8 100%);
+            border: none;
+            border-radius: 30px;
+            font-family: 'Noto Serif TC', serif;
+            font-size: 20px;
+            color: #555;
+            letter-spacing: 5px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .enter-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Scene 1: 生命之花呼吸 - 完整的生命之花 */
+        #state-breathing {
+            gap: 30px;
+        }
+
+        .flower-of-life {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            transition: transform 4s cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        .flower-of-life svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .flower-of-life svg circle {
+            stroke: #888;
+            stroke-width: 1.2;
+            fill: none;
+            transition: all 4s ease;
+        }
+
+        .flower-of-life.inhale {
+            transform: scale(1.25);
+        }
+
+        .flower-of-life.inhale svg circle {
+            stroke: #555;
+            stroke-width: 2;
+        }
+
+        .flower-of-life.exhale {
+            transform: scale(0.8);
+        }
+
+        .flower-of-life.exhale svg circle {
+            stroke: #BBB;
+            stroke-width: 0.8;
+        }
+
+        .breath-counter {
+            font-size: 36px;
+            color: #777;
+            letter-spacing: 5px;
+            font-weight: 300;
+        }
+
+        .breath-progress {
+            display: flex;
+            gap: 15px;
+        }
+
+        .breath-dot {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #CCC;
+            border-radius: 50%;
+            transition: all 0.5s ease;
+        }
+
+        .breath-dot.active {
+            background: #888;
+            transform: scale(1.2);
+        }
+
+        .skip-button {
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid #DDD;
+            border-radius: 25px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skip-button:hover {
+            background: rgba(255,255,255,0.95);
+        }
+
+        /* Scene 2: 卓爾金召喚 - 確保一頁完整可見 */
+        #state-tzolkin {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            position: relative;
+        }
+
+        .tzolkin-board {
+            background: rgba(255,255,255,0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            max-height: calc(100vh - 120px);
+        }
+
+        .tzolkin-grid {
+            display: grid;
+            grid-template-columns: repeat(13, minmax(40px, 1fr));
+            grid-template-rows: repeat(20, minmax(25px, 1fr));
+            gap: 2px;
+            cursor: pointer;
+        }
+
+        .kin-cell {
+            width: 100%;
+            height: 100%;
+            min-width: 40px;
+            min-height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+            border: 1px solid #DDD;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .kin-cell.red { background: linear-gradient(135deg, #FFF8F8 0%, #FFE5E5 100%); }
+        .kin-cell.white { background: linear-gradient(135deg, #FAFAFA 0%, #F0F0F0 100%); }
+        .kin-cell.blue { background: linear-gradient(135deg, #F8F8FF 0%, #E5E5FF 100%); }
+        .kin-cell.yellow { background: linear-gradient(135deg, #FFFEF8 0%, #FFF8E5 100%); }
+        
+        .kin-cell.gap {
+            border: 2px solid #88CC88;
+            background: linear-gradient(135deg, #F0FFF0 0%, #E5FFE5 100%);
+            box-shadow: inset 0 0 6px rgba(120,255,120,0.3);
+        }
+
+        .kin-cell.highlight {
+            transform: scale(1.4);
+            z-index: 100;
+            background: white !important;
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
+            border: 2px solid #444;
+        }
+
+        /* 固定在底部的提示 */
+        .touch-hint {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 35px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 30px;
+            color: #555;
+            letter-spacing: 3px;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 50;
+        }
+
+        /* Scene 3: 靜心資訊 - 大氣的石碑風格 */
+        .quiet-stone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: 
+                linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,248,248,0.98) 100%);
+            padding: 60px;
+            border-radius: 25px;
+            box-shadow: 
+                0 30px 80px rgba(0,0,0,0.35),
+                inset 0 2px 4px rgba(255,255,255,1),
+                inset 0 -2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+            z-index: 300;
+            transition: transform 0.5s ease;
+        }
+
+        .quiet-stone.visible {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .tone-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .tone-dots {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dot-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .tone-dot {
+            width: 12px;
+            height: 12px;
+            background: #444;
+            border-radius: 50%;
+        }
+
+        .tone-bar {
+            width: 40px;
+            height: 12px;
+            background: #444;
+            border-radius: 3px;
+        }
+
+        .tone-name {
+            font-size: 26px;
+            color: #333;
+            letter-spacing: 4px;
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .glyph-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .glyph-image {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+        }
+
+        .glyph-name {
+            font-size: 24px;
+            color: #444;
+            letter-spacing: 3px;
+        }
+
+        /* Scene 4: 顯化卡牌 - 更大氣的呈現 */
+        #state-manifest {
+            gap: 30px;
+        }
+
+        .manifest-card {
+            background: linear-gradient(135deg, #FFF 0%, #F8F8F8 100%);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            max-width: 600px;
+        }
+
+        .sky-section {
+            text-align: center;
+        }
+
+        .earth-section {
+            text-align: center;
+        }
+
+        .earth-section img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 15px rgba(0,0,0,0.2));
+        }
+
+        .human-section {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            color: #444;
+            letter-spacing: 4px;
+        }
+
+        /* U型波符 - 正確的呈現 */
+        .wavespell-container {
+            width: 280px;
+            height: 140px;
+            position: relative;
+            margin-top: 30px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .wave-path {
+            stroke: #BBB;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .wave-dot {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border: 2px solid #888;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .wave-dot.current {
+            background: #555;
+            transform: scale(1.6);
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+            z-index: 10;
+        }
+
+        .wave-legend {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            letter-spacing: 2px;
+            margin-top: 15px;
+        }
+
+        /* 深度解讀區 */
+        .reading-section {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .reading-title {
+            font-size: 20px;
+            color: #444;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .reading-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .reading-item {
+            padding: 15px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            border-left: 4px solid #888;
+        }
+
+        .reading-label {
+            font-size: 14px;
+            color: #777;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .reading-text {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Scene 5: 向內觀看 */
+        #state-silence {
+            background: rgba(255,255,255,0.98);
+        }
+
+        .silence-timer {
+            font-size: 56px;
+            color: #DDD;
+            font-weight: 100;
+            font-family: 'Cinzel', serif;
+        }
+
+        .silence-message {
+            color: #AAA;
+            font-size: 20px;
+            letter-spacing: 6px;
+            margin-top: 25px;
+        }
+
+        /* Scene 6: 輕柔提示 */
+        #state-complete {
+            gap: 50px;
+        }
+
+        .light-message {
+            color: #777;
+            font-size: 24px;
+            letter-spacing: 5px;
+            font-style: italic;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 35px;
+        }
+
+        .action-button {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #FFF 0%, #F8F8F8 100%);
+            border: none;
+            border-radius: 30px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+        }
+
+        /* 記錄石 - 固定左側，更大氣 */
+        .record-stones {
+            position: fixed;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            z-index: 100;
+        }
+
+        .record-stone {
+            width: 65px;
+            height: 60px;
+            background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%);
+            border-radius: 35% 65% 65% 35% / 60% 40% 60% 40%;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #555;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            transition: all 0.3s ease;
+        }
+
+        .record-stone:hover {
+            transform: translateX(8px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.35);
+        }
+
+        .record-stone .kin-number {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+        }
+
+        .record-stone .completion {
+            font-size: 10px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .record-stone.today {
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFD700 100%);
+            box-shadow: 0 0 15px rgba(255,215,0,0.5);
+        }
+
+        /* 音效相關 */
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="temple-container">
+        <!-- 固定首頁按鈕 -->
+        <button class="home-button" onclick="goHome()">🏠</button>
+
+        <!-- Scene 0: 入殿 - 大氣的封面 -->
+        <div id="state-entrance" class="state active">
+            <!-- 生命之花作為封面背景 -->
+            <div class="entrance-flower">
+                <svg viewBox="0 0 400 400">
+                    <defs>
+                        <pattern id="flowerPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                            <circle cx="50" cy="50" r="20" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.6"/>
+                        </pattern>
+                    </defs>
+                    <!-- 中心圓 -->
+                    <circle cx="200" cy="200" r="30" stroke="#C4A574" stroke-width="1" fill="none"/>
+                    <!-- 第一層6個圓 -->
+                    <circle cx="200" cy="170" r="30" stroke="#C4A574" stroke-width="1" fill="none"/>
+                    <circle cx="226" cy="185" r="30" stroke="#C4A574" stroke-width="1" fill="none"/>
+                    <circle cx="226" cy="215" r="30" stroke="#C4A574" stroke-width="1" fill="none"/>
+                    <circle cx="200" cy="230" r="30" stroke="#C4A574" stroke-width="1" fill="none"/>
+                    <circle cx="174" cy="215" r="30" stroke="#C4A574" stroke-width="1" fill="none"/>
+                    <circle cx="174" cy="185" r="30" stroke="#C4A574" stroke-width="1" fill="none"/>
+                    <!-- 第二層12個圓 -->
+                    <circle cx="200" cy="140" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="226" cy="155" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="252" cy="170" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="252" cy="200" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="252" cy="230" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="226" cy="245" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="200" cy="260" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="174" cy="245" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="148" cy="230" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="148" cy="200" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="148" cy="170" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <circle cx="174" cy="155" r="30" stroke="#C4A574" stroke-width="0.8" fill="none" opacity="0.8"/>
+                    <!-- 第三層18個圓 -->
+                    <circle cx="200" cy="110" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="252" cy="140" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="278" cy="185" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="278" cy="215" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="252" cy="260" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="200" cy="290" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="148" cy="260" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="122" cy="215" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="122" cy="185" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <circle cx="148" cy="140" r="30" stroke="#C4A574" stroke-width="0.6" fill="none" opacity="0.6"/>
+                    <!-- 外圈裝飾 -->
+                    <circle cx="200" cy="200" r="180" stroke="#C4A574" stroke-width="0.5" fill="none" opacity="0.4"/>
+                </svg>
+            </div>
+            <div class="temple-title">白色靜化殿</div>
+            <div class="sound-altar">
+                <button class="sound-stone active" onclick="setSound('silence')">靜音</button>
+                <button class="sound-stone" onclick="setSound('bowl')">頌缽</button>
+                <button class="sound-stone" onclick="setSound('crystal')">水晶缽</button>
+                <button class="sound-stone" onclick="setSound('forest')">森林</button>
+            </div>
+            <button class="enter-button" onclick="enterTemple()">進入</button>
+        </div>
+
+        <!-- Scene 1: 生命之花呼吸 -->
+        <div id="state-breathing" class="state">
+            <div class="flower-of-life">
+                <svg viewBox="0 0 400 400">
+                    <!-- 與封面相同的生命之花圖案 -->
+                    <circle cx="200" cy="200" r="30" stroke="#888" stroke-width="1.2" fill="none"/>
+                    <circle cx="200" cy="170" r="30" stroke="#888" stroke-width="1.2" fill="none"/>
+                    <circle cx="226" cy="185" r="30" stroke="#888" stroke-width="1.2" fill="none"/>
+                    <circle cx="226" cy="215" r="30" stroke="#888" stroke-width="1.2" fill="none"/>
+                    <circle cx="200" cy="230" r="30" stroke="#888" stroke-width="1.2" fill="none"/>
+                    <circle cx="174" cy="215" r="30" stroke="#888" stroke-width="1.2" fill="none"/>
+                    <circle cx="174" cy="185" r="30" stroke="#888" stroke-width="1.2" fill="none"/>
+                    <circle cx="200" cy="140" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="226" cy="155" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="252" cy="170" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="252" cy="200" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="252" cy="230" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="226" cy="245" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="200" cy="260" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="174" cy="245" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="148" cy="230" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="148" cy="200" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="148" cy="170" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                    <circle cx="174" cy="155" r="30" stroke="#888" stroke-width="1" fill="none" opacity="0.9"/>
+                </svg>
+            </div>
+            <div class="breath-counter"></div>
+            <div class="breath-progress">
+                <div class="breath-dot"></div>
+                <div class="breath-dot"></div>
+                <div class="breath-dot"></div>
+            </div>
+            <button class="skip-button" onclick="skipBreathing()">SKIP</button>
+        </div>
+
+        <!-- Scene 2: 卓爾金召喚 -->
+        <div id="state-tzolkin" class="state">
+            <div class="tzolkin-board">
+                <div class="tzolkin-grid" onclick="lockKin()"></div>
+                <div class="quiet-stone" id="quiet-stone"></div>
+            </div>
+            <div class="touch-hint">Touch to Lock 觸碰停止</div>
+        </div>
+
+        <!-- Scene 4: 顯化卡牌 -->
+        <div id="state-manifest" class="state">
+            <div class="manifest-card">
+                <div class="sky-section">
+                    <div class="tone-dots" id="manifest-tone-dots"></div>
+                    <div class="tone-name" id="manifest-tone-name"></div>
+                </div>
+                <div class="earth-section">
+                    <img id="manifest-glyph" src="" alt="">
+                    <div class="glyph-name" id="manifest-glyph-name"></div>
+                </div>
+                <div class="human-section">
+                    KIN <span id="manifest-kin-number"></span>
+                </div>
+                <div class="wavespell-container">
+                    <svg width="280" height="140" viewBox="0 0 280 140">
+                        <path class="wave-path" d="M 20 120 Q 140 20 260 120"/>
+                    </svg>
+                    <div id="wave-dots-container"></div>
+                    <div class="wave-legend">波符第 <span id="wave-pos"></span> 天</div>
+                </div>
+                
+                <!-- 深度解讀 -->
+                <div class="reading-section">
+                    <div class="reading-title">深度解讀</div>
+                    <div class="reading-content">
+                        <div class="reading-item">
+                            <div class="reading-label">正向頻率</div>
+                            <div class="reading-text" id="reading-positive"></div>
+                        </div>
+                        <div class="reading-item">
+                            <div class="reading-label">低頻陷阱</div>
+                            <div class="reading-text" id="reading-shadow"></div>
+                        </div>
+                        <div class="reading-item">
+                            <div class="reading-label">建議練習</div>
+                            <div class="reading-text" id="reading-advice"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scene 5: 向內觀看 -->
+        <div id="state-silence" class="state">
+            <div class="silence-timer" id="silence-timer">30</div>
+            <div class="silence-message">向內觀看</div>
+            <button class="skip-button" onclick="skipSilence()">SKIP</button>
+        </div>
+
+        <!-- Scene 6: 輕柔提示 -->
+        <div id="state-complete" class="state">
+            <div class="light-message" id="light-message"></div>
+            <div class="action-buttons">
+                <button class="action-button" onclick="restart()">再抽一次</button>
+                <button class="action-button" onclick="goHome()">返回首頁</button>
+            </div>
+        </div>
+
+        <!-- 記錄石 -->
+        <div class="record-stones" id="record-stones"></div>
+    </div>
+
+    <!-- 音效檔案 -->
+    <audio id="audio-bowl" loop>
+        <source src="../audio/singing-bowl.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audio-crystal" loop>
+        <source src="../audio/crystal-bowl.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audio-forest" loop>
+        <source src="../audio/forest-stream.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 狀態管理
+        let currentState = 'entrance';
+        let selectedKin = null;
+        let currentHighlight = null;
+        let tzolkinInterval = null;
+        let silenceTimer = null;
+        let breathCount = 0;
+        let currentSound = 'silence';
+        let currentAudio = null;
+        let quietTimeout = null;
+        let didCompleteRitual = false;
+
+        // 20圖騰資料
+        const solarSeals = [
+            {name: '紅龍', color: 'red'},
+            {name: '白風', color: 'white'},
+            {name: '藍夜', color: 'blue'},
+            {name: '黃種子', color: 'yellow'},
+            {name: '紅蛇', color: 'red'},
+            {name: '白世界橋', color: 'white'},
+            {name: '藍手', color: 'blue'},
+            {name: '黃星星', color: 'yellow'},
+            {name: '紅月', color: 'red'},
+            {name: '白狗', color: 'white'},
+            {name: '藍猴', color: 'blue'},
+            {name: '黃人', color: 'yellow'},
+            {name: '紅天行者', color: 'red'},
+            {name: '白巫師', color: 'white'},
+            {name: '藍鷹', color: 'blue'},
+            {name: '黃戰士', color: 'yellow'},
+            {name: '紅地球', color: 'red'},
+            {name: '白鏡', color: 'white'},
+            {name: '藍風暴', color: 'blue'},
+            {name: '黃太陽', color: 'yellow'}
+        ];
+
+        // 13調性資料
+        const galacticTones = [
+            '磁性', '月亮', '電力', '自我存在', '超頻',
+            '韻律', '共振', '銀河', '太陽', '行星',
+            '光譜', '水晶', '宇宙'
+        ];
+
+        // GAP日
+        const gapDays = [1,20,22,39,43,50,51,58,64,69,72,77,85,88,93,96,
+            106,107,108,109,110,111,112,113,114,115,146,147,148,149,
+            150,151,152,153,154,155,165,168,173,176,184,189,192,197,
+            203,210,211,218,222,239,241,260];
+
+        // 深度解讀資料
+        const readings = {
+            positive: [
+                "你的內在智慧正在覺醒，信任直覺的指引",
+                "生命力正在更新，準備迎接新的循環",
+                "創造力正處於高峰，讓靈感自然流動",
+                "與宇宙的連結正在加深，保持開放的心",
+                "轉化的能量正在運作，釋放不再需要的"
+            ],
+            shadow: [
+                "過度思考可能阻礙直覺，練習放下控制",
+                "執著於舊模式，需要勇氣跨越舒適圈",
+                "完美主義的陷阱，接納不完美的美",
+                "逃避內在的聲音，需要更多獨處時間",
+                "抗拒改變的恐懼，信任生命的流動"
+            ],
+            advice: [
+                "每日靜心10分鐘，觀察呼吸的節奏",
+                "書寫晨間日記，記錄夢境與直覺",
+                "親近大自然，赤腳接地30分鐘",
+                "練習感恩，列出今日的三個祝福",
+                "創造神聖空間，點燃蠟燭冥想"
+            ]
+        };
+
+        // 輕柔提示句
+        const lightMessages = [
+            "靜觀內在的光，它一直都在",
+            "時間在此刻停止，只有永恆",
+            "你已與宇宙同頻，感受這份連結",
+            "沉默中有答案，耐心等待",
+            "此刻即是永恆，無需他求",
+            "呼吸帶來覺知，覺知帶來自由",
+            "你就是你尋找的光"
+        ];
+
+        // 設定聲音
+        function setSound(type) {
+            // 停止當前音效
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            
+            // 更新按鈕狀態
+            document.querySelectorAll('.sound-stone').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            currentSound = type;
+            
+            // 播放新音效
+            if (type !== 'silence') {
+                currentAudio = document.getElementById(`audio-${type}`);
+                if (currentAudio) {
+                    currentAudio.volume = 0.3;
+                    currentAudio.play().catch(e => console.log('Audio play failed:', e));
+                }
+            }
+        }
+
+        // 進入神殿
+        function enterTemple() {
+            didCompleteRitual = true;
+            transitionTo('breathing');
+            startBreathing();
+        }
+
+        // 狀態轉換
+        function transitionTo(state) {
+            document.querySelectorAll('.state').forEach(s => {
+                s.classList.remove('active');
+            });
+            setTimeout(() => {
+                document.getElementById(`state-${state}`).classList.add('active');
+                currentState = state;
+            }, 500);
+        }
+
+        // 開始呼吸
+        function startBreathing() {
+            breathCount = 0;
+            performBreathCycle();
+        }
+
+        // 呼吸循環
+        function performBreathCycle() {
+            const flower = document.querySelector('.flower-of-life');
+            const counter = document.querySelector('.breath-counter');
+            const dots = document.querySelectorAll('.breath-dot');
+            
+            breathCount++;
+            if (breathCount <= 3) {
+                dots[breathCount - 1].classList.add('active');
+            }
+
+            // 吸氣4秒
+            flower.classList.add('inhale');
+            let count = 0;
+            
+            const inhaleInterval = setInterval(() => {
+                count++;
+                counter.textContent = `吸 ${count}`;
+                if (count >= 4) {
+                    clearInterval(inhaleInterval);
+                    
+                    // 吐氣6秒
+                    flower.classList.remove('inhale');
+                    flower.classList.add('exhale');
+                    count = 0;
+                    
+                    const exhaleInterval = setInterval(() => {
+                        count++;
+                        counter.textContent = `吐 ${count}`;
+                        if (count >= 6) {
+                            clearInterval(exhaleInterval);
+                            flower.classList.remove('exhale');
+                            counter.textContent = '';
+                            
+                            if (breathCount < 3) {
+                                setTimeout(() => performBreathCycle(), 1000);
+                            } else {
+                                setTimeout(() => initTzolkin(), 1500);
+                            }
+                        }
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        // 略過呼吸
+        function skipBreathing() {
+            didCompleteRitual = false;
+            initTzolkin();
+        }
+
+        // 初始化卓爾金曆
+        function initTzolkin() {
+            transitionTo('tzolkin');
+            const grid = document.querySelector('.tzolkin-grid');
+            grid.innerHTML = '';
+            
+            // 建立20×13矩陣
+            for (let row = 0; row < 20; row++) {
+                for (let col = 0; col < 13; col++) {
+                    const seal = row + 1;
+                    const tone = col + 1;
+                    const kin = seal + 20 * (tone - 1);
+                    
+                    const cell = document.createElement('div');
+                    cell.className = 'kin-cell';
+                    cell.classList.add(solarSeals[seal - 1].color);
+                    
+                    if (gapDays.includes(kin)) {
+                        cell.classList.add('gap');
+                    }
+                    
+                    cell.dataset.kin = kin;
+                    cell.dataset.seal = seal;
+                    cell.dataset.tone = tone;
+                    cell.textContent = kin;
+                    grid.appendChild(cell);
+                }
+            }
+            
+            startTzolkinAnimation();
+        }
+
+        // 開始跳動動畫
+        function startTzolkinAnimation() {
+            const cells = document.querySelectorAll('.kin-cell');
+            tzolkinInterval = setInterval(() => {
+                if (currentHighlight) {
+                    currentHighlight.classList.remove('highlight');
+                }
+                const randomIndex = Math.floor(Math.random() * 260);
+                currentHighlight = cells[randomIndex];
+                currentHighlight.classList.add('highlight');
+            }, 50);
+        }
+
+        // 鎖定KIN
+        function lockKin() {
+            if (!tzolkinInterval) return;
+            clearInterval(tzolkinInterval);
+            
+            if (currentHighlight) {
+                selectedKin = parseInt(currentHighlight.dataset.kin);
+                currentHighlight.classList.add('highlight');
+                
+                setTimeout(() => showQuietInfo(), 1000);
+            }
+        }
+
+        // 顯示靜心資訊
+        function showQuietInfo() {
+            const kin = selectedKin;
+            const seal = ((kin - 1) % 20) + 1;
+            const tone = Math.floor((kin - 1) / 20) + 1;
+            
+            const stone = document.getElementById('quiet-stone');
+            stone.innerHTML = `
+                <div class="tone-section">
+                    <div class="tone-dots">${renderToneDots(tone)}</div>
+                    <div class="tone-name">${galacticTones[tone - 1]}</div>
+                </div>
+                <div class="glyph-section">
+                    <img class="glyph-image" src="../images/${String(seal).padStart(2, '0')}.png" 
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\"font-size:60px;color:#444;\">${solarSeals[seal-1].name}</div>'">
+                    <div class="glyph-name">${solarSeals[seal - 1].name}</div>
+                </div>
+                <button class="skip-button" onclick="skipQuiet()">SKIP</button>
+            `;
+            stone.classList.add('visible');
+            
+            quietTimeout = setTimeout(() => skipQuiet(), 6000);
+        }
+
+        // 略過靜心
+        function skipQuiet() {
+            clearTimeout(quietTimeout);
+            document.getElementById('quiet-stone').classList.remove('visible');
+            if (currentHighlight) {
+                currentHighlight.classList.remove('highlight');
+            }
+            setTimeout(() => showManifest(), 500);
+        }
+
+        // 渲染調性點槓
+        function renderToneDots(tone) {
+            let html = '';
+            const bars = Math.floor(tone / 5);
+            const dots = tone % 5;
+            
+            for (let i = 0; i < bars; i++) {
+                html += '<div class="tone-bar"></div>';
+            }
+            
+            if (dots > 0) {
+                html += '<div class="dot-row">';
+                for (let i = 0; i < dots; i++) {
+                    html += '<div class="tone-dot"></div>';
+                }
+                html += '</div>';
+            }
+            
+            return html;
+        }
+
+        // 顯示顯化卡牌
+        function showManifest() {
+            transitionTo('manifest');
+            
+            const kin = selectedKin;
+            const seal = ((kin - 1) % 20) + 1;
+            const tone = Math.floor((kin - 1) / 20) + 1;
+            const tonePos = tone;
+            
+            // 更新顯化卡牌內容
+            document.getElementById('manifest-tone-dots').innerHTML = renderToneDots(tone);
+            document.getElementById('manifest-tone-name').textContent = galacticTones[tone - 1];
+            
+            const glyphImg = document.getElementById('manifest-glyph');
+            glyphImg.src = `../images/${String(seal).padStart(2, '0')}.png`;
+            glyphImg.onerror = function() {
+                this.style.display = 'none';
+                this.parentElement.innerHTML = `<div style="font-size: 80px; color: #444;">${solarSeals[seal-1].name}</div>`;
+            };
+            
+            document.getElementById('manifest-glyph-name').textContent = solarSeals[seal - 1].name;
+            document.getElementById('manifest-kin-number').textContent = kin;
+            
+            // 繪製U型波符
+            const container = document.getElementById('wave-dots-container');
+            container.innerHTML = '';
+            const positions = [
+                {x: 20, y: 110}, {x: 40, y: 95}, {x: 60, y: 80}, {x: 80, y: 65},
+                {x: 100, y: 50}, {x: 120, y: 40}, {x: 140, y: 35},
+                {x: 160, y: 40}, {x: 180, y: 50}, {x: 200, y: 65},
+                {x: 220, y: 80}, {x: 240, y: 95}, {x: 260, y: 110}
+            ];
+            
+            positions.forEach((pos, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'wave-dot';
+                if (i + 1 === tonePos) dot.classList.add('current');
+                dot.style.left = pos.x + 'px';
+                dot.style.top = pos.y + 'px';
+                container.appendChild(dot);
+            });
+            
+            document.getElementById('wave-pos').textContent = tonePos;
+            
+            // 深度解讀
+            document.getElementById('reading-positive').textContent = 
+                readings.positive[Math.floor(Math.random() * readings.positive.length)];
+            document.getElementById('reading-shadow').textContent = 
+                readings.shadow[Math.floor(Math.random() * readings.shadow.length)];
+            document.getElementById('reading-advice').textContent = 
+                readings.advice[Math.floor(Math.random() * readings.advice.length)];
+            
+            // 儲存記錄
+            saveRecord(kin);
+            
+            // 5秒後進入靜默
+            setTimeout(() => enterSilence(), 5000);
+        }
+
+        // 進入靜默
+        function enterSilence() {
+            transitionTo('silence');
+            
+            // 音樂漸弱
+            if (currentAudio) {
+                let volume = currentAudio.volume;
+                const fadeInterval = setInterval(() => {
+                    volume -= 0.01;
+                    if (volume <= 0) {
+                        clearInterval(fadeInterval);
+                        currentAudio.pause();
+                    } else {
+                        currentAudio.volume = volume;
+                    }
+                }, 300);
+            }
+            
+            let count = 30;
+            const timer = document.getElementById('silence-timer');
+            
+            silenceTimer = setInterval(() => {
+                count--;
+                timer.textContent = count;
+                if (count <= 0) {
+                    clearInterval(silenceTimer);
+                    showComplete();
+                }
+            }, 1000);
+        }
+
+        // 略過靜默
+        function skipSilence() {
+            clearInterval(silenceTimer);
+            showComplete();
+        }
+
+        // 顯示完成
+        function showComplete() {
+            transitionTo('complete');
+            const message = lightMessages[Math.floor(Math.random() * lightMessages.length)];
+            document.getElementById('light-message').textContent = message;
+            
+            // 音樂漸強
+            if (currentAudio && currentSound !== 'silence') {
+                currentAudio.volume = 0;
+                currentAudio.play();
+                let volume = 0;
+                const fadeInterval = setInterval(() => {
+                    volume += 0.01;
+                    if (volume >= 0.3) {
+                        clearInterval(fadeInterval);
+                    } else {
+                        currentAudio.volume = volume;
+                    }
+                }, 100);
+            }
+        }
+
+        // 重新開始
+        function restart() {
+            breathCount = 0;
+            selectedKin = null;
+            currentHighlight = null;
+            didCompleteRitual = true;
+            document.querySelectorAll('.breath-dot').forEach(d => d.classList.remove('active'));
+            transitionTo('breathing');
+            startBreathing();
+        }
+
+        // 返回首頁
+        function goHome() {
+            window.location.href = '/';
+        }
+
+        // 檢查是否為今日對頻
+        function isTodayKin(kin) {
+            // 這裡簡化處理，實際需要根據13月亮曆計算
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+            return (dayOfYear % 260) === (kin - 1);
+        }
+
+        // 儲存記錄
+        function saveRecord(kin) {
+            let records = JSON.parse(localStorage.getItem('whiteRecords') || '[]');
+            records.unshift({
+                kin: kin,
+                timestamp: Date.now(),
+                completed: didCompleteRitual,
+                isToday: isTodayKin(kin)
+            });
+            records = records.slice(0, 5);
+            localStorage.setItem('whiteRecords', JSON.stringify(records));
+            updateRecordStones();
+        }
+
+        // 更新記錄石
+        function updateRecordStones() {
+            const records = JSON.parse(localStorage.getItem('whiteRecords') || '[]');
+            const container = document.getElementById('record-stones');
+            container.innerHTML = records.map(record => {
+                const classes = ['record-stone'];
+                if (record.isToday) classes.push('today');
+                return `
+                    <div class="${classes.join(' ')}" onclick="viewRecord(${record.kin})">
+                        <div class="kin-number">KIN ${record.kin}</div>
+                        <div class="completion">${record.completed ? '✓' : '○'}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 查看記錄
+        function viewRecord(kin) {
+            selectedKin = kin;
+            showManifest();
+        }
+
+        // 初始化
+        updateRecordStones();
+    </script>
+</body>
+</html>

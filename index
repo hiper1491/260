@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 月亮曆 - 森林靜心場域 (修正版)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0d1b2a;
+            background-image: radial-gradient(circle, #1b263b 0%, #0d1b2a 100%);
+            font-family: sans-serif;
+            color: #e0e1dd;
+        }
+
+        .container { text-align: center; }
+
+        /* 儀式按鈕 */
+        .ritual-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid #778da9;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            outline: none;
+            box-shadow: 0 0 15px rgba(119, 141, 169, 0.3);
+        }
+
+        .ritual-button:hover {
+            border-color: #e0e1dd;
+            box-shadow: 0 0 30px rgba(224, 225, 221, 0.5);
+        }
+
+        .ritual-button.playing {
+            animation: breathe 4s infinite ease-in-out;
+            border-color: #415a77;
+        }
+
+        @keyframes breathe {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .status-text {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button class="ritual-button" id="playBtn" disabled>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e0e1dd" stroke-width="1.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+        </button>
+        <p class="status-text" id="status">正在連結森林頻率...</p>
+    </div>
+
+    <audio id="bgm" loop preload="auto">
+        <source src="https://upload.wikimedia.org/wikipedia/commons/2/21/Small_Stream_in_the_Forest.ogg" type="audio/ogg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const audio = document.getElementById('bgm');
+        const playBtn = document.getElementById('playBtn');
+        const statusText = document.getElementById('status');
+        let isPlaying = false;
+
+        // 當音樂準備好可以播放時
+        audio.oncanplaythrough = () => {
+            playBtn.disabled = false;
+            statusText.innerText = "森林已就緒，請開啟儀式";
+        };
+
+        // 如果載入失敗
+        audio.onerror = () => {
+            statusText.innerText = "頻率連結失敗，請檢查網路或更換瀏覽器";
+        };
+
+        playBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                audio.volume = 0;
+                audio.play().then(() => {
+                    fadeIn(audio);
+                    playBtn.classList.add('playing');
+                    statusText.innerText = "能量流動中";
+                    isPlaying = true;
+                }).catch(err => {
+                    alert("瀏覽器阻擋了聲音，請再點擊一次試試看！");
+                });
+            } else {
+                fadeOut(audio);
+                playBtn.classList.remove('playing');
+                statusText.innerText = "森林頻率已靜止";
+                isPlaying = false;
+            }
+        });
+
+        function fadeIn(audioElement) {
+            let vol = 0;
+            const timer = setInterval(() => {
+                vol += 0.05;
+                if (vol >= 0.6) {
+                    audioElement.volume = 0.6;
+                    clearInterval(timer);
+                } else {
+                    audioElement.volume = vol;
+                }
+            }, 100);
+        }
+
+        function fadeOut(audioElement) {
+            let vol = audioElement.volume;
+            const timer = setInterval(() => {
+                vol -= 0.05;
+                if (vol <= 0) {
+                    audioElement.volume = 0;
+                    audioElement.pause();
+                    clearInterval(timer);
+                } else {
+                    audioElement.volume = vol;
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
