@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>白色小屋｜五階段完整流程＋卓爾金</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{width:100%;height:100%;}
+    body{
+      overflow:hidden;
+      font-family:'Noto Serif TC', serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+      background: linear-gradient(180deg,#FEFEFE 0%,#F8F7F5 30%,#F0EEE9 70%,#E8E5DF 100%);
+    }
+
+    .state{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:18px;
+      padding:28px 18px;
+    }
+    .state.active{ display:flex; }
+
+    /* ===== 階段1+2：黑底入殿 + 文字逐行出現（點花進入呼吸） ===== */
+    #state-entrance{
+      background: linear-gradient(180deg, #000 0%, #1a1a1a 100%);
+      color: rgba(255,255,255,0.92);
+      gap:14px;
+    }
+    .entrance-flower-svg{
+      width:380px;height:380px;
+      filter: drop-shadow(0 0 44px rgba(212,175,55,0.85));
+      animation: entranceGlow 3s ease-in-out;
+      opacity:1;
+      cursor: default;
+      touch-action: manipulation;
+      user-select:none;
+    }
+    .entrance-title{
+      font-family:'Cinzel', serif;
+      letter-spacing:10px;
+      font-size:24px;
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 0 22px rgba(212,175,55,0.25);
+      user-select:none;
+      margin-top:4px;
+    }
+    @keyframes entranceGlow{
+      0%{ opacity:0; transform: scale(0.82); }
+      60%{ opacity:1; transform: scale(1.05); }
+      100%{ opacity:1; transform: scale(1); }
+    }
+
+    .entrance-guide{
+      margin-top:10px;
+      text-align:center;
+      max-width:560px;
+      padding: 0 16px;
+    }
+    .entrance-line{
+      opacity:0;
+      font-size:17px;
+      letter-spacing:2px;
+      line-height:1.9;
+      color: rgba(245,245,245,0.86);
+      text-shadow: 0 1px 0 rgba(0,0,0,0.35);
+      transform: translateY(10px);
+      animation: fadeInLine 1s ease-in-out forwards;
+    }
+    .entrance-line:nth-child(1){ animation-delay: 0.6s; }
+    .entrance-line:nth-child(2){ animation-delay: 1.6s; }
+    .entrance-line:nth-child(3){ animation-delay: 2.6s; }
+    .entrance-line:nth-child(4){ animation-delay: 3.6s; }
+
+    @keyframes fadeInLine{
+      from { opacity:0; transform: translateY(10px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .enter-hint{
+      position: fixed;
+      bottom: 66px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      letter-spacing: 6px;
+      color: rgba(212,175,55,0.78);
+      text-shadow:
+        0 1px 0 rgba(0,0,0,0.55),
+        0 10px 26px rgba(0,0,0,0.22);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .9s ease;
+      white-space: nowrap;
+      user-select:none;
+    }
+    .enter-hint.show{
+      opacity: 1;
+      animation: hintBreath 4.2s ease-in-out infinite;
+    }
+    @keyframes hintBreath{
+      0%,100%{ opacity:0.62; transform: translateX(-50%) translateY(0); }
+      50%{ opacity:0.92; transform: translateX(-50%) translateY(-2px); }
+    }
+
+    .entrance-flower-svg.ready{
+      cursor:pointer;
+      filter: drop-shadow(0 0 56px rgba(199,163,107,0.70));
+      animation: readyGlow 2.8s ease-in-out infinite;
+    }
+    @keyframes readyGlow{
+      0%,100%{ transform: scale(1); }
+      50%{ transform: scale(1.02); }
+    }
+
+    /* ===== 階段3：光之呼吸（3輪） ===== */
+    #state-breath{
+      background: linear-gradient(180deg,#FEFEFE 0%,#F8F7F5 40%,#EFEDE8 100%);
+    }
+    .breath-container{
+      position:relative;
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:10vh;
+    }
+
+    .heart-flower{
+      position:relative;
+      width:100px;
+      height:100px;
+      z-index:2;
+      opacity:1;
+    }
+    .heart-flower-svg{
+      width:100%;
+      height:100%;
+      opacity:0.38;
+      filter: drop-shadow(0 0 14px rgba(199,163,107,0.16));
+    }
+
+    .breath-text{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%, -50%);
+      font-size:1.75rem;
+      font-weight:800;
+      letter-spacing:2px;
+      color: rgba(180,145,80,0.92);
+      text-shadow: 0 0 8px rgba(212,175,55,0.16);
+      z-index:3;
+      transition: all 0.6s ease;
+      user-select:none;
+      pointer-events:none;
+      background: transparent;
+    }
+    .breath-text.inhale{
+      transform: translate(-50%, -50%) scale(1.18);
+      color: rgba(199,163,107,0.98);
+    }
+    .breath-text.exhale{
+      transform: translate(-50%, -50%) scale(0.90);
+      opacity:0.72;
+    }
+
+    .breath-aura{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform: translate(-50%, -50%);
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      background: radial-gradient(circle,
+        rgba(212,175,55,0.26) 0%,
+        rgba(199,163,107,0.16) 30%,
+        transparent 72%);
+      filter: blur(34px);
+      z-index:1;
+      transition: all 0.6s ease;
+      opacity:0.95;
+    }
+    .breath-aura.inhale{ animation: auraInhale 4s ease-in-out forwards; }
+    .breath-aura.exhale{ animation: auraExhale 6s ease-in-out forwards; }
+
+    @keyframes auraInhale{
+      0%{ transform: translate(-50%, -50%) scale(1); opacity:0.55; }
+      100%{ transform: translate(-50%, -50%) scale(1.75); opacity:1; }
+    }
+    @keyframes auraExhale{
+      0%{ transform: translate(-50%, -50%) scale(1.75); opacity:1; }
+      100%{ transform: translate(-50%, -50%) scale(1.05); opacity:0.58; }
+    }
+
+    .breath-progress{
+      position:fixed;
+      bottom:60px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:18px;
+      z-index:10;
+      user-select:none;
+      pointer-events:none;
+    }
+    .progress-dot{
+      width:16px;height:16px;border-radius:50%;
+      border:2px solid rgba(212,175,55,0.35);
+      background:transparent;
+      transition: all 0.4s ease;
+    }
+    .progress-dot.active{
+      background: rgba(212,175,55,0.88);
+      border-color: rgba(212,175,55,0.95);
+      box-shadow: 0 0 15px rgba(212,175,55,0.42);
+    }
+
+    /* ===== 階段4：入心（2秒）— 只做柔和淡出，不再跳一排文字 ===== */
+    @keyframes flowerToHeart{
+      0%{ transform: scale(1); opacity: 1; }
+      100%{ transform: scale(0.25); opacity: 0; }
+    }
+    .heart-flower.to-heart{
+      animation: flowerToHeart 2s ease-out forwards;
+    }
+    #state-breath.fade-out{
+      animation: fadeToWhite 1.2s ease-out forwards;
+    }
+    @keyframes fadeToWhite{ to{ opacity:0; } }
+
+    /* ===== 卓爾金 ===== */
+    #state-tzolkin{ padding:10px; }
+    .tzolkin-wrap{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px 12px;
+      position:relative;
+    }
+
+    #tzBoard{
+      position:relative;
+      width:min(92vw, 720px);
+      height:min(88vh, 820px);
+      background:transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    #tzBoard.breathing::before{
+      content:"";
+      position:absolute;
+      inset:-28px;
+      border-radius:999px;
+      background: radial-gradient(circle,
+        rgba(212,175,55,.14) 0%,
+        rgba(199,163,107,.08) 35%,
+        rgba(199,163,107,.04) 55%,
+        transparent 72%);
+      animation: fieldBreath 2.8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes fieldBreath{
+      0%,100%{ opacity:.20; transform: scale(.985); }
+      50%{ opacity:.52; transform: scale(1.02); }
+    }
+
+    .tzolkin-grid{
+      width:100%;
+      height:100%;
+      display:grid;
+      grid-template-columns:repeat(13,1fr);
+      grid-template-rows:repeat(20,1fr);
+      gap:4px;
+      cursor:pointer;
+      position:relative;
+      z-index:2;
+    }
+
+    .kin-cell{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:4px;
+      border:1px solid transparent;
+      font-size:11px;
+      font-weight:600;
+      color:#666;
+      transition: all 0.2s ease;
+      user-select:none;
+      background:#fff;
+    }
+
+    .kin-cell.red{    background:#FFF5F5; border-color: rgba(255,200,200,0.30); }
+    .kin-cell.white{  background:#FFFFFF; border-color: rgba(200,200,200,0.20); }
+    .kin-cell.blue{   background:#F0F5FF; border-color: rgba(200,220,255,0.30); }
+    .kin-cell.yellow{ background:#FFFBF0; border-color: rgba(255,240,200,0.30); }
+
+    .kin-cell.gap{
+      background:#F0FFF0;
+      border:2px solid rgba(136,204,136,0.50);
+      box-shadow: inset 0 0 6px rgba(136,204,136,0.20);
+    }
+
+    .kin-cell.highlight{
+      transform: scale(1.35);
+      background:#FFF !important;
+      border-color:#888 !important;
+      box-shadow: 0 0 20px rgba(0,0,0,0.30);
+      color:#333;
+      font-weight:700;
+      z-index:10;
+    }
+
+    .lock-indicator{
+      position:absolute; left:50%; bottom:-32px; transform:translateX(-50%);
+      font-size:18px; color: rgba(120,120,120,0.58);
+      transition: all 0.4s ease; user-select:none; pointer-events:none; z-index:6;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+    }
+    .lock-indicator.locked{
+      color: rgba(180,150,90,0.90);
+      text-shadow: 0 0 12px rgba(212,175,55,0.70), 0 1px 0 rgba(255,255,255,0.45);
+    }
+
+    /* ===== 快速檢查面板 ===== */
+    .debug-btn{
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+      cursor: pointer;
+      z-index: 2000;
+      font-size: 18px;
+      color: rgba(60,60,60,0.75);
+    }
+    .debug-panel{
+      position: fixed;
+      top: 68px;
+      right: 16px;
+      width: 260px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(0,0,0,0.10);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.14);
+      z-index: 2000;
+      display: none;
+    }
+    .debug-panel.show{ display:block; }
+    .dbg-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:8px 0; }
+    .dbg-row label{ font-size:13px; color: rgba(0,0,0,0.60); }
+    .dbg-row input{
+      width: 110px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background:#fff;
+      font-size: 14px;
+    }
+    .dbg-actions{ display:flex; gap:8px; margin-top:8px; }
+    .dbg-actions button{
+      flex:1;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(250,250,250,1);
+      cursor:pointer;
+      font-size: 13px;
+    }
+    .dbg-actions button:hover{ background: rgba(245,245,245,1); }
+
+    @media (max-width: 520px){
+      .entrance-flower-svg{ width:280px; height:280px; }
+      .entrance-title{ font-size:21px; letter-spacing:8px; }
+      .entrance-line{ font-size:15px; }
+      .breath-container{ margin-top:5vh; }
+      .heart-flower{ width:80px; height:80px; }
+      .breath-text{ font-size:1.35rem; }
+      .breath-aura{ width:240px; height:240px; filter: blur(30px); }
+      #tzBoard{ width:94vw; height:92vh; }
+      .kin-cell{ font-size:9px; }
+      .kin-cell.highlight{ transform: scale(1.25); }
+      .lock-indicator{ font-size:16px; bottom:-26px; }
+      .debug-panel{ width: 240px; right: 10px; }
+    }
+    @media (min-width: 521px) and (max-width: 1024px){
+      .entrance-flower-svg{ width:320px; height:320px; }
+    }
+  </style>
+</head>
+
+<body>
+  <svg width="0" height="0" style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+        <stop offset="50%" style="stop-color:#C7A36B;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#B8956A;stop-opacity:1" />
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <symbol id="flower-of-life" viewBox="0 0 350 350">
+      <g transform="translate(175, 175)" filter="url(#glow)">
+        <g opacity="0.9">
+          <circle cx="0" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="24.25" cy="-14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="24.25" cy="14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="0" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="-24.25" cy="14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="-24.25" cy="-14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <g opacity="0.75">
+            <circle cx="0" cy="-56" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="48.5" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="48.5" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="0" cy="56" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-48.5" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-48.5" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="0" cy="-84" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="72.75" cy="-42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="72.75" cy="42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="0" cy="84" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-72.75" cy="42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-72.75" cy="-42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+          </g>
+        </g>
+      </g>
+    </symbol>
+  </svg>
+
+  <div id="state-entrance" class="state active">
+    <svg class="entrance-flower-svg" id="entranceFlower" viewBox="0 0 350 350" aria-label="生命之花">
+      <use href="#flower-of-life" xlink:href="#flower-of-life"></use>
+    </svg>
+
+    <div class="entrance-title">白光聖所</div>
+
+    <div class="entrance-guide" aria-live="polite">
+      <div class="entrance-line">在進入之前</div>
+      <div class="entrance-line">請先讓心靜下來</div>
+      <div class="entrance-line">找一個舒適的姿勢</div>
+      <div class="entrance-line">準備好後，點擊生命之花</div>
+    </div>
+
+    <div class="enter-hint" id="enterHint">點 擊 · 生 命 · 之 花</div>
+  </div>
+
+  <div id="state-breath" class="state">
+    <div class="breath-container">
+      <div class="heart-flower" id="heartFlower">
+        <svg class="heart-flower-svg" viewBox="0 0 350 350" aria-hidden="true">
+          <use href="#flower-of-life" xlink:href="#flower-of-life"></use>
+        </svg>
+        <div class="breath-text inhale" id="breathText">吸...</div>
+      </div>
+
+      <div class="breath-aura inhale" id="breathAura"></div>
+    </div>
+
+    <div class="breath-progress" aria-hidden="true">
+      <div class="progress-dot" id="dot0"></div>
+      <div class="progress-dot" id="dot1"></div>
+      <div class="progress-dot" id="dot2"></div>
+    </div>
+  </div>
+
+  <div id="state-tzolkin" class="state">
+    <div class="tzolkin-wrap">
+      <div id="tzBoard" class="breathing">
+        <div class="tzolkin-grid" id="tzGrid"></div>
+        <div class="lock-indicator" id="lockSeal">○</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="debug-btn" id="dbgBtn" title="快速檢查">⚙︎</button>
+  <div class="debug-panel" id="dbgPanel">
+    <div class="dbg-row">
+      <label>KIN</label>
+      <input id="dbgKin" type="number" min="1" max="260" value="34">
+    </div>
+
+    <div class="dbg-actions">
+      <button id="dbgShow">顯示卡牌</button>
+      <button id="dbgHide">關閉卡牌</button>
+    </div>
+
+    <div class="dbg-actions" style="margin-top:6px;">
+      <button id="dbgGoto">跳到卓爾金</button>
+      <button id="dbgClose">收起面板</button>
+    </div>
+  </div>
+
+  <script src="../core/kin-card-core.js"></script>
+
+  <script>
+    const solarSeals = [
+      {name:'紅龍', color:'red'},{name:'白風', color:'white'},{name:'藍夜', color:'blue'},{name:'黃種子', color:'yellow'},
+      {name:'紅蛇', color:'red'},{name:'白世界橋', color:'white'},{name:'藍手', color:'blue'},{name:'黃星星', color:'yellow'},
+      {name:'紅月', color:'red'},{name:'白狗', color:'white'},{name:'藍猴', color:'blue'},{name:'黃人', color:'yellow'},
+      {name:'紅天行者', color:'red'},{name:'白巫師', color:'white'},{name:'藍鷹', color:'blue'},{name:'黃戰士', color:'yellow'},
+      {name:'紅地球', color:'red'},{name:'白鏡', color:'white'},{name:'藍風暴', color:'blue'},{name:'黃太陽', color:'yellow'}
+    ];
+    const galacticTones = ['磁性','月亮','電力','自我存在','超頻','韻律','共振','銀河','太陽','行星','光譜','水晶','宇宙'];
+    const gapDays = [1, 20, 22, 39, 43, 50, 51, 58, 64, 69, 72, 77, 85, 88, 93, 96, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 165, 168, 173, 176, 184, 189, 192, 197, 203, 210, 211, 218, 222, 239, 241, 260];
+
+    let kinCard = { showFromKin: ()=>{}, hide: ()=>{} };
+    try{
+      if (window.KIN_CARD_CORE && typeof window.KIN_CARD_CORE.mount === 'function'){
+        kinCard = window.KIN_CARD_CORE.mount({
+          hostEl: document.getElementById('tzBoard'),
+          imageBasePath: '../images',
+          solarSeals,
+          galacticTones
+        });
+      } else {
+        console.warn('[white-room] KIN_CARD_CORE not found. Tzolkin grid will still work; card overlay disabled.');
+      }
+    }catch(err){
+      console.warn('[white-room] KIN_CARD_CORE mount failed:', err);
+    }
+
+    const stateEntrance = document.getElementById('state-entrance');
+    const stateBreath = document.getElementById('state-breath');
+    const stateTzolkin = document.getElementById('state-tzolkin');
+
+    function switchState(target){
+      document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+      document.getElementById(`state-${target}`).classList.add('active');
+    }
+
+    const entranceFlower = document.getElementById('entranceFlower');
+    const enterHint = document.getElementById('enterHint');
+    let entranceReady = false;
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        entranceReady = true;
+        enterHint.classList.add('show');
+        entranceFlower.classList.add('ready');
+        entranceFlower.addEventListener('click', () => {
+          if (!entranceReady) return;
+          switchState('breath');
+          startBreathRounds();
+        }, { once:true, passive:true });
+      }, 4600);
+    });
+
+    const dots = [document.getElementById('dot0'), document.getElementById('dot1'), document.getElementById('dot2')];
+    const breathText = document.getElementById('breathText');
+    const breathAura = document.getElementById('breathAura');
+    const heartFlower = document.getElementById('heartFlower');
+
+    let breathRound = 0;
+    let phaseTimer = null;
+
+    function clearTimers(){
+      if (phaseTimer) clearTimeout(phaseTimer);
+      phaseTimer = null;
+    }
+
+    function breathCycle(){
+      if (breathRound >= 3){
+        enterHeartIntegration();
+        return;
+      }
+
+      dots[breathRound].classList.add('active');
+
+      breathText.textContent = '吸...';
+      breathText.className = 'breath-text inhale';
+      breathAura.className = 'breath-aura inhale';
+
+      phaseTimer = setTimeout(() => {
+        breathText.textContent = '吐...';
+        breathText.className = 'breath-text exhale';
+        breathAura.className = 'breath-aura exhale';
+
+        phaseTimer = setTimeout(() => {
+          breathRound++;
+          breathCycle();
+        }, 6000);
+      }, 4000);
+    }
+
+    function startBreathRounds(){
+      clearTimers();
+      breathRound = 0;
+      dots.forEach(d => d.classList.remove('active'));
+      setTimeout(breathCycle, 380);
+    }
+
+    function enterHeartIntegration(){
+      clearTimers();
+      heartFlower.classList.add('to-heart');
+
+      setTimeout(() => {
+        stateBreath.classList.add('fade-out');
+      }, 650);
+
+      setTimeout(() => {
+        switchState('tzolkin');
+        initTzolkin();
+      }, 2000);
+    }
+
+    const grid = document.getElementById('tzGrid');
+    const board = document.getElementById('tzBoard');
+    const lockSeal = document.getElementById('lockSeal');
+
+    let interval = null;
+    let current = null;
+
+    function initTzolkin(){
+      board.classList.add('breathing');
+      lockSeal.textContent = '○';
+      lockSeal.classList.remove('locked');
+
+      try{ kinCard.hide(); }catch(e){}
+      grid.innerHTML = '';
+
+      for(let row=0; row<20; row++){
+        const sealRow = row + 1;
+        for(let col=0; col<13; col++){
+          const kin = sealRow + 20*col;
+          const cell = document.createElement('div');
+          cell.className = 'kin-cell ' + solarSeals[sealRow-1].color;
+
+          if (gapDays.includes(kin)) cell.classList.add('gap');
+
+          cell.textContent = kin;
+          cell.dataset.kin = String(kin);
+          grid.appendChild(cell);
+        }
+      }
+
+      startShuffle();
+    }
+
+    function startShuffle(){
+      const cells = document.querySelectorAll('.kin-cell');
+      if (interval) clearInterval(interval);
+
+      interval = setInterval(()=>{
+        if(current) current.classList.remove('highlight');
+        current = cells[Math.floor(Math.random()*cells.length)];
+        current.classList.add('highlight');
+      }, 120);
+    }
+
+    function lockKin(){
+      if(!interval) return;
+      clearInterval(interval);
+      interval = null;
+
+      board.classList.remove('breathing');
+      lockSeal.textContent = '◉';
+      lockSeal.classList.add('locked');
+
+      const kin = Number(current?.dataset?.kin || 1);
+      try{ kinCard.showFromKin(kin); }catch(e){}
+    }
+
+    grid.addEventListener('click', lockKin);
+
+    const dbgBtn = document.getElementById('dbgBtn');
+    const dbgPanel = document.getElementById('dbgPanel');
+    const dbgKin = document.getElementById('dbgKin');
+    const dbgShow = document.getElementById('dbgShow');
+    const dbgHide = document.getElementById('dbgHide');
+    const dbgGoto = document.getElementById('dbgGoto');
+    const dbgClose = document.getElementById('dbgClose');
+
+    function clampKin(v){
+      let k = parseInt(v || '1', 10);
+      if (isNaN(k)) k = 1;
+      if (k < 1) k = 1;
+      if (k > 260) k = 260;
+      return k;
+    }
+
+    dbgBtn.addEventListener('click', () => dbgPanel.classList.toggle('show'));
+    dbgClose.addEventListener('click', () => dbgPanel.classList.remove('show'));
+
+    dbgShow.addEventListener('click', () => {
+      const k = clampKin(dbgKin.value);
+      dbgKin.value = String(k);
+
+      if (!stateTzolkin.classList.contains('active')){
+        switchState('tzolkin');
+        initTzolkin();
+      }
+      try{ kinCard.showFromKin(k); }catch(e){}
+    });
+
+    dbgHide.addEventListener('click', () => { try{ kinCard.hide(); }catch(e){} });
+
+    dbgGoto.addEventListener('click', () => {
+      if (!stateTzolkin.classList.contains('active')){
+        switchState('tzolkin');
+      }
+      initTzolkin();
+    });
+  </script>
+</body>
+</html>

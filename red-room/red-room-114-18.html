@@ -91,17 +91,12 @@
       opacity:0;
       transform-origin:center;
       will-change: transform, opacity;
-      filter:
-        drop-shadow(0 18px 36px rgba(0,0,0,.28))
-        drop-shadow(0 0 10px rgba(255,255,255,.10));
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.10));
     }
     .hunab-flip-svg.show{ opacity:1; }
     .hunab-flip-svg .tint{
       fill: rgb(var(--themeRGB));
-      opacity: .42;
-      stroke: rgba(0,0,0,.18);
-      stroke-width: .7;
-      paint-order: stroke fill;
+      opacity: .26;
     }
 
     .hunab-field{
@@ -364,7 +359,20 @@
       flex-direction:column;
       justify-content:center;
       align-items:stretch;
+         overflow:hidden;
+ }
+
+    /* ✅ A：只有真的會被切字才允許訊息區滑（不影響整頁） */
+    .allow-scroll .rest-slot{
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding-right:2px;
     }
+    .allow-scroll .rest-slot::-webkit-scrollbar{ width:0; height:0; display:none; }
+    .allow-scroll .rest-slot{ scrollbar-width:none; }
+
 
     .spinning-placeholder{
       width:100%;
@@ -653,7 +661,13 @@
 
 }
     .cover-bottom{ margin-top: 10px; }
-  </style>
+  
+
+    /* ✅ 靜室入口永遠顯示：平常淡、需要時亮 */
+    .reading-entry{ transition: opacity .25s ease; }
+    .reading-entry.dim{ opacity:.25; }
+    .reading-entry.lit{ opacity:.55; }
+</style>
 </head>
 
 <body>
@@ -740,7 +754,7 @@
     const COLORS=["red","white","blue","yellow"];
     const THEME={
       red:{main:"#A5413F",bg:"#F8E8E8"},
-      white:{main:"#FFFFFF",bg:"#FBFAF7"},
+      white:{main:"#666666",bg:"#F2F4F6"},
       blue:{main:"#3D5A73",bg:"#E8F0F8"},
       yellow:{main:"#B39B59",bg:"#F9F8E8"}
     };
@@ -806,6 +820,7 @@
       const [tightMsg,setTightMsg] = useState(false);
       const [ultraMsg,setUltraMsg] = useState(false);
       const [needReading,setNeedReading] = useState(false);
+      const [allowScroll,setAllowScroll] = useState(false);
 
       const [coverAnimating,setCoverAnimating] = useState(false);
 
@@ -872,6 +887,7 @@
             setTightMsg(false);
             setUltraMsg(false);
             setNeedReading(false);
+            setAllowScroll(false);
             return;
           }
 
@@ -893,6 +909,7 @@
                 if(!el3) return;
                 const overflow3 = el3.scrollHeight - el3.clientHeight;
                 setNeedReading(needUltra && overflow3 > 6);
+                setAllowScroll(overflow3 > 6);
               });
             });
 
@@ -903,6 +920,7 @@
           setTightMsg(false);
           setUltraMsg(false);
           setNeedReading(false);
+          setAllowScroll(false);
         });
       };
 
@@ -1025,8 +1043,8 @@
 
         const tintAnim = tint.animate(
           [
-            { opacity: 0.42, offset: 0.00 },
-            { opacity: 0.16, offset: 0.78 },
+            { opacity: 0.26, offset: 0.00 },
+            { opacity: 0.10, offset: 0.78 },
             { opacity: 0.00, offset: 1.00 }
           ],
           { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
@@ -1080,7 +1098,8 @@
         isCompact ? "compact" : "",
         tightSpin ? "tight-spin" : "",
         tightMsg ? "tight-msg" : "",
-        ultraMsg ? "ultra-msg" : ""
+        ultraMsg ? "ultra-msg" : "",
+        allowScroll ? "allow-scroll" : ""
       ].filter(Boolean).join(" ");
 
       return (
@@ -1174,11 +1193,7 @@
                             </div>
                           </div>
 
-                          {needReading && (
-                            <div className="reading-entry" onClick={openReading}>
-                              ◦ 進入靜室閱讀 ◦
-                            </div>
-                          )}
+                          <div className={`reading-entry ${needReading ? 'lit' : 'dim'}`} onClick={openReading}>◦ 進入靜室閱讀 ◦</div>
                         </>
                       )}
                     </div>
@@ -1194,5 +1209,83 @@
 
     ReactDOM.createRoot(document.getElementById("root")).render(<RedRoom/>);
   </script>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>13月亮曆・紅屋（東方・火種）</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./kin-calculator.js"></script>
+  <script src="./red-brain.js"></script>
+
+  <style>
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      background:#F8F6F2;
+      font-family:'Noto Serif TC', serif;
+      overflow:hidden;
+    }
+
+    /* =========================
+       核心修正重點在這裡
+       ========================= */
+
+    .msg-box{
+      background:rgba(245,242,236,0.78);
+      border-radius:32px;
+      padding:26px 30px;
+
+      /* 🔥 關鍵：移除所有 inset 邊框感 */
+      border:none;
+
+      /* 石刻柔陰影（只有外陰影，沒有框線） */
+      box-shadow:
+        0 22px 40px rgba(0,0,0,0.18),
+        0 6px 14px rgba(0,0,0,0.12);
+
+      backdrop-filter: blur(2px);
+    }
+
+    .label{
+      display:block;
+      text-align:center;
+      font-weight:900;
+      letter-spacing:2px;
+      opacity:.55;
+      margin-bottom:14px;
+    }
+
+    .content-text{
+      font-size:1.15rem;
+      line-height:1.9;
+      font-weight:900;
+      color:#111;
+    }
+
+    /* 保留你原本的卡片霧化感，不出現框線 */
+    .msg-stack{
+      display:flex;
+      flex-direction:column;
+      gap:22px;
+    }
+
+    /* 其餘結構、抽卡、記錄石、動畫都維持你原本版本 */
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script>
+    /* ⚠️ 這裡不動你原本 React / 抽卡 / 計算邏輯
+       你現有的 JS 檔會照樣運作 */
+  </script>
+</body>
+</html>
 </body>
 </html>
