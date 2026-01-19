@@ -1,602 +1,790 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>白色煉金殿（完整流程＋快速檢查）</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Noto+Serif+TC:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{
-      width:100vw;height:100vh;overflow:hidden;
-      font-family:'Noto Serif TC', serif;
-      background: linear-gradient(180deg,#FEFEFE 0%,#F8F7F5 30%,#F0EEE9 70%,#E8E5DF 100%);
-      display:flex;align-items:center;justify-content:center;
-    }
-
-    .state{
-      position:absolute; inset:0;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      opacity:0; pointer-events:none;
-      transition: opacity .8s ease;
-    }
-    .state.active{opacity:1;pointer-events:auto;}
-
-    /* ===== 呼吸頁 ===== */
-    #state-breath{ gap:44px; }
-
-    .flower-container{
-      position:relative;
-      width:400px;height:400px;
-      display:flex;align-items:center;justify-content:center;
-    }
-
-    .aura{
-      position:absolute;
-      width:100%;height:100%;
-      border-radius:50%;
-      background: radial-gradient(circle,
-        rgba(199,163,107,0.18) 0%,
-        rgba(199,163,107,0.10) 40%,
-        transparent 70%);
-      animation: breatheAura 8s ease-in-out infinite;
-      filter: blur(22px);
-      transition: opacity .16s ease;
-      opacity:1;
-    }
-    @keyframes breatheAura{
-      0%,100%{ transform: scale(0.92); opacity:0.55; }
-      50%{ transform: scale(1.10); opacity:1; }
-    }
-
-    .flower-svg{
-      position:relative;
-      width:350px;height:350px;
-      filter: drop-shadow(0 0 30px rgba(199,163,107,0.30));
-      transform-box: fill-box;
-      transform-origin: center;
-      transform: scale(1);
-      transition: filter .16s ease;
-      cursor: default;
-    }
-
-    .breath-circles{
-      display:flex; gap:18px;
-      align-items:center; justify-content:center;
-    }
-    .breath-circle{
-      width:34px;height:34px;border-radius:50%;
-      border:1.5px solid rgba(199,163,107,0.26);
-      background: radial-gradient(circle,
-        rgba(199,163,107,0.14) 0%,
-        rgba(199,163,107,0.06) 60%,
-        transparent 100%);
-      opacity:.35;
-      transition: all .6s ease;
-    }
-    .breath-circle.active{
-      opacity:1;
-      border-color: rgba(212,175,55,0.50);
-      box-shadow:0 0 18px rgba(199,163,107,0.38);
-      background: radial-gradient(circle,
-        rgba(212,175,55,0.26) 0%,
-        rgba(199,163,107,0.14) 60%,
-        transparent 100%);
-    }
-
-    .enter-hint{
-      position: fixed;
-      bottom: 70px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 14px;
-      letter-spacing: 6px;
-      color: rgba(115, 92, 66, 0.78);
-      text-shadow:
-        0 1px 0 rgba(255,255,255,0.45),
-        0 6px 18px rgba(0,0,0,0.10);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .9s ease;
-      white-space: nowrap;
-    }
-    .enter-hint.show{
-      opacity: 1;
-      animation: hintBreath 4.2s ease-in-out infinite;
-    }
-    @keyframes hintBreath{
-      0%,100%{ opacity:0.62; transform: translateX(-50%) translateY(0); }
-      50%{ opacity:0.90; transform: translateX(-50%) translateY(-2px); }
-    }
-
-    .ready{
-      cursor:pointer;
-      filter: drop-shadow(0 0 52px rgba(199,163,107,0.55));
-      animation: readyGlow 2.6s ease-in-out infinite;
-    }
-    @keyframes readyGlow{
-      0%,100%{ transform: scale(1); }
-      50%{ transform: scale(1.015); }
-    }
-
-    body.activating .flower-svg{
-      animation: bloomTransform 1.5s ease-out forwards;
-      filter: drop-shadow(0 0 60px rgba(199,163,107,0.8));
-    }
-    body.activating .aura{ animation: auralBloom 1.5s ease-out forwards; }
-    @keyframes bloomTransform{
-      0%{ transform: scale(1.05); }
-      50%{
-        transform: scale(1.15) rotate(15deg);
-        filter: drop-shadow(0 0 80px rgba(199,163,107,1));
-      }
-      100%{ transform: scale(12) rotate(30deg); opacity: 0; }
-    }
-    @keyframes auralBloom{
-      0%{ transform: scale(1.1); opacity: 1; }
-      100%{ transform: scale(4); opacity: 0; }
-    }
-    body.transitioning{ animation: fadeToWhite 1.5s ease-out forwards; }
-    @keyframes fadeToWhite{ to{ background:#FFFFFF; } }
-
-    /* ===== 卓爾金（保持你 row 顏色固定，不錯位） ===== */
-    #state-tzolkin{ padding:10px; }
-
-    .tzolkin-wrap{
-      width:100%;
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-    }
-
-    #tzBoard{
-      position:relative;
-      width:min(92vw, 720px);
-      height:min(88vh, 820px);
-      background:transparent;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    #tzBoard.breathing::before{
-      content:"";
-      position:absolute;
-      inset:-28px;
-      border-radius:999px;
-      background: radial-gradient(circle,
-        rgba(212,175,55,.18) 0%,
-        rgba(199,163,107,.10) 35%,
-        rgba(199,163,107,.06) 55%,
-        transparent 72%);
-      animation: fieldBreath 2.8s ease-in-out infinite;
-      pointer-events:none;
-    }
-    @keyframes fieldBreath{
-      0%,100%{ opacity:.22; transform: scale(.985); }
-      50%{ opacity:.55; transform: scale(1.02); }
-    }
-
-    .tzolkin-grid{
-      width:100%;
-      height:100%;
-      display:grid;
-      grid-template-columns:repeat(13,1fr);
-      grid-template-rows:repeat(20,1fr);
-      gap:2px;
-      cursor:pointer;
-      position:relative;
-      z-index:2;
-    }
-
-    .kin-cell{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:10px;
-      color:#777;
-      border:1px solid rgba(0,0,0,0.08);
-      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-      user-select:none;
-      background:rgba(255,255,255,.55);
-    }
-    .kin-cell.red{background:linear-gradient(135deg,#FFF7F7,#FFE2E2);}
-    .kin-cell.white{background:linear-gradient(135deg,#FFFFFF,#F1F1F1);}
-    .kin-cell.blue{background:linear-gradient(135deg,#F6F8FF,#E3E7FF);}
-    .kin-cell.yellow{background:linear-gradient(135deg,#FFFEF6,#FFF2CC);}
-
-    .kin-cell.gap{
-      border:2px solid #88CC88;
-      background:linear-gradient(135deg,#F0FFF0,#E5FFE5);
-      box-shadow: inset 0 0 6px rgba(120,255,120,0.3);
-    }
-
-    .kin-cell.highlight{
-      transform:scale(1.35);
-      z-index:5;
-      background:#fff !important;
-      box-shadow:0 0 24px rgba(0,0,0,.35);
-      border-color:#555;
-    }
-
-    .lock-indicator{
-      position:absolute; left:50%; bottom:-32px; transform:translateX(-50%);
-      font-size:18px; color: rgba(120,120,120,0.58);
-      transition: all 0.4s ease; user-select:none; pointer-events:none; z-index:6;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.45);
-    }
-    .lock-indicator.locked{
-      color: rgba(180,150,90,0.90);
-      text-shadow: 0 0 12px rgba(212,175,55,0.70), 0 1px 0 rgba(255,255,255,0.45);
-    }
-
-    /* ===== 快速檢查面板（重點：用 core 的 show/hide，不重寫） ===== */
-    .debug-btn{
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.10);
-      background: rgba(255,255,255,0.85);
-      box-shadow: 0 10px 22px rgba(0,0,0,0.10);
-      cursor: pointer;
-      z-index: 2000;
-      font-size: 18px;
-      color: rgba(60,60,60,0.75);
-    }
-    .debug-panel{
-      position: fixed;
-      top: 68px;
-      right: 16px;
-      width: 270px;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.92);
-      border: 1px solid rgba(0,0,0,0.10);
-      box-shadow: 0 18px 44px rgba(0,0,0,0.14);
-      z-index: 2000;
-      display: none;
-    }
-    .debug-panel.show{display:block;}
-    .dbg-title{
-      font-family: 'Cinzel', serif;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: #333;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-    .dbg-row{display:flex; gap:10px; margin-bottom:10px; align-items:center;}
-    .dbg-row label{font-size:12px; color:#666; letter-spacing:1px; width:64px;}
-    .dbg-row input{
-      flex:1;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(0,0,0,0.12);
-      background: rgba(255,255,255,0.95);
-      font-size: 13px;
-      color:#333;
-      outline: none;
-    }
-    .dbg-actions{display:flex; gap:10px;}
-    .dbg-actions button{
-      flex:1;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.10);
-      background: rgba(245,245,245,0.95);
-      cursor:pointer;
-      font-size: 13px;
-      color:#333;
-    }
-
-    @media (max-width:520px){
-      .flower-container{ width:360px; height:360px; }
-      .flower-svg{ width:320px; height:320px; }
-      .enter-hint{ bottom:58px; font-size:13px; letter-spacing:5px; color: rgba(115,92,66,0.82); }
-
-      #tzBoard{ width:94vw; height:92vh; }
-      .kin-cell{ font-size:9px; }
-      .kin-cell.highlight{ transform:scale(1.25); }
-      .lock-indicator{ font-size:16px; bottom:-26px; }
-
-      .debug-panel{ width: 240px; right: 10px; }
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Scene A：生命之花 -->
-  <div id="state-breath" class="state active">
-    <div class="flower-container">
-      <div class="aura" id="aura"></div>
-
-      <svg class="flower-svg" id="flowerSvg" viewBox="0 0 350 350">
-        <defs>
-          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
-            <stop offset="50%" style="stop-color:#C7A36B;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#B8956A;stop-opacity:1" />
-          </linearGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-
-        <g transform="translate(175, 175)" filter="url(#glow)">
-          <circle r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.9"/>
-
-          <circle cx="0" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
-          <circle cx="24.25" cy="-14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
-          <circle cx="24.25" cy="14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
-          <circle cx="0" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
-          <circle cx="-24.25" cy="14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
-          <circle cx="-24.25" cy="-14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
-
-          <g opacity="0.75">
-            <circle cx="0" cy="-56" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="48.5" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="48.5" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="0" cy="56" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="-48.5" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="-48.5" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="24.25" cy="-42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="24.25" cy="42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="-24.25" cy="42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="-24.25" cy="-42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="48.5" cy="0" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-            <circle cx="-48.5" cy="0" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
-          </g>
-        </g>
-      </svg>
-    </div>
-
-    <div class="breath-circles">
-      <div class="breath-circle"></div>
-      <div class="breath-circle"></div>
-      <div class="breath-circle"></div>
-    </div>
-  </div>
-
-  <div class="enter-hint" id="enterHint">凝 視 · 或 · 觸 碰</div>
-
-  <!-- Scene B：卓爾金 -->
-  <div id="state-tzolkin" class="state">
-    <div class="tzolkin-wrap">
-      <div id="tzBoard" class="breathing">
-        <div class="tzolkin-grid" id="tzGrid"></div>
-        <div class="lock-indicator" id="lockSeal">○</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 快速檢查面板 -->
-  <button class="debug-btn" id="dbgBtn" title="快速檢查">⚙︎</button>
-  <div class="debug-panel" id="dbgPanel">
-    <div class="dbg-title">快速檢查</div>
-
-    <div class="dbg-row">
-      <label>KIN</label>
-      <input id="dbgKin" type="number" min="1" max="260" value="34">
-    </div>
-
-    <div class="dbg-actions">
-      <button id="dbgShow">顯示卡牌</button>
-      <button id="dbgHide">關閉卡牌</button>
-    </div>
-
-    <div class="dbg-actions" style="margin-top:6px;">
-      <button id="dbgGoto">跳到卓爾金</button>
-      <button id="dbgClose">收起面板</button>
-    </div>
-  </div>
-
-  <!-- ✅ 卡牌 core（show/hide 都從這裡來） -->
-  <script src="../core/kin-card-core.js"></script>
-
-  <script>
-    /* ===== 共用資料 ===== */
-    const solarSeals = [
-      {name:'紅龍', color:'red'},{name:'白風', color:'white'},{name:'藍夜', color:'blue'},{name:'黃種子', color:'yellow'},
-      {name:'紅蛇', color:'red'},{name:'白世界橋', color:'white'},{name:'藍手', color:'blue'},{name:'黃星星', color:'yellow'},
-      {name:'紅月', color:'red'},{name:'白狗', color:'white'},{name:'藍猴', color:'blue'},{name:'黃人', color:'yellow'},
-      {name:'紅天行者', color:'red'},{name:'白巫師', color:'white'},{name:'藍鷹', color:'blue'},{name:'黃戰士', color:'yellow'},
-      {name:'紅地球', color:'red'},{name:'白鏡', color:'white'},{name:'藍風暴', color:'blue'},{name:'黃太陽', color:'yellow'}
-    ];
-    const galacticTones = ['磁性','月亮','電力','自我存在','超頻','韻律','共振','銀河','太陽','行星','光譜','水晶','宇宙'];
-    const gapDays = [1,20,22,39,43,50,51,58,64,69,72,77,85,88,93,96,106,107,108,109,110,111,112,113,114,115,146,147,148,149,150,151,152,153,154,155,165,168,173,176,184,189,192,197,203,210,211,218,222,239,241,260];
-
-    /* ===== 把卡牌掛在 tzBoard：以後每屋都能同款共用 ===== */
-    const kinCard = KIN_CARD_CORE.mount({
-      hostEl: document.getElementById('tzBoard'),
-      imageBasePath: '../images',
-      solarSeals,
-      galacticTones
-    });
-
-    /* ===== 呼吸三輪 ===== */
-    const flowerSvg = document.getElementById('flowerSvg');
-    const aura = document.getElementById('aura');
-    const dots = document.querySelectorAll('.breath-circle');
-    const enterHint = document.getElementById('enterHint');
-
-    let breathRound = 0;
-    let flowerAnim = null;
-    let activated = false;
-
-    function playBreathOnce(){
-      if (flowerAnim) flowerAnim.cancel();
-      flowerAnim = flowerSvg.animate(
-        [
-          { transform: 'scale(1)' },
-          { transform: 'scale(1.30)', offset: 0.25 },
-          { transform: 'scale(1.30)', offset: 0.50 },
-          { transform: 'scale(1)',   offset: 0.75 },
-          { transform: 'scale(1)' }
-        ],
-        { duration: 8000, easing: 'ease-in-out', fill: 'forwards' }
-      );
-    }
-
-    function breatheCycle(){
-      if (breathRound >= 3){
-        enterHint.classList.add('show');
-        flowerSvg.classList.add('ready');
-        flowerSvg.addEventListener('click', activateAndEnterTzolkin, { once:true });
-        return;
-      }
-      dots[breathRound].classList.add('active');
-      playBreathOnce();
-      breathRound += 1;
-      setTimeout(breatheCycle, 8000);
-    }
-
-    function switchState(target){
-      document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
-      document.getElementById(`state-${target}`).classList.add('active');
-    }
-
-    function activateAndEnterTzolkin(){
-      if (activated) return;
-      activated = true;
-
-      enterHint.classList.remove('show');
-      if (flowerAnim) flowerAnim.cancel();
-
-      // 160ms 舒服緩衝
-      flowerSvg.style.filter = 'drop-shadow(0 0 46px rgba(199,163,107,0.62))';
-      aura.style.opacity = '1';
-
-      setTimeout(() => {
-        document.body.classList.add('activating');
-        setTimeout(() => document.body.classList.add('transitioning'), 800);
-
-        setTimeout(() => {
-          switchState('tzolkin');
-          initTzolkin();
-        }, 2500);
-      }, 160);
-    }
-
-    /* ===== 卓爾金（你原本排法：row 顏色固定，不錯位） ===== */
-    const grid = document.getElementById('tzGrid');
-    const board = document.getElementById('tzBoard');
-    const lockSeal = document.getElementById('lockSeal');
-
-    let interval = null;
-    let current = null;
-
-    function initTzolkin(){
-      board.classList.add('breathing');
-      lockSeal.textContent = '○';
-      lockSeal.classList.remove('locked');
-
-      kinCard.hide();
-      grid.innerHTML = '';
-
-      for(let row=0; row<20; row++){
-        const sealRow = row + 1;
-        for(let col=0; col<13; col++){
-          const kin = sealRow + 20*col;
-          const cell = document.createElement('div');
-          cell.className = 'kin-cell ' + solarSeals[sealRow-1].color;
-
-          if (gapDays.includes(kin)) cell.classList.add('gap');
-
-          cell.textContent = kin;
-          cell.dataset.kin = String(kin);
-          grid.appendChild(cell);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北方・淨序</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }
 
-      startShuffle();
-    }
+        body {
+            font-family: 'Noto Serif TC', 'Microsoft JhengHei', serif;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, #fdfcfb 0%, #f7f5f2 40%, #ebe8e3 100%);
+            height: 100vh;
+            position: relative;
+        }
 
-    function startShuffle(){
-      const cells = document.querySelectorAll('.kin-cell');
-      if (interval) clearInterval(interval);
+        /* 神聖幾何背景紋理 */
+        .sacred-geometry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(120deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px);
+            pointer-events: none;
+            z-index: 1;
+        }
 
-      interval = setInterval(()=>{
-        if(current) current.classList.remove('highlight');
-        current = cells[Math.floor(Math.random()*cells.length)];
-        current.classList.add('highlight');
-      }, 60);
-    }
+        /* 能量場氛圍光 */
+        .energy-field {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            margin-left: -400px;
+            margin-top: -400px;
+            pointer-events: none;
+            z-index: 2;
+        }
 
-    function lockKin(){
-      if(!interval) return;
-      clearInterval(interval);
-      interval = null;
+        .energy-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            animation: energyPulse 20s infinite ease-in-out;
+        }
 
-      board.classList.remove('breathing');
-      lockSeal.textContent = '◉';
-      lockSeal.classList.add('locked');
+        .energy-ring:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            animation-delay: 0s;
+        }
 
-      const kin = Number(current.dataset.kin);
-      kinCard.showFromKin(kin);
-    }
+        .energy-ring:nth-child(2) {
+            width: 550px;
+            height: 550px;
+            animation-delay: -5s;
+        }
 
-    grid.addEventListener('click', lockKin);
+        .energy-ring:nth-child(3) {
+            width: 700px;
+            height: 700px;
+            animation-delay: -10s;
+        }
 
-    /* ===== 快速檢查面板：用 core 的 show/hide ===== */
-    const dbgBtn = document.getElementById('dbgBtn');
-    const dbgPanel = document.getElementById('dbgPanel');
-    const dbgKin = document.getElementById('dbgKin');
-    const dbgShow = document.getElementById('dbgShow');
-    const dbgHide = document.getElementById('dbgHide');
-    const dbgGoto = document.getElementById('dbgGoto');
-    const dbgClose = document.getElementById('dbgClose');
+        @keyframes energyPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(0.95);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+                opacity: 0.5;
+            }
+        }
 
-    function clampKin(v){
-      let k = parseInt(v || '1', 10);
-      if (isNaN(k)) k = 1;
-      if (k < 1) k = 1;
-      if (k > 260) k = 260;
-      return k;
-    }
+        /* 封面頁 */
+        .cover-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 2.5s ease-out;
+            padding: 60px 20px 60px 20px;
+            overflow-y: auto;
+        }
 
-    dbgBtn.addEventListener('click', () => {
-      dbgPanel.classList.toggle('show');
-    });
+        .cover-page.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    dbgClose.addEventListener('click', () => dbgPanel.classList.remove('show'));
+        /* 生命之花 - 加強版 */
+        .flower-of-life {
+            width: 320px;
+            height: 320px;
+            position: relative;
+            margin-top: 40px;
+            margin-bottom: 50px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 35px rgba(218, 165, 32, 0.4));
+            animation: flowerPresence 12s infinite ease-in-out;
+        }
 
-    dbgGoto.addEventListener('click', () => {
-      // 不等呼吸：直接跳到卓爾金並初始化
-      if (!document.getElementById('state-tzolkin').classList.contains('active')){
-        switchState('tzolkin');
-      }
-      initTzolkin();
-    });
+        @keyframes flowerPresence {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 30px rgba(218, 165, 32, 0.35));
+            }
+            50% {
+                transform: scale(1.03) rotate(0.5deg);
+                filter: drop-shadow(0 0 50px rgba(240, 216, 115, 0.6));
+            }
+        }
 
-    dbgShow.addEventListener('click', () => {
-      const k = clampKin(dbgKin.value);
-      dbgKin.value = String(k);
+        svg {
+            width: 100%;
+            height: 100%;
+        }
 
-      // 保險：若還沒進卓爾金，也能直接顯示（卡牌掛在 tzBoard）
-      if (!document.getElementById('state-tzolkin').classList.contains('active')){
-        switchState('tzolkin');
-        initTzolkin();
-      }
-      kinCard.showFromKin(k);
-    });
+        .petal {
+            fill: none;
+            stroke: url(#goldGradient);
+            stroke-width: 2.5;
+            animation: petalEnergy 10s infinite ease-in-out;
+            filter: drop-shadow(0 0 3px rgba(218, 165, 32, 0.4));
+        }
 
-    dbgHide.addEventListener('click', () => kinCard.hide());
+        @keyframes petalEnergy {
+            0%, 100% {
+                stroke-opacity: 0.8;
+                stroke-width: 2.5;
+            }
+            50% {
+                stroke-opacity: 1;
+                stroke-width: 3;
+            }
+        }
 
-    /* ===== 啟動 ===== */
-    window.addEventListener('load', () => {
-      setTimeout(breatheCycle, 900);
-    });
-  </script>
+        .petal:nth-child(2n) { animation-delay: -2s; }
+        .petal:nth-child(3n) { animation-delay: -4s; }
+        .petal:nth-child(4n) { animation-delay: -6s; }
+        .petal:nth-child(5n) { animation-delay: -8s; }
+
+        /* 封面文字 */
+        .cover-title {
+            color: #5a5a5a;
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 28px;
+            margin-bottom: 40px;
+            flex-shrink: 0;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            animation: titleAura 15s ease-in-out infinite;
+        }
+
+        @keyframes titleAura {
+            0%, 100% { 
+                opacity: 0.88;
+                letter-spacing: 28px;
+            }
+            50% { 
+                opacity: 1;
+                letter-spacing: 30px;
+            }
+        }
+
+        .cover-subtitle {
+            color: #7a7a7a;
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 10px;
+            margin-bottom: 30px;
+            flex-shrink: 0;
+            opacity: 0.9;
+        }
+
+        .cover-description {
+            color: #8a8a8a;
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 5px;
+            line-height: 2.4;
+            max-width: 600px;
+            text-align: center;
+            padding: 0 30px;
+            opacity: 0.85;
+            margin-bottom: 50px;
+            flex-shrink: 0;
+        }
+
+        .enter-hint {
+            color: rgba(90, 90, 90, 0.7);
+            font-size: 15px;
+            letter-spacing: 8px;
+            font-weight: 300;
+            animation: invitePulse 6s infinite ease-in-out;
+            cursor: pointer;
+            transition: all 0.8s ease;
+            padding: 16px 40px;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+            flex-shrink: 0;
+        }
+
+        .enter-hint:hover {
+            color: rgba(70, 70, 70, 0.95);
+            letter-spacing: 10px;
+            border-color: rgba(212, 175, 55, 0.7);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        @keyframes invitePulse {
+            0%, 100% { 
+                opacity: 0.7;
+                transform: scale(1);
+                box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.02);
+                box-shadow: 0 0 35px rgba(212, 175, 55, 0.35);
+            }
+        }
+
+        /* 呼吸引導頁 */
+        .breathing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2.5s ease-in;
+        }
+
+        .breathing-page.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .breathing-container {
+            text-align: center;
+            position: relative;
+        }
+
+        .breathing-circle {
+            width: 350px;
+            height: 350px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 多層次能量光環 */
+        .aura-layer {
+            position: absolute;
+            border-radius: 50%;
+            animation: auraFlow 18s infinite ease-in-out;
+        }
+
+        .aura-layer-1 {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, 
+                rgba(255, 252, 245, 0.9) 0%, 
+                rgba(252, 248, 235, 0.6) 25%,
+                rgba(248, 240, 220, 0.4) 50%,
+                rgba(240, 230, 200, 0.2) 75%,
+                transparent 100%);
+            animation-delay: 0s;
+        }
+
+        .aura-layer-2 {
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, 
+                rgba(255, 250, 240, 0.95) 0%, 
+                rgba(250, 243, 225, 0.7) 30%,
+                rgba(245, 235, 210, 0.5) 60%,
+                transparent 100%);
+            animation-delay: -4s;
+        }
+
+        .aura-layer-3 {
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, 
+                rgba(255, 248, 235, 1) 0%, 
+                rgba(248, 238, 215, 0.8) 40%,
+                rgba(240, 230, 200, 0.6) 70%,
+                transparent 100%);
+            animation-delay: -8s;
+        }
+
+        @keyframes auraFlow {
+            0% {
+                transform: scale(0.75);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.4);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.75);
+                opacity: 0.6;
+            }
+        }
+
+        /* 核心光球 */
+        .sacred-light {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 250, 1) 0%, 
+                rgba(255, 250, 235, 0.98) 20%,
+                rgba(250, 240, 210, 0.92) 40%,
+                rgba(240, 225, 180, 0.82) 60%,
+                rgba(220, 200, 140, 0.6) 80%,
+                rgba(200, 180, 120, 0.3) 100%
+            );
+            box-shadow: 
+                0 0 50px rgba(255, 248, 220, 0.9),
+                0 0 100px rgba(240, 220, 160, 0.7),
+                0 0 150px rgba(220, 190, 120, 0.5),
+                0 0 200px rgba(200, 170, 100, 0.3),
+                inset 0 0 40px rgba(255, 255, 240, 0.7);
+            animation: sacredBreath 18s infinite ease-in-out;
+        }
+
+        @keyframes sacredBreath {
+            0% {
+                transform: scale(0.5);
+                box-shadow: 
+                    0 0 30px rgba(255, 248, 220, 0.6),
+                    0 0 60px rgba(240, 220, 160, 0.4),
+                    0 0 90px rgba(220, 190, 120, 0.3),
+                    0 0 120px rgba(200, 170, 100, 0.2),
+                    inset 0 0 25px rgba(255, 255, 240, 0.5);
+            }
+            50% {
+                transform: scale(2.2);
+                box-shadow: 
+                    0 0 80px rgba(255, 248, 220, 1),
+                    0 0 160px rgba(240, 220, 160, 0.9),
+                    0 0 240px rgba(220, 190, 120, 0.7),
+                    0 0 320px rgba(200, 170, 100, 0.5),
+                    inset 0 0 70px rgba(255, 255, 240, 0.9);
+            }
+            100% {
+                transform: scale(0.5);
+                box-shadow: 
+                    0 0 30px rgba(255, 248, 220, 0.6),
+                    0 0 60px rgba(240, 220, 160, 0.4),
+                    0 0 90px rgba(220, 190, 120, 0.3),
+                    0 0 120px rgba(200, 170, 100, 0.2),
+                    inset 0 0 25px rgba(255, 255, 240, 0.5);
+            }
+        }
+
+        /* 能量粒子 - 19個 */
+        .light-essence {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .essence-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(240, 216, 115, 0.9) 0%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(218, 165, 32, 0.6);
+            animation: essenceFlow 18s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes essenceFlow {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0.2);
+            }
+            40% {
+                opacity: 0.9;
+            }
+            60% {
+                opacity: 0.9;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(1.8);
+            }
+        }
+
+        /* 進度指示器 */
+        .progress-indicators {
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            background: transparent;
+            transition: all 0.5s ease;
+        }
+
+        .progress-dot.completed {
+            background: rgba(212, 175, 55, 0.8);
+            border-color: rgba(212, 175, 55, 0.9);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .progress-dot.active {
+            background: rgba(240, 216, 115, 0.9);
+            border-color: rgba(240, 216, 115, 1);
+            box-shadow: 0 0 15px rgba(240, 216, 115, 0.7);
+            animation: dotPulse 1s infinite ease-in-out;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+
+
+        .instruction {
+            margin-top: 130px;
+            color: rgba(70, 70, 70, 0.95);
+            font-size: 42px;
+            font-weight: 300;
+            letter-spacing: 20px;
+            min-height: 80px;
+            transition: all 2s ease;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+        }
+
+        .subtitle {
+            margin-top: 50px;
+            color: rgba(110, 110, 110, 0.75);
+            font-size: 17px;
+            letter-spacing: 6px;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        /* 返回 */
+        .back-button {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            color: rgba(100, 100, 100, 0.5);
+            font-size: 15px;
+            letter-spacing: 4px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.8s ease;
+            z-index: 20;
+            padding: 16px 32px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 35px;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .back-button:hover {
+            color: rgba(70, 70, 70, 0.9);
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .cover-page {
+                padding: 40px 20px 40px 20px;
+            }
+
+            .flower-of-life {
+                width: 240px;
+                height: 240px;
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }
+
+            .cover-title {
+                font-size: 36px;
+                letter-spacing: 20px;
+                margin-bottom: 30px;
+            }
+
+            .cover-subtitle {
+                font-size: 15px;
+                letter-spacing: 6px;
+                margin-bottom: 25px;
+            }
+
+            .cover-description {
+                font-size: 14px;
+                letter-spacing: 3px;
+                line-height: 2.2;
+                margin-bottom: 40px;
+                padding: 0 20px;
+            }
+
+            .enter-hint {
+                font-size: 13px;
+                letter-spacing: 6px;
+                padding: 14px 32px;
+            }
+
+            .breathing-circle {
+                width: 280px;
+                height: 280px;
+            }
+
+            .instruction {
+                font-size: 32px;
+                letter-spacing: 12px;
+                margin-top: 100px;
+            }
+
+            .back-button {
+                top: 30px;
+                left: 30px;
+                font-size: 13px;
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sacred-geometry-bg"></div>
+    <div class="energy-field">
+        <div class="energy-ring"></div>
+        <div class="energy-ring"></div>
+        <div class="energy-ring"></div>
+    </div>
+    
+    <!-- 封面頁 -->
+    <div class="cover-page" id="coverPage">
+        <div class="flower-of-life">
+            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#F0D873;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#B8941F;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <circle class="petal" cx="200" cy="200" r="60"/>
+                <circle class="petal" cx="200" cy="140" r="60"/>
+                <circle class="petal" cx="252" cy="170" r="60"/>
+                <circle class="petal" cx="252" cy="230" r="60"/>
+                <circle class="petal" cx="200" cy="260" r="60"/>
+                <circle class="petal" cx="148" cy="230" r="60"/>
+                <circle class="petal" cx="148" cy="170" r="60"/>
+                <circle class="petal" cx="200" cy="80" r="60"/>
+                <circle class="petal" cx="252" cy="110" r="60"/>
+                <circle class="petal" cx="304" cy="140" r="60"/>
+                <circle class="petal" cx="304" cy="200" r="60"/>
+                <circle class="petal" cx="304" cy="260" r="60"/>
+                <circle class="petal" cx="252" cy="290" r="60"/>
+                <circle class="petal" cx="200" cy="320" r="60"/>
+                <circle class="petal" cx="148" cy="290" r="60"/>
+                <circle class="petal" cx="96" cy="260" r="60"/>
+                <circle class="petal" cx="96" cy="200" r="60"/>
+                <circle class="petal" cx="96" cy="140" r="60"/>
+                <circle class="petal" cx="148" cy="110" r="60"/>
+                <circle class="petal" cx="200" cy="200" r="180" stroke-width="2"/>
+            </svg>
+        </div>
+        <h1 class="cover-title">北方・淨序</h1>
+        <p class="cover-subtitle">洗滌雜訊　回到內在秩序</p>
+        <p class="cover-description">清理混亂與干擾<br>讓心回到安靜而清晰的位置</p>
+        <div class="enter-hint" onclick="enterBreathing()">進入神聖空間</div>
+    </div>
+
+    <!-- 呼吸引導頁 -->
+    <div class="breathing-page" id="breathingPage">
+        <div class="back-button" onclick="backToCover()">← 返回</div>
+        <div class="breathing-container">
+            <div class="breathing-circle">
+                <div class="aura-layer aura-layer-1"></div>
+                <div class="aura-layer aura-layer-2"></div>
+                <div class="aura-layer aura-layer-3"></div>
+                <div class="sacred-light"></div>
+                <div class="light-essence" id="particles"></div>
+            </div>
+            
+            <div class="instruction" id="instruction">靜心準備</div>
+            <div class="subtitle">跟隨聖光的韻律　吸進純淨</div>
+
+            <!-- 三輪進度指示 -->
+            <div class="progress-indicators">
+                <div class="progress-dot" id="dot1"></div>
+                <div class="progress-dot" id="dot2"></div>
+                <div class="progress-dot" id="dot3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 創建 19 個能量粒子
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 19; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'essence-particle';
+            const angle = (i / 19) * Math.PI * 2;
+            const distance = 155;
+            const tx = Math.cos(angle) * distance + 'px';
+            const ty = Math.sin(angle) * distance + 'px';
+            particle.style.setProperty('--tx', tx);
+            particle.style.setProperty('--ty', ty);
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            particle.style.animationDelay = (i * 0.95) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // 頁面切換
+        function enterBreathing() {
+            document.getElementById('coverPage').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('breathingPage').classList.add('active');
+                startBreathing();
+            }, 2500);
+        }
+
+        function backToCover() {
+            document.getElementById('breathingPage').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('coverPage').classList.remove('fade-out');
+                stopBreathing();
+            }, 2500);
+        }
+
+        // 神聖呼吸引導
+        const instruction = document.getElementById('instruction');
+        
+        let breathingTimer;
+        let isBreathing = false;
+        let currentRound = 0;
+
+        function updateProgressDots(round) {
+            const dots = [
+                document.getElementById('dot1'),
+                document.getElementById('dot2'),
+                document.getElementById('dot3')
+            ];
+
+            dots.forEach((dot, index) => {
+                dot.classList.remove('completed', 'active');
+                if (index < round) {
+                    dot.classList.add('completed');
+                } else if (index === round) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        function startBreathing() {
+            if (isBreathing) return;
+            isBreathing = true;
+            currentRound = 0;
+            
+            updateProgressDots(0);
+
+            const phases = [
+                { text: '深深吸入白光', duration: 7000 },
+                { text: '光在體內流動', duration: 4000 },
+                { text: '緩緩釋放濁氣', duration: 8000 },
+                { text: '安住於寧靜', duration: 3000 }
+            ];
+            
+            let currentPhase = 0;
+            let phaseCount = 0;
+            
+            function updatePhase() {
+                if (!isBreathing) return;
+                
+                instruction.style.opacity = '0';
+                instruction.style.transform = 'translateY(-20px) scale(0.98)';
+                
+                setTimeout(() => {
+                    instruction.textContent = phases[currentPhase].text;
+                    instruction.style.opacity = '1';
+                    instruction.style.transform = 'translateY(0) scale(1)';
+                }, 1000);
+                
+                breathingTimer = setTimeout(() => {
+                    currentPhase = (currentPhase + 1) % phases.length;
+                    phaseCount++;
+                    
+                    // 每完成一輪（4個階段）
+                    if (phaseCount % 4 === 0) {
+                        currentRound++;
+                        if (currentRound <= 3) {
+                            updateProgressDots(currentRound);
+                        }
+                        
+                        // 完成三輪後跳轉
+                        if (currentRound >= 3) {
+                            setTimeout(() => {
+                                transitionToTzolkin();
+                            }, 2000);
+                            return;
+                        }
+                    }
+                    
+                    updatePhase();
+                }, phases[currentPhase].duration);
+            }
+            
+            setTimeout(() => {
+                updateProgressDots(0);
+                updatePhase();
+            }, 1000);
+        }
+
+        function stopBreathing() {
+            isBreathing = false;
+            currentRound = 0;
+            if (breathingTimer) {
+                clearTimeout(breathingTimer);
+            }
+            instruction.textContent = '靜心準備';
+            instruction.style.opacity = '1';
+            instruction.style.transform = 'translateY(0) scale(1)';
+            updateProgressDots(-1);
+        }
+
+        function transitionToTzolkin() {
+            // 整個畫面漸黑
+            document.body.style.transition = 'opacity 2s ease-out';
+            document.body.style.opacity = '0';
+            
+            setTimeout(() => {
+                // 跳轉到卓爾金神廟
+                window.location.href = 'tzolkin-temple.html';
+            }, 2000);
+        }
+    </script>
 </body>
 </html>

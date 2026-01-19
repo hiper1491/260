@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>白色煉金殿（完整流程＋快速檢查）</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Noto+Serif+TC:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      width:100vw;height:100vh;overflow:hidden;
+      font-family:'Noto Serif TC', serif;
+      background: linear-gradient(180deg,#FEFEFE 0%,#F8F7F5 30%,#F0EEE9 70%,#E8E5DF 100%);
+      display:flex;align-items:center;justify-content:center;
+    }
+
+    .state{
+      position:absolute; inset:0;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      opacity:0; pointer-events:none;
+      transition: opacity .8s ease;
+    }
+    .state.active{opacity:1;pointer-events:auto;}
+
+    /* ===== 呼吸頁 ===== */
+    #state-breath{ gap:44px; }
+
+    .flower-container{
+      position:relative;
+      width:400px;height:400px;
+      display:flex;align-items:center;justify-content:center;
+    }
+
+    .aura{
+      position:absolute;
+      width:100%;height:100%;
+      border-radius:50%;
+      background: radial-gradient(circle,
+        rgba(199,163,107,0.18) 0%,
+        rgba(199,163,107,0.10) 40%,
+        transparent 70%);
+      animation: breatheAura 8s ease-in-out infinite;
+      filter: blur(22px);
+      transition: opacity .16s ease;
+      opacity:1;
+    }
+    @keyframes breatheAura{
+      0%,100%{ transform: scale(0.92); opacity:0.55; }
+      50%{ transform: scale(1.10); opacity:1; }
+    }
+
+    .flower-svg{
+      position:relative;
+      width:350px;height:350px;
+      filter: drop-shadow(0 0 30px rgba(199,163,107,0.30));
+      transform-box: fill-box;
+      transform-origin: center;
+      transform: scale(1);
+      transition: filter .16s ease;
+      cursor: default;
+    }
+
+    .breath-circles{
+      display:flex; gap:18px;
+      align-items:center; justify-content:center;
+    }
+    .breath-circle{
+      width:34px;height:34px;border-radius:50%;
+      border:1.5px solid rgba(199,163,107,0.26);
+      background: radial-gradient(circle,
+        rgba(199,163,107,0.14) 0%,
+        rgba(199,163,107,0.06) 60%,
+        transparent 100%);
+      opacity:.35;
+      transition: all .6s ease;
+    }
+    .breath-circle.active{
+      opacity:1;
+      border-color: rgba(212,175,55,0.50);
+      box-shadow:0 0 18px rgba(199,163,107,0.38);
+      background: radial-gradient(circle,
+        rgba(212,175,55,0.26) 0%,
+        rgba(199,163,107,0.14) 60%,
+        transparent 100%);
+    }
+
+    .enter-hint{
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      letter-spacing: 6px;
+      color: rgba(115, 92, 66, 0.78);
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.45),
+        0 6px 18px rgba(0,0,0,0.10);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .9s ease;
+      white-space: nowrap;
+    }
+    .enter-hint.show{
+      opacity: 1;
+      animation: hintBreath 4.2s ease-in-out infinite;
+    }
+    @keyframes hintBreath{
+      0%,100%{ opacity:0.62; transform: translateX(-50%) translateY(0); }
+      50%{ opacity:0.90; transform: translateX(-50%) translateY(-2px); }
+    }
+
+    .ready{
+      cursor:pointer;
+      filter: drop-shadow(0 0 52px rgba(199,163,107,0.55));
+      animation: readyGlow 2.6s ease-in-out infinite;
+    }
+    @keyframes readyGlow{
+      0%,100%{ transform: scale(1); }
+      50%{ transform: scale(1.015); }
+    }
+
+    body.activating .flower-svg{
+      animation: bloomTransform 1.5s ease-out forwards;
+      filter: drop-shadow(0 0 60px rgba(199,163,107,0.8));
+    }
+    body.activating .aura{ animation: auralBloom 1.5s ease-out forwards; }
+    @keyframes bloomTransform{
+      0%{ transform: scale(1.05); }
+      50%{
+        transform: scale(1.15) rotate(15deg);
+        filter: drop-shadow(0 0 80px rgba(199,163,107,1));
+      }
+      100%{ transform: scale(12) rotate(30deg); opacity: 0; }
+    }
+    @keyframes auralBloom{
+      0%{ transform: scale(1.1); opacity: 1; }
+      100%{ transform: scale(4); opacity: 0; }
+    }
+    body.transitioning{ animation: fadeToWhite 1.5s ease-out forwards; }
+    @keyframes fadeToWhite{ to{ background:#FFFFFF; } }
+
+    /* ===== 卓爾金（保持你 row 顏色固定，不錯位） ===== */
+    #state-tzolkin{ padding:10px; }
+
+    .tzolkin-wrap{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+
+    #tzBoard{
+      position:relative;
+      width:min(92vw, 720px);
+      height:min(88vh, 820px);
+      background:transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    #tzBoard.breathing::before{
+      content:"";
+      position:absolute;
+      inset:-28px;
+      border-radius:999px;
+      background: radial-gradient(circle,
+        rgba(212,175,55,.18) 0%,
+        rgba(199,163,107,.10) 35%,
+        rgba(199,163,107,.06) 55%,
+        transparent 72%);
+      animation: fieldBreath 2.8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes fieldBreath{
+      0%,100%{ opacity:.22; transform: scale(.985); }
+      50%{ opacity:.55; transform: scale(1.02); }
+    }
+
+    .tzolkin-grid{
+      width:100%;
+      height:100%;
+      display:grid;
+      grid-template-columns:repeat(13,1fr);
+      grid-template-rows:repeat(20,1fr);
+      gap:2px;
+      cursor:pointer;
+      position:relative;
+      z-index:2;
+    }
+
+    .kin-cell{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:10px;
+      color:#777;
+      border:1px solid rgba(0,0,0,0.08);
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+      user-select:none;
+      background:rgba(255,255,255,.55);
+    }
+    .kin-cell.red{background:linear-gradient(135deg,#FFF7F7,#FFE2E2);}
+    .kin-cell.white{background:linear-gradient(135deg,#FFFFFF,#F1F1F1);}
+    .kin-cell.blue{background:linear-gradient(135deg,#F6F8FF,#E3E7FF);}
+    .kin-cell.yellow{background:linear-gradient(135deg,#FFFEF6,#FFF2CC);}
+
+    .kin-cell.gap{
+      border:2px solid #88CC88;
+      background:linear-gradient(135deg,#F0FFF0,#E5FFE5);
+      box-shadow: inset 0 0 6px rgba(120,255,120,0.3);
+    }
+
+    .kin-cell.highlight{
+      transform:scale(1.35);
+      z-index:5;
+      background:#fff !important;
+      box-shadow:0 0 24px rgba(0,0,0,.35);
+      border-color:#555;
+    }
+
+    .lock-indicator{
+      position:absolute; left:50%; bottom:-32px; transform:translateX(-50%);
+      font-size:18px; color: rgba(120,120,120,0.58);
+      transition: all 0.4s ease; user-select:none; pointer-events:none; z-index:6;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+    }
+    .lock-indicator.locked{
+      color: rgba(180,150,90,0.90);
+      text-shadow: 0 0 12px rgba(212,175,55,0.70), 0 1px 0 rgba(255,255,255,0.45);
+    }
+
+    /* ===== 快速檢查面板（重點：用 core 的 show/hide，不重寫） ===== */
+    .debug-btn{
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+      cursor: pointer;
+      z-index: 2000;
+      font-size: 18px;
+      color: rgba(60,60,60,0.75);
+    }
+    .debug-panel{
+      position: fixed;
+      top: 68px;
+      right: 16px;
+      width: 270px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(0,0,0,0.10);
+      box-shadow: 0 18px 44px rgba(0,0,0,0.14);
+      z-index: 2000;
+      display: none;
+    }
+    .debug-panel.show{display:block;}
+    .dbg-title{
+      font-family: 'Cinzel', serif;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .dbg-row{display:flex; gap:10px; margin-bottom:10px; align-items:center;}
+    .dbg-row label{font-size:12px; color:#666; letter-spacing:1px; width:64px;}
+    .dbg-row input{
+      flex:1;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.95);
+      font-size: 13px;
+      color:#333;
+      outline: none;
+    }
+    .dbg-actions{display:flex; gap:10px;}
+    .dbg-actions button{
+      flex:1;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(245,245,245,0.95);
+      cursor:pointer;
+      font-size: 13px;
+      color:#333;
+    }
+
+    @media (max-width:520px){
+      .flower-container{ width:360px; height:360px; }
+      .flower-svg{ width:320px; height:320px; }
+      .enter-hint{ bottom:58px; font-size:13px; letter-spacing:5px; color: rgba(115,92,66,0.82); }
+
+      #tzBoard{ width:94vw; height:92vh; }
+      .kin-cell{ font-size:9px; }
+      .kin-cell.highlight{ transform:scale(1.25); }
+      .lock-indicator{ font-size:16px; bottom:-26px; }
+
+      .debug-panel{ width: 240px; right: 10px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Scene A：生命之花 -->
+  <div id="state-breath" class="state active">
+    <div class="flower-container">
+      <div class="aura" id="aura"></div>
+
+      <svg class="flower-svg" id="flowerSvg" viewBox="0 0 350 350">
+        <defs>
+          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#C7A36B;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#B8956A;stop-opacity:1" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <g transform="translate(175, 175)" filter="url(#glow)">
+          <circle r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.9"/>
+
+          <circle cx="0" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="24.25" cy="-14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="24.25" cy="14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="0" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="-24.25" cy="14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+          <circle cx="-24.25" cy="-14" r="28" stroke="url(#goldGradient)" stroke-width="2" fill="none" opacity="0.85"/>
+
+          <g opacity="0.75">
+            <circle cx="0" cy="-56" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="48.5" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="48.5" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="0" cy="56" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-48.5" cy="28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-48.5" cy="-28" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="24.25" cy="-42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="24.25" cy="42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-24.25" cy="42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-24.25" cy="-42" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="48.5" cy="0" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+            <circle cx="-48.5" cy="0" r="28" stroke="url(#goldGradient)" stroke-width="1.5" fill="none"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="breath-circles">
+      <div class="breath-circle"></div>
+      <div class="breath-circle"></div>
+      <div class="breath-circle"></div>
+    </div>
+  </div>
+
+  <div class="enter-hint" id="enterHint">凝 視 · 或 · 觸 碰</div>
+
+  <!-- Scene B：卓爾金 -->
+  <div id="state-tzolkin" class="state">
+    <div class="tzolkin-wrap">
+      <div id="tzBoard" class="breathing">
+        <div class="tzolkin-grid" id="tzGrid"></div>
+        <div class="lock-indicator" id="lockSeal">○</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 快速檢查面板 -->
+  <button class="debug-btn" id="dbgBtn" title="快速檢查">⚙︎</button>
+  <div class="debug-panel" id="dbgPanel">
+    <div class="dbg-title">快速檢查</div>
+
+    <div class="dbg-row">
+      <label>KIN</label>
+      <input id="dbgKin" type="number" min="1" max="260" value="34">
+    </div>
+
+    <div class="dbg-actions">
+      <button id="dbgShow">顯示卡牌</button>
+      <button id="dbgHide">關閉卡牌</button>
+    </div>
+
+    <div class="dbg-actions" style="margin-top:6px;">
+      <button id="dbgGoto">跳到卓爾金</button>
+      <button id="dbgClose">收起面板</button>
+    </div>
+  </div>
+
+  <!-- ✅ 卡牌 core（show/hide 都從這裡來） -->
+  <script src="../core/kin-card-core.js"></script>
+
+  <script>
+    /* ===== 共用資料 ===== */
+    const solarSeals = [
+      {name:'紅龍', color:'red'},{name:'白風', color:'white'},{name:'藍夜', color:'blue'},{name:'黃種子', color:'yellow'},
+      {name:'紅蛇', color:'red'},{name:'白世界橋', color:'white'},{name:'藍手', color:'blue'},{name:'黃星星', color:'yellow'},
+      {name:'紅月', color:'red'},{name:'白狗', color:'white'},{name:'藍猴', color:'blue'},{name:'黃人', color:'yellow'},
+      {name:'紅天行者', color:'red'},{name:'白巫師', color:'white'},{name:'藍鷹', color:'blue'},{name:'黃戰士', color:'yellow'},
+      {name:'紅地球', color:'red'},{name:'白鏡', color:'white'},{name:'藍風暴', color:'blue'},{name:'黃太陽', color:'yellow'}
+    ];
+    const galacticTones = ['磁性','月亮','電力','自我存在','超頻','韻律','共振','銀河','太陽','行星','光譜','水晶','宇宙'];
+    const gapDays = [1,20,22,39,43,50,51,58,64,69,72,77,85,88,93,96,106,107,108,109,110,111,112,113,114,115,146,147,148,149,150,151,152,153,154,155,165,168,173,176,184,189,192,197,203,210,211,218,222,239,241,260];
+
+    /* ===== 把卡牌掛在 tzBoard：以後每屋都能同款共用 ===== */
+    const kinCard = KIN_CARD_CORE.mount({
+      hostEl: document.getElementById('tzBoard'),
+      imageBasePath: '../images',
+      solarSeals,
+      galacticTones
+    });
+
+    /* ===== 呼吸三輪 ===== */
+    const flowerSvg = document.getElementById('flowerSvg');
+    const aura = document.getElementById('aura');
+    const dots = document.querySelectorAll('.breath-circle');
+    const enterHint = document.getElementById('enterHint');
+
+    let breathRound = 0;
+    let flowerAnim = null;
+    let activated = false;
+
+    function playBreathOnce(){
+      if (flowerAnim) flowerAnim.cancel();
+      flowerAnim = flowerSvg.animate(
+        [
+          { transform: 'scale(1)' },
+          { transform: 'scale(1.30)', offset: 0.25 },
+          { transform: 'scale(1.30)', offset: 0.50 },
+          { transform: 'scale(1)',   offset: 0.75 },
+          { transform: 'scale(1)' }
+        ],
+        { duration: 8000, easing: 'ease-in-out', fill: 'forwards' }
+      );
+    }
+
+    function breatheCycle(){
+      if (breathRound >= 3){
+        enterHint.classList.add('show');
+        flowerSvg.classList.add('ready');
+        flowerSvg.addEventListener('click', activateAndEnterTzolkin, { once:true });
+        return;
+      }
+      dots[breathRound].classList.add('active');
+      playBreathOnce();
+      breathRound += 1;
+      setTimeout(breatheCycle, 8000);
+    }
+
+    function switchState(target){
+      document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+      document.getElementById(`state-${target}`).classList.add('active');
+    }
+
+    function activateAndEnterTzolkin(){
+      if (activated) return;
+      activated = true;
+
+      enterHint.classList.remove('show');
+      if (flowerAnim) flowerAnim.cancel();
+
+      // 160ms 舒服緩衝
+      flowerSvg.style.filter = 'drop-shadow(0 0 46px rgba(199,163,107,0.62))';
+      aura.style.opacity = '1';
+
+      setTimeout(() => {
+        document.body.classList.add('activating');
+        setTimeout(() => document.body.classList.add('transitioning'), 800);
+
+        setTimeout(() => {
+          switchState('tzolkin');
+          initTzolkin();
+        }, 2500);
+      }, 160);
+    }
+
+    /* ===== 卓爾金（你原本排法：row 顏色固定，不錯位） ===== */
+    const grid = document.getElementById('tzGrid');
+    const board = document.getElementById('tzBoard');
+    const lockSeal = document.getElementById('lockSeal');
+
+    let interval = null;
+    let current = null;
+
+    function initTzolkin(){
+      board.classList.add('breathing');
+      lockSeal.textContent = '○';
+      lockSeal.classList.remove('locked');
+
+      kinCard.hide();
+      grid.innerHTML = '';
+
+      for(let row=0; row<20; row++){
+        const sealRow = row + 1;
+        for(let col=0; col<13; col++){
+          const kin = sealRow + 20*col;
+          const cell = document.createElement('div');
+          cell.className = 'kin-cell ' + solarSeals[sealRow-1].color;
+
+          if (gapDays.includes(kin)) cell.classList.add('gap');
+
+          cell.textContent = kin;
+          cell.dataset.kin = String(kin);
+          grid.appendChild(cell);
+        }
+      }
+
+      startShuffle();
+    }
+
+    function startShuffle(){
+      const cells = document.querySelectorAll('.kin-cell');
+      if (interval) clearInterval(interval);
+
+      interval = setInterval(()=>{
+        if(current) current.classList.remove('highlight');
+        current = cells[Math.floor(Math.random()*cells.length)];
+        current.classList.add('highlight');
+      }, 60);
+    }
+
+    function lockKin(){
+      if(!interval) return;
+      clearInterval(interval);
+      interval = null;
+
+      board.classList.remove('breathing');
+      lockSeal.textContent = '◉';
+      lockSeal.classList.add('locked');
+
+      const kin = Number(current.dataset.kin);
+      kinCard.showFromKin(kin);
+    }
+
+    grid.addEventListener('click', lockKin);
+
+    /* ===== 快速檢查面板：用 core 的 show/hide ===== */
+    const dbgBtn = document.getElementById('dbgBtn');
+    const dbgPanel = document.getElementById('dbgPanel');
+    const dbgKin = document.getElementById('dbgKin');
+    const dbgShow = document.getElementById('dbgShow');
+    const dbgHide = document.getElementById('dbgHide');
+    const dbgGoto = document.getElementById('dbgGoto');
+    const dbgClose = document.getElementById('dbgClose');
+
+    function clampKin(v){
+      let k = parseInt(v || '1', 10);
+      if (isNaN(k)) k = 1;
+      if (k < 1) k = 1;
+      if (k > 260) k = 260;
+      return k;
+    }
+
+    dbgBtn.addEventListener('click', () => {
+      dbgPanel.classList.toggle('show');
+    });
+
+    dbgClose.addEventListener('click', () => dbgPanel.classList.remove('show'));
+
+    dbgGoto.addEventListener('click', () => {
+      // 不等呼吸：直接跳到卓爾金並初始化
+      if (!document.getElementById('state-tzolkin').classList.contains('active')){
+        switchState('tzolkin');
+      }
+      initTzolkin();
+    });
+
+    dbgShow.addEventListener('click', () => {
+      const k = clampKin(dbgKin.value);
+      dbgKin.value = String(k);
+
+      // 保險：若還沒進卓爾金，也能直接顯示（卡牌掛在 tzBoard）
+      if (!document.getElementById('state-tzolkin').classList.contains('active')){
+        switchState('tzolkin');
+        initTzolkin();
+      }
+      kinCard.showFromKin(k);
+    });
+
+    dbgHide.addEventListener('click', () => kinCard.hide());
+
+    /* ===== 啟動 ===== */
+    window.addEventListener('load', () => {
+      setTimeout(breatheCycle, 900);
+    });
+  </script>
+</body>
+</html>
