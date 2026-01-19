@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- 114-13版｜母版=114-11｜只加 Level 3 神廟閱讀層（A＋B）｜不滾動｜不改抽卡/內頁結構 -->
-  <title>13月亮曆・神廟石碑（115-2）</title>
+  <title>13月亮曆・神廟石碑（115-優化版）</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +11,6 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <!-- ✅ 你說封面計算大腦 -->
   <script src="../kin-calculator.js"></script>
   <script src="./red-brain.js"></script>
 
@@ -36,8 +34,14 @@
     @supports (height: 100svh){
       html,body{ height:100svh; }
     }
-
     #root{ width:100%; height:100%; }
+
+    /* ✅ 效能優化控制：動畫期間關閉濾鏡減輕手機負擔 */
+    body.perf-active .pre-card,
+    body.perf-active .pre-hunab {
+      filter: none !important;
+      backdrop-filter: none !important;
+    }
 
     body::before{
       content:"";
@@ -52,7 +56,7 @@
     }
 
     /* =========================
-       ✅ 轉場：整版「單色」同色幕布（淺 → 更淺 → 無）
+       轉場：整版單色幕布（淺→更淺→無）
        ========================= */
     .cover-curtain{
       position:fixed;
@@ -73,15 +77,12 @@
     }
     @keyframes curtainMono{
       0%   { opacity:0; background: rgba(var(--themeRGB), 0.00); }
-      14%  { opacity:1; background: rgba(var(--themeRGB), 0.16); } /* 淺 */
-      72%  { opacity:1; background: rgba(var(--themeRGB), 0.06); } /* 更淺 */
+      14%  { opacity:1; background: rgba(var(--themeRGB), 0.16); }
+      72%  { opacity:1; background: rgba(var(--themeRGB), 0.06); }
       100% { opacity:0; background: rgba(var(--themeRGB), 0.00); }
     }
 
-    /* =========================
-       ✅ 放大旋進 Hunab Ku（同色線條）
-       - 深→淺→0 由 JS 控制 tint opacity
-       ========================= */
+    /* 放大旋進 Hunab Ku（同色線條） */
     .hunab-flip-svg{
       position:fixed;
       left:0; top:0;
@@ -108,7 +109,6 @@
       transition: opacity .12s ease;
     }
     .hunab-field.show{ opacity:1; }
-
     .hunab-field::before{
       content:"";
       position:absolute; inset:0;
@@ -134,9 +134,7 @@
       100%{ opacity:0.44; filter: blur(1px); }
     }
 
-    /* =========================
-       ✅ Level 3：神廟閱讀層（A＋B）（只加這一塊，不動內頁）
-       ========================= */
+    /* Level 3 overlay */
     .reading-overlay{
       position:fixed;
       inset:0;
@@ -150,10 +148,7 @@
       pointer-events:none;
       transition: opacity .55s ease;
     }
-    .reading-overlay.show{
-      opacity:1;
-      pointer-events:auto;
-    }
+    .reading-overlay.show{ opacity:1; pointer-events:auto; }
     .reading-stone{
       width:min(760px,92vw);
       border-radius:64px;
@@ -216,9 +211,8 @@
     .reading-entry:hover{ opacity:.85; }
 
     /* =========================
-       ✅ 內頁（保持你原本）——以下照你母版（不動）
+       內頁（不動）
        ========================= */
-
     .home-button{
       position:fixed;
       top:32px;
@@ -291,7 +285,6 @@
     @supports (height: 100svh){
       .tablet{ height:min(880px, 90svh); }
     }
-
     .tablet::after{
       content:"";
       position:absolute; inset:0;
@@ -394,7 +387,27 @@
     .ultra-msg .label{ font-size:0.88rem; margin-bottom:8px; letter-spacing:1px; }
     .ultra-msg .content-text{ font-size:1.02rem; line-height:1.65; }
 
-    /* 封面卡片（Fix-05：回到正中間） */
+    /* ✅ Portal Scrim（點外收合）
+       ✅ FIX：z-index 必須低於 history-sidebar，否則你點不到石頭，永遠無法收合 */
+    .portal-scrim{
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,.14);
+      backdrop-filter: blur(0.5px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .14s ease;
+      touch-action: manipulation;
+    }
+    .portal-scrim.show{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* =========================
+       ✅ Fix-10 封面：保留布局
+       ========================= */
     .pre-card{
       width:min(680px,88%);
       border-radius:56px;
@@ -413,60 +426,55 @@
       overflow:hidden;
       transition: transform .25s ease;
 
-      display:grid;
-      grid-template-rows: 1fr auto 1fr;
-      align-items:center;
-      justify-items:center;
-      padding:clamp(34px, 4.6vh, 54px) 20px;
-
-      /* ✅ Fix-05：降低卡片高度，避免整組被往上擠 */
-      min-height: min(560px, 64vh);
-    }
-    .pre-card:hover{ transform: translateY(-4px); }
-    .pre-card:hover .pre-hunab.spin{ transform: rotate(360deg) scale(1.06); opacity:.62; }
-
-    .cover-top{
-      width:100%;
       display:flex;
       flex-direction:column;
-      align-items:center;
-      justify-content:flex-end;
-      gap:14px;
-      padding-top:6px;
-    }
-
-    /* ✅ Fix-05：中間圖往下推 */
-    .cover-middle{
-      width:100%;
-      display:flex;
       align-items:center;
       justify-content:center;
-      margin-top: 30px; /* 可調 12~28 */
+      padding: clamp(24px, 3vh, 38px) 20px clamp(18px, 2.4vh, 28px);
+      min-height: min(620px, 72vh);
     }
 
-    .cover-bottom{
+    .cover-bay{
       width:100%;
+      position:relative;
+      height: 430px;
+      display:block;
+    }
+
+    .bay-orn-top{
+      position:absolute;
+      left:50%;
+      top:12px;
+      transform:translateX(-50%);
+    }
+    .bay-orn-bottom{
+      position:absolute;
+      left:50%;
+      bottom:10px;
+      transform:translateX(-50%);
+      text-align:center;
+    }
+
+    .bay-center{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:flex-start;
-      gap:14px;
-      padding-bottom:6px;
+      gap:16px;
+      width:100%;
     }
-.cover-bottom{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-  gap:14px;
-  padding-bottom:6px;
-  margin-top:  px; /* ✅ 文字往下：可調 10~22 */
-}
+
+    .pre-ornament{ display:flex; align-items:center; gap:16px; margin:0; }
+    .pre-ornament-dot{ width:6px; height:6px; background:rgba(0,0,0,.22); border-radius:50%; }
+    .pre-ornament-line{ width:74px; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,.24), transparent); }
+    .pre-ornament-line.short{ width:56px; }
 
     .pre-symbol{
-      width:140px;
-      height:140px;
+      width:170px;
+      height:170px;
       position:relative;
       display:flex;
       align-items:center;
@@ -476,16 +484,17 @@
     }
     .pre-glow{
       position:absolute;
-      inset:-40px;
+      inset:-50px;
       border-radius:50%;
-      background:radial-gradient(circle, rgba(255,255,255,.42), transparent 62%);
-      opacity:.50;
-      animation: pulse 3s ease-in-out infinite;
+      background:radial-gradient(circle, rgba(255,255,255,.40), transparent 62%);
+      opacity:.28;
       pointer-events:none;
     }
-    @keyframes pulse{
-      0%,100%{ transform:scale(1); opacity:.46; }
-      50%{ transform:scale(1.08); opacity:.62; }
+
+    /* ✅ 修改：增加旋轉動畫 */
+    @keyframes pre-totem-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     .pre-hunab{
@@ -494,51 +503,67 @@
       display:block;
       border-radius:50%;
       object-fit:cover;
-      opacity:.80;
-      filter: drop-shadow(0 12px 22px rgba(0,0,0,.22));
-      transition: all 2.05s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform, opacity;
+      opacity:.92;
+      filter: drop-shadow(0 14px 26px rgba(0,0,0,.20));
+      /* ✅ 加入旋轉效果 */
+      animation: pre-totem-rotate 25s linear infinite;
+      will-change: transform;
     }
-
-    .pre-ornament{ display:flex; align-items:center; gap:16px; margin:0; }
-    .pre-ornament-dot{ width:6px; height:6px; background:rgba(0,0,0,.2); border-radius:50%; }
-    .pre-ornament-line{ width:66px; height:1px; background:linear-gradient(90deg, transparent, rgba(0,0,0,.2), transparent); }
 
     .pre-title{
       font-weight:900;
       letter-spacing:12px;
-      color:#1A1A1A;
-      font-size:2.2rem;
+      color:#141414;
+      font-size:2.25rem;
+      line-height:1.12;
       text-align:center;
-      text-shadow:0 2px 8px rgba(0,0,0,.1);
+      text-shadow:0 2px 10px rgba(0,0,0,.10);
       font-family:'Cinzel', serif;
+      white-space:nowrap;
+      max-width:92%;
     }
-    .pre-sub{
-      opacity:.66;
-      font-weight:800;
+    .pre-subtitle{
+      opacity:.72;
+      font-weight:900;
       letter-spacing:5px;
-      font-size:1.12rem;
+      font-size:1.10rem;
+      line-height:1.2;
       text-align:center;
-      color:#333;
+      color:#222;
+      white-space:nowrap;
+      max-width:92%;
     }
     .pre-hint{
-      opacity:.50;
-      font-weight:700;
-      letter-spacing:2px;
-      font-size:.92rem;
-      text-align:center;
+      font-weight:900;
+      letter-spacing:4px;
+      opacity:.86;
+      color:#141414;
+      font-size:1.05rem;
+      line-height:1.2;
+      text-shadow: 0 1px 0 rgba(255,255,255,.35);
+      white-space:nowrap;
+      max-width:92%;
     }
 
-    /* ✅ Fix-05：刻印離框框更近，避免把整體撐高 */
+    .pre-subhint{
+      margin-top:10px;
+      font-size:.92rem;
+      letter-spacing:2px;
+      opacity:.50;
+      font-weight:800;
+      color:#2b2b2b;
+      user-select:none;
+      white-space:nowrap;
+    }
+
     .cover-etch-below{
-      margin-top: 12px; /* 原本偏大 → 拉近 */
+      margin-top: 16px;
       display:flex;
       align-items:center;
       justify-content:center;
       width:100%;
       pointer-events:none;
     }
-
     .ritual-etch{
       width:min(260px, 64%);
       height:34px;
@@ -555,9 +580,9 @@
       width:13px;height:13px;border-radius:50%;
       background: var(--theme);
       box-shadow:
-        inset 0 -4px 6px rgba(0,0,0,.34),
-        0 10px 16px rgba(0,0,0,.16);
-      opacity:.96;
+        inset 0 -5px 8px rgba(0,0,0,.42),
+        0 12px 18px rgba(0,0,0,.18);
+      opacity:1;
     }
     .ritual-etch::after{
       content:"";
@@ -566,40 +591,37 @@
       border-radius:13px;
       background: var(--theme);
       box-shadow:
-        inset 0 -5px 7px rgba(0,0,0,.36),
-        0 12px 18px rgba(0,0,0,.16);
-      opacity:.94;
+        inset 0 -6px 9px rgba(0,0,0,.44),
+        0 14px 20px rgba(0,0,0,.18);
+      opacity:1;
     }
 
+    /* =========================
+       ✅ 手機版歷史記錄石
+       ========================= */
     @media (max-width: 520px){
-      .history-sidebar{ left:14px; top:110px; transform:none; gap:12px; z-index:180; }
-      .history-sidebar:not(.open) .history-stone:not(:first-child){ display:none; }
-      .history-stone{ width:62px; height:58px; font-size:1.02rem; }
-      .home-button{ top:22px; left:16px; width:58px; height:58px; font-size:1.55rem; }
-      .content{ overflow:hidden; }
+      .home-button{ top:18px; left:16px; width:56px; height:56px; font-size:1.5rem; }
 
-      .pre-card{ min-height:min(540px, 62svh); }
-
-      .pre-title{ font-size:2.0rem; letter-spacing:10px; }
-      .pre-sub{ font-size:1.05rem; letter-spacing:4px; }
-      .pre-symbol{ width:132px; height:132px; }
-
-      .cover-middle{ margin-top: 28px; } /* 手機少一點 */
-      .cover-etch-below{ margin-top: 10px; }
-    
-      /* ======= ✅ red-115 手機歷史記錄石（最終規格覆蓋） ======= */
-      .history-stone{
-        width:56px;           /* 76→56 */
-        height:52px;          /* 70→52 */
-        font-size:0.95rem;    /* 1.12→0.95 */
+      .history-sidebar{
+        left:14px;
+        top:110px;
+        transform:none;
+        gap:8px;
+        z-index:220;
+        max-height: 360px;
+        pointer-events:auto;
       }
 
-      /* 預設收合：只顯示第一顆（其餘完全消失） */
+      .history-stone{
+        width:56px;
+        height:52px;
+        font-size:0.95rem;
+      }
+
       .history-sidebar:not(.open) .history-stone:not(:first-child){
         display:none !important;
       }
 
-      /* 展開：顯示全部 + 從第一顆下方滑出 */
       .history-sidebar.open .history-stone{
         display:flex !important;
         animation: slideDown 0.3s ease;
@@ -610,7 +632,6 @@
         to  { opacity:1; transform: translateY(0); }
       }
 
-      /* 解除你舊版 secondary 的收合動畫殘留（避免衝突） */
       .history-sidebar:not(.open) .history-stone.secondary{
         opacity:1 !important;
         transform:none !important;
@@ -625,18 +646,17 @@
         max-height:none !important;
         margin-top:0 !important;
       }
-}
-    .cover-bottom{ margin-top: 10px; }
+    }
   </style>
 </head>
 
 <body>
   <div id="root"></div>
 
-  <!-- ✅ 整版單色幕布 -->
+  <div id="scrim-portal"></div>
+
   <div class="cover-curtain" id="coverCurtain" aria-hidden="true"></div>
 
-  <!-- ✅ Level 3 Overlay（疊加層，不碰內頁） -->
   <div class="reading-overlay" id="readingOverlay" aria-hidden="true">
     <div class="reading-stone">
       <div class="reading-inner">
@@ -653,10 +673,8 @@
     </div>
   </div>
 
-  <!-- 封面 ONLY：原本就有 -->
   <div class="hunab-field" id="hunabField" aria-hidden="true"></div>
 
-  <!-- ✅ 放大旋進用（SVG luminance mask：顯示「同色線條」） -->
   <svg class="hunab-flip-svg" id="hunabFlip" viewBox="0 0 100 100" aria-hidden="true">
     <defs>
       <filter id="hunabMaskFilter">
@@ -671,14 +689,12 @@
           <feFuncB type="table" tableValues="1 0"/>
         </feComponentTransfer>
       </filter>
-
       <mask id="hunabLineMask" maskUnits="objectBoundingBox">
         <image href="../images/hunab-ku.png" x="0" y="0" width="100" height="100"
                preserveAspectRatio="xMidYMid slice"
                filter="url(#hunabMaskFilter)"/>
       </mask>
     </defs>
-
     <rect class="tint" x="0" y="0" width="100" height="100" mask="url(#hunabLineMask)"></rect>
   </svg>
 
@@ -798,31 +814,7 @@
       const brain = window.RED_BRAIN_DATA || {};
       const data = brain[String(kin)] || { synchronicMessage: "", alignment: "" };
 
-      const openReading = ()=>{
-        const overlay = document.getElementById('readingOverlay');
-        const a = document.getElementById('readingTextA');
-        const b = document.getElementById('readingTextB');
-        if(!overlay || !a || !b) return;
-        a.textContent = data.synchronicMessage || "";
-        b.textContent = data.alignment || "";
-        overlay.classList.add('show');
-      };
-      const closeReading = ()=>{
-        const overlay = document.getElementById('readingOverlay');
-        if(!overlay) return;
-        overlay.classList.remove('show');
-      };
-
-      useEffect(()=>{
-        const exit = document.getElementById('readingExit');
-        const overlay = document.getElementById('readingOverlay');
-        if(exit) exit.onclick = closeReading;
-        if(overlay){
-          overlay.addEventListener('click', (e)=>{
-            if(e.target === overlay) closeReading();
-          });
-        }
-      },[]);
+      const isMobile = ()=> window.innerWidth <= 520;
 
       useEffect(()=>{
         const activeTheme = hasDrawn ? theme : todayTheme;
@@ -831,7 +823,25 @@
         document.documentElement.style.setProperty("--themeRGB", hexToRgbTuple(activeTheme.main));
       },[theme.bg, theme.main, todayTheme.bg, todayTheme.main, hasDrawn]);
 
-      const isMobile = ()=> window.innerWidth <= 520;
+      /* ✅ 備援（保留）：點側欄外收合 */
+      useEffect(()=>{
+        if(!historyOpen) return;
+
+        const closeIfOutside = (e)=>{
+          const el = document.querySelector(".history-sidebar");
+          if(!el) { setHistoryOpen(false); return; }
+          if(el.contains(e.target)) return;
+          setHistoryOpen(false);
+        };
+
+        document.addEventListener("pointerdown", closeIfOutside, true);
+        document.addEventListener("touchstart", closeIfOutside, true);
+
+        return ()=>{
+          document.removeEventListener("pointerdown", closeIfOutside, true);
+          document.removeEventListener("touchstart", closeIfOutside, true);
+        };
+      }, [historyOpen]);
 
       const measureOverflow = ()=>{
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -926,24 +936,45 @@
         if(e) e.stopPropagation();
 
         if(!isMobile()){
-          // 電腦版：直接切換 KIN
           if(!spinning) setKin(k);
           return;
         }
 
-        // 手機版：第一顆永遠是 toggle（只管展開/收合，不選 KIN）
         if(i === 0){
           setHistoryOpen(prev => !prev);
           return;
         }
 
-        // 手機版：其他顆只有在展開狀態才可選，選完自動收合
         if(!historyOpen) return;
         if(!spinning) setKin(k);
         setHistoryOpen(false);
-      };;
+      };
 
-      const onSidebarClick = ()=>{ if(isMobile() && historyOpen) setHistoryOpen(false); };
+      const openReading = ()=>{
+        const overlay = document.getElementById('readingOverlay');
+        const a = document.getElementById('readingTextA');
+        const b = document.getElementById('readingTextB');
+        if(!overlay || !a || !b) return;
+        a.textContent = data.synchronicMessage || "";
+        b.textContent = data.alignment || "";
+        overlay.classList.add('show');
+      };
+      const closeReading = ()=>{
+        const overlay = document.getElementById('readingOverlay');
+        if(!overlay) return;
+        overlay.classList.remove('show');
+      };
+
+      useEffect(()=>{
+        const exit = document.getElementById('readingExit');
+        const overlay = document.getElementById('readingOverlay');
+        if(exit) exit.onclick = closeReading;
+        if(overlay){
+          overlay.addEventListener('click', (e)=>{
+            if(e.target === overlay) closeReading();
+          });
+        }
+      },[]);
 
       const manualInput = ()=>{
         const num = prompt("召喚指定 KIN (1-260):", kin);
@@ -963,9 +994,13 @@
         }
       };
 
+      /* ✅ 修正：參考 index-114-2 的跳轉動畫 (旋轉、放大、消失) */
       const handleCoverClick = ()=>{
         if(coverAnimating) return;
         setCoverAnimating(true);
+        
+        // 進入效能模式
+        document.body.classList.add('perf-active');
 
         const source = document.querySelector('.pre-hunab');
         const flip = document.getElementById('hunabFlip');
@@ -973,16 +1008,12 @@
         const field = document.getElementById('hunabField');
 
         if(!source || !flip || !tint || !field){
-          try{ source.classList.remove('spin'); }catch(e){}
-
           setCoverAnimating(false);
           startSpin();
           return;
         }
 
-        // ✅ 讓封面上的 Hunab Ku 圖也同步旋轉/淡化（跟轉場同節奏）
-        source.classList.add('spin');
-        const DURATION = 2050;
+        const DURATION = 2050; 
         const r = source.getBoundingClientRect();
 
         document.body.classList.add('cover-transiting');
@@ -995,6 +1026,7 @@
         flip.style.height = r.height + 'px';
         flip.classList.add('show');
 
+        // 處理顏色淡出
         const tintAnim = tint.animate(
           [
             { opacity: 0.26, offset: 0.00 },
@@ -1004,16 +1036,9 @@
           { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
         );
 
-        const cx = window.innerWidth / 2;
-        const cy = window.innerHeight / 2;
-        const sx = r.left + r.width/2;
-        const sy = r.top + r.height/2;
-        const dx = cx - sx;
-        const dy = cy - sy;
-
-        const scale = Math.max(window.innerWidth, window.innerHeight) / r.width * 1.02;
-        const midScale = Math.min(scale, 2.9);
-        const endScale = Math.min(scale, 7.4);
+        const scaleBase = Math.max(window.innerWidth, window.innerHeight) / r.width * 1.02;
+        const midScale = Math.min(scaleBase, 2.9);
+        const endScale = Math.min(scaleBase, 7.4);
 
         let finished = false;
         const finish = ()=>{
@@ -1024,20 +1049,21 @@
           field.classList.remove('show');
           document.body.classList.remove('flip-activating');
           document.body.classList.remove('cover-transiting');
+          document.body.classList.remove('perf-active'); // 結束效能模式
 
           try{ tintAnim.cancel(); }catch(e){}
-          try{ tint.style.opacity = ""; }catch(e){}
-
           setCoverAnimating(false);
           startSpin();
         };
 
         requestAnimationFrame(()=>{
+          // ✅ 核心動畫：旋轉 + 放大
           const anim = flip.animate(
             [
-              { transform: `translate(${dx}px, ${dy}px) scale(1) rotate(0deg)` },
-              { transform: `translate(${dx}px, ${dy}px) scale(${midScale}) rotate(300deg)`, offset: 0.58 },
-              { transform: `translate(${dx}px, ${dy}px) scale(${endScale}) rotate(640deg)` }
+              { transform: `scale(1) rotate(0deg)`, offset: 0.00 },
+              { transform: `scale(1) rotate(0deg)`, offset: 0.10 },
+              { transform: `scale(${midScale}) rotate(300deg)`, offset: 0.62 },
+              { transform: `scale(${endScale}) rotate(640deg)`, offset: 1.00 }
             ],
             { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
           );
@@ -1045,6 +1071,12 @@
           anim.onfinish = finish;
           setTimeout(finish, DURATION + 120);
         });
+      };
+
+      const closeHistoryHard = (e)=>{
+        try{ e.preventDefault(); }catch(_){}
+        try{ e.stopPropagation(); }catch(_){}
+        setHistoryOpen(false);
       };
 
       const contentClass = [
@@ -1059,11 +1091,22 @@
         <>
           {hasDrawn && (<a href="../index.html" className="home-button" title="返回主頁">🏠</a>)}
 
-          <div className={`history-sidebar ${historyOpen ? 'open' : ''}`} onClick={onSidebarClick}>
+          {ReactDOM.createPortal(
+            <div
+              className={`portal-scrim ${(isMobile() && historyOpen) ? 'show' : ''}`}
+              onPointerDownCapture={closeHistoryHard}
+              onTouchStartCapture={closeHistoryHard}
+              onMouseDownCapture={closeHistoryHard}
+              aria-hidden="true"
+            />,
+            document.getElementById('scrim-portal')
+          )}
+
+          <div className={`history-sidebar ${historyOpen ? 'open' : ''}`}>
             {history.map((k,i)=>(
               <div
                 key={i}
-                className="history-stone"
+                className={`history-stone ${i===0 ? 'primary' : 'secondary'}`}
                 onClick={(e)=>onHistoryStoneClick(k,i,e)}
               >
                 {k}
@@ -1074,29 +1117,37 @@
           <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
             <div className="tablet">
               <div ref={contentRef} className={contentClass}>
-
                 {!hasDrawn ? (
                   <>
                     <div className="pre-card" onClick={handleCoverClick}>
-                      <div className="cover-top">
-                        <div className="pre-title">東方・火種</div>
-                        <div className="pre-sub">誕生行動的第一道火光</div>
-                        <div className="pre-ornament">
-                          <div className="pre-ornament-line"></div>
-                          <div className="pre-ornament-dot"></div>
-                          <div className="pre-ornament-line"></div>
+                      <div className="cover-bay">
+                        <div className="bay-orn-top">
+                          <div className="pre-ornament">
+                            <div className="pre-ornament-line"></div>
+                            <div className="pre-ornament-dot"></div>
+                            <div className="pre-ornament-line"></div>
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="cover-middle">
-                        <div className="pre-symbol">
-                          <div className="pre-glow"></div>
-                          <img className="pre-hunab" src="../images/hunab-ku.png" alt="Hunab Ku" />
+                        <div className="bay-center">
+                          <div className="pre-symbol">
+                            <div className="pre-glow"></div>
+                            <img className="pre-hunab" src="../images/hunab-ku.png" alt="Hunab Ku" />
+                          </div>
+
+                          <div className="pre-title">東方・火種</div>
+                          <div className="pre-subtitle">誕生行動的第一道火光</div>
+                          <div className="pre-hint">跟著直覺，鎖定印記</div>
                         </div>
-                      </div>
 
-                      <div className="cover-bottom">
-                        <div className="pre-hint">跟著直覺，鎖定印記</div>
+                        <div className="bay-orn-bottom">
+                          <div className="pre-ornament">
+                            <div className="pre-ornament-dot"></div>
+                            <div className="pre-ornament-line short"></div>
+                            <div className="pre-ornament-dot"></div>
+                          </div>
+                          <div className="pre-subhint">點擊開始對頻</div>
+                        </div>
                       </div>
                     </div>
 
@@ -1118,11 +1169,7 @@
                     <div className="kin-name">{TONE_NAMES[toneId-1]}{GLYPH_NAMES[glyphId]}</div>
 
                     <div className="wavespell-badge">
-                      <img
-                        className="wavespell-icon"
-                        src={`../images/${String(wavespell.glyphId + 1).padStart(2,'0')}.png`}
-                        alt={wavespell.name}
-                      />
+                      <img className="wavespell-icon" src={`../images/${String(wavespell.glyphId + 1).padStart(2,'0')}.png`} alt={wavespell.name} />
                       {wavespell.name}
                     </div>
 
@@ -1155,7 +1202,6 @@
                     </div>
                   </>
                 )}
-
               </div>
             </div>
           </div>

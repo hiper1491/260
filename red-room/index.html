@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>13月亮曆・神廟石碑（115）</title>
+  <title>13月亮曆・神廟石碑（115-優化版）</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -35,6 +35,13 @@
       html,body{ height:100svh; }
     }
     #root{ width:100%; height:100%; }
+
+    /* ✅ 效能優化控制：動畫期間關閉濾鏡減輕手機負擔 */
+    body.perf-active .pre-card,
+    body.perf-active .pre-hunab {
+      filter: none !important;
+      backdrop-filter: none !important;
+    }
 
     body::before{
       content:"";
@@ -399,7 +406,7 @@
     }
 
     /* =========================
-       ✅ Fix-10 封面：保留你說「圖位置OK」的布局
+       ✅ Fix-10 封面：保留布局
        ========================= */
     .pre-card{
       width:min(680px,88%);
@@ -484,7 +491,7 @@
       pointer-events:none;
     }
 
-    /* ✅ 修正：封面圖增加旋轉動畫與效能優化 */
+    /* ✅ 修改：增加旋轉動畫 */
     @keyframes pre-totem-rotate {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -498,8 +505,8 @@
       object-fit:cover;
       opacity:.92;
       filter: drop-shadow(0 14px 26px rgba(0,0,0,.20));
-      /* 加入旋轉 */
-      animation: pre-totem-rotate 20s linear infinite;
+      /* ✅ 加入旋轉效果 */
+      animation: pre-totem-rotate 25s linear infinite;
       will-change: transform;
     }
 
@@ -589,7 +596,9 @@
       opacity:1;
     }
 
-    /* ✅ 手機版歷史記錄石 */
+    /* =========================
+       ✅ 手機版歷史記錄石
+       ========================= */
     @media (max-width: 520px){
       .home-button{ top:18px; left:16px; width:56px; height:56px; font-size:1.5rem; }
 
@@ -923,7 +932,6 @@
 
       const toggle = ()=>{ if(spinning) stopSpin(); else startSpin(); };
 
-      /* ✅ FIX：手機版第一顆永遠 toggle 收合/展開（避免「不能收合」） */
       const onHistoryStoneClick = (k, i, e)=>{
         if(e) e.stopPropagation();
 
@@ -932,13 +940,11 @@
           return;
         }
 
-        // 第一顆：toggle 展開/收合（不選 KIN）
         if(i === 0){
           setHistoryOpen(prev => !prev);
           return;
         }
 
-        // 其他顆：只有展開時可選，選完收合
         if(!historyOpen) return;
         if(!spinning) setKin(k);
         setHistoryOpen(false);
@@ -988,10 +994,13 @@
         }
       };
 
-      /* ✅ 修正式 handleCoverClick：植入 114-2 的旋轉放大轉場動畫 */
+      /* ✅ 修正：參考 index-114-2 的跳轉動畫 (旋轉、放大、消失) */
       const handleCoverClick = ()=>{
         if(coverAnimating) return;
         setCoverAnimating(true);
+        
+        // 進入效能模式
+        document.body.classList.add('perf-active');
 
         const source = document.querySelector('.pre-hunab');
         const flip = document.getElementById('hunabFlip');
@@ -1004,22 +1013,20 @@
           return;
         }
 
-        const DURATION = 2050; // 轉場總時長
+        const DURATION = 2050; 
         const r = source.getBoundingClientRect();
 
-        // 啟動轉場幕布與場域背景
         document.body.classList.add('cover-transiting');
         field.classList.add('show');
         document.body.classList.add('flip-activating');
 
-        // 將隱藏的 SVG 定位到當前圖片位置
         flip.style.left = r.left + 'px';
         flip.style.top = r.top + 'px';
         flip.style.width = r.width + 'px';
         flip.style.height = r.height + 'px';
         flip.classList.add('show');
 
-        // 處理顏色漸淡
+        // 處理顏色淡出
         const tintAnim = tint.animate(
           [
             { opacity: 0.26, offset: 0.00 },
@@ -1029,7 +1036,6 @@
           { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
         );
 
-        // 計算放大倍率 (覆蓋螢幕)
         const scaleBase = Math.max(window.innerWidth, window.innerHeight) / r.width * 1.02;
         const midScale = Math.min(scaleBase, 2.9);
         const endScale = Math.min(scaleBase, 7.4);
@@ -1043,14 +1049,15 @@
           field.classList.remove('show');
           document.body.classList.remove('flip-activating');
           document.body.classList.remove('cover-transiting');
+          document.body.classList.remove('perf-active'); // 結束效能模式
 
           try{ tintAnim.cancel(); }catch(e){}
           setCoverAnimating(false);
-          startSpin(); // 進入對頻狀態
+          startSpin();
         };
 
         requestAnimationFrame(()=>{
-          // 核心：旋轉 + 放大動畫
+          // ✅ 核心動畫：旋轉 + 放大
           const anim = flip.animate(
             [
               { transform: `scale(1) rotate(0deg)`, offset: 0.00 },
@@ -1084,7 +1091,6 @@
         <>
           {hasDrawn && (<a href="../index.html" className="home-button" title="返回主頁">🏠</a>)}
 
-          {/* ✅ scrim：點外收合 */}
           {ReactDOM.createPortal(
             <div
               className={`portal-scrim ${(isMobile() && historyOpen) ? 'show' : ''}`}
