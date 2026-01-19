@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卓爾金神廟 · 260 KIN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', 'Microsoft JhengHei', serif;
+            background: radial-gradient(ellipse at center, #fdfcfb 0%, #f7f5f2 40%, #ebe8e3 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 神聖幾何背景 */
+        .sacred-geometry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(120deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 頁面進入動畫 */
+        .page-container {
+            opacity: 0;
+            animation: fadeIn 2s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 標題區 */
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            color: #5a5a5a;
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: 18px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .header p {
+            color: #8a8a8a;
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            opacity: 0.8;
+        }
+
+        /* 卓爾金曆容器 */
+        .tzolkin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .tzolkin-wrapper {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+        }
+
+        /* 260 格網格 */
+        .tzolkin-grid {
+            display: grid;
+            grid-template-columns: 60px repeat(13, 60px);
+            grid-template-rows: 40px repeat(20, 60px);
+            gap: 3px;
+            margin: 0 auto;
+            width: fit-content;
+        }
+
+        /* 調性標題列 */
+        .tone-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #7a7a7a;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* 圖騰標題列 */
+        .seal-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #7a7a7a;
+            font-weight: 300;
+            writing-mode: vertical-rl;
+            letter-spacing: 2px;
+        }
+
+        /* KIN 格子 */
+        .kin-cell {
+            position: relative;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .kin-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            border-color: rgba(212, 175, 55, 0.6);
+            z-index: 10;
+        }
+
+        /* GAP 日 */
+        .kin-cell.gap {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(102, 187, 106, 0.2) 100%);
+            border-color: rgba(76, 175, 80, 0.4);
+        }
+
+        .kin-cell.gap:hover {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.25) 0%, rgba(102, 187, 106, 0.3) 100%);
+        }
+
+        /* 調性符號 */
+        .cell-tone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+
+        .tone-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .tone-dot {
+            width: 4px;
+            height: 4px;
+            background: #8a8a8a;
+            border-radius: 50%;
+        }
+
+        .tone-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tone-bar {
+            width: 16px;
+            height: 2px;
+            background: #8a8a8a;
+            border-radius: 1px;
+        }
+
+        /* 圖騰圖示 */
+        .cell-seal {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 2px;
+        }
+
+        .cell-seal img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.85;
+        }
+
+        /* KIN 數字 */
+        .cell-kin {
+            font-size: 10px;
+            color: #6a6a6a;
+            font-weight: 400;
+        }
+
+        /* 光點 */
+        .light-orb {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+
+        .light-orb.active {
+            display: block;
+            animation: orbPulse 0.6s ease-in-out infinite;
+        }
+
+        .orb-core {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 250, 0.95) 0%, 
+                rgba(255, 250, 235, 0.85) 30%,
+                rgba(250, 240, 210, 0.7) 60%,
+                rgba(240, 225, 180, 0.4) 100%
+            );
+            box-shadow: 
+                0 0 30px rgba(255, 248, 220, 0.9),
+                0 0 60px rgba(240, 220, 160, 0.7),
+                inset 0 0 20px rgba(255, 255, 240, 0.6);
+        }
+
+        @keyframes orbPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        /* 定錨按鈕 */
+        .anchor-button {
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.15);
+            border: 2px solid rgba(212, 175, 55, 0.6);
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            z-index: 1000;
+            box-shadow: 0 5px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .anchor-button:hover {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: rgba(212, 175, 55, 0.9);
+            box-shadow: 0 8px 35px rgba(212, 175, 55, 0.5);
+            transform: scale(1.05);
+        }
+
+        .anchor-button.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .anchor-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
+        }
+
+        .anchor-text {
+            font-size: 12px;
+            color: #7a7a7a;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* 波符指示 */
+        .wavespell-indicator {
+            position: sticky;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 4px 8px;
+            font-size: 9px;
+            color: #8a8a8a;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            text-align: center;
+            letter-spacing: 1px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        /* 響應式 */
+        @media (max-width: 1024px) {
+            .tzolkin-grid {
+                grid-template-columns: 50px repeat(13, 50px);
+                grid-template-rows: 35px repeat(20, 50px);
+                gap: 2px;
+            }
+
+            .cell-seal {
+                width: 28px;
+                height: 28px;
+            }
+
+            .cell-kin {
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+                letter-spacing: 12px;
+            }
+
+            .tzolkin-grid {
+                grid-template-columns: 40px repeat(13, 45px);
+                grid-template-rows: 30px repeat(20, 45px);
+                gap: 2px;
+            }
+
+            .cell-seal {
+                width: 24px;
+                height: 24px;
+            }
+
+            .cell-kin {
+                font-size: 8px;
+            }
+
+            .tone-dot {
+                width: 3px;
+                height: 3px;
+            }
+
+            .tone-bar {
+                width: 12px;
+                height: 1.5px;
+            }
+
+            .anchor-button {
+                width: 65px;
+                height: 65px;
+                bottom: 30px;
+                right: 30px;
+            }
+
+            .anchor-icon {
+                font-size: 26px;
+            }
+
+            .anchor-text {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sacred-geometry-bg"></div>
+    
+    <div class="page-container">
+        <div class="header">
+            <h1>卓爾金神廟</h1>
+            <p>260 KIN · 神聖曆法</p>
+        </div>
+
+        <div class="tzolkin-container">
+            <div class="tzolkin-wrapper">
+                <div class="tzolkin-grid" id="tzolkinGrid">
+                    <!-- 由 JavaScript 動態生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 光點 -->
+        <div class="light-orb" id="lightOrb">
+            <div class="orb-core"></div>
+        </div>
+
+        <!-- 定錨按鈕 -->
+        <div class="anchor-button" id="anchorButton">
+            <div class="anchor-icon">⚓</div>
+            <div class="anchor-text">定錨</div>
+        </div>
+    </div>
+
+    <script src="tzolkin-data.js"></script>
+    <script>
+        // ============================================
+        // 卓爾金曆核心邏輯
+        // ============================================
+
+        const grid = document.getElementById('tzolkinGrid');
+        const lightOrb = document.getElementById('lightOrb');
+        const anchorButton = document.getElementById('anchorButton');
+
+        let currentKin = 1;
+        let isJumping = false;
+        let jumpInterval = null;
+        let targetKin = null;
+
+        // ============================================
+        // 生成 260 格
+        // ============================================
+
+        function generateGrid() {
+            // 第一行：空格 + 13 個調性
+            grid.innerHTML = '<div class="tone-header"></div>';
+            for (let tone = 1; tone <= 13; tone++) {
+                grid.innerHTML += `<div class="tone-header">${tone}</div>`;
+            }
+
+            // 20 行圖騰
+            for (let sealIdx = 0; sealIdx < 20; sealIdx++) {
+                const seal = TZOLKIN_DATA.seals[sealIdx];
+                
+                // 每行開始：圖騰名稱
+                grid.innerHTML += `<div class="seal-header">${seal.name}</div>`;
+
+                // 13 個 KIN
+                for (let tone = 1; tone <= 13; tone++) {
+                    const kin = sealIdx * 13 + tone;
+                    const kinInfo = getKinInfo(kin);
+                    const isGap = kinInfo.isGap;
+                    const gapClass = isGap ? 'gap' : '';
+
+                    grid.innerHTML += `
+                        <div class="kin-cell ${gapClass}" data-kin="${kin}" id="cell-${kin}">
+                            <div class="cell-tone">${renderToneSymbol(kinInfo.tone.id)}</div>
+                            <div class="cell-seal">
+                                <img src="260-images/${String(seal.id).padStart(2, '0')}.png" alt="${seal.name}">
+                            </div>
+                            <div class="cell-kin">${kin}</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // ============================================
+        // 光點跳動系統
+        // ============================================
+
+        function positionLightOrb(kin) {
+            const cell = document.getElementById(`cell-${kin}`);
+            if (!cell) return;
+
+            const rect = cell.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+            lightOrb.style.left = (rect.left + scrollLeft + rect.width / 2 - 35) + 'px';
+            lightOrb.style.top = (rect.top + scrollTop + rect.height / 2 - 35) + 'px';
+            lightOrb.classList.add('active');
+        }
+
+        function startJumping() {
+            isJumping = true;
+            currentKin = 1;
+            anchorButton.classList.remove('hidden');
+
+            let speed = 80; // 初始速度（毫秒）
+
+            function jump() {
+                if (!isJumping) return;
+
+                positionLightOrb(currentKin);
+
+                // 速度曲線：前50格快，中間穩定，後面漸慢
+                if (currentKin < 50) {
+                    speed = 80;
+                } else if (currentKin < 200) {
+                    speed = 150;
+                } else {
+                    speed = Math.min(400, 150 + (currentKin - 200) * 4);
+                }
+
+                currentKin++;
+                if (currentKin <= 260) {
+                    jumpInterval = setTimeout(jump, speed);
+                }
+            }
+
+            jump();
+        }
+
+        function stopJumping() {
+            isJumping = false;
+            if (jumpInterval) {
+                clearTimeout(jumpInterval);
+            }
+            targetKin = currentKin - 1;
+            
+            // 停止後顯示 KIN 卡片（下一階段實作）
+            console.log(`定錨在 KIN ${targetKin}`);
+            anchorButton.classList.add('hidden');
+            
+            // TODO: 顯示 KIN 卡片
+        }
+
+        // ============================================
+        // 事件監聽
+        // ============================================
+
+        anchorButton.addEventListener('click', () => {
+            if (isJumping) {
+                stopJumping();
+            }
+        });
+
+        // ============================================
+        // 初始化
+        // ============================================
+
+        generateGrid();
+
+        // 頁面載入 2 秒後開始光點跳動
+        setTimeout(() => {
+            startJumping();
+        }, 2000);
+    </script>
+</body>
+</html>
