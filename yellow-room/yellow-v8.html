@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>南方 · 金穗聖域</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Cinzel:wght@600;900&display=swap"
+        rel="stylesheet">
+    <script src="kinData.js"></script>
+    <style>
+        :root {
+            /* Theme: Warm Sanctuary */
+            /* Background Radial: Light Gold -> Warm Stone -> Deep Earth */
+            --bg-center: #F3E5AB;
+            /* Malt/Vanilla */
+            --bg-mid: #D2B48C;
+            /* Tan/Limestone */
+            --bg-edge: #8B4513;
+            /* Saddle Brown/Earth */
+
+            --stone-main: #E6DBC6;
+            /* Light Limestone */
+            --stone-shadow: #BFAFA0;
+
+            --gold-light: #FFD700;
+            --gold-dark: #B8860B;
+
+            --text-main: #3E2723;
+            --text-light: #5D4037;
+
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 40%, var(--bg-center), var(--bg-mid), var(--bg-edge));
+            color: var(--text-main);
+            font-family: 'Noto Serif TC', serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Texture Overlay for Grain/Stone feel */
+        .texture {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            mix-blend-mode: multiply;
+        }
+
+        .halo-glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* === Scene Management === */
+        .scene {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+            transform: scale(0.98);
+            z-index: 10;
+        }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+        }
+
+        /* === Scene 1: Sanctuary Gate (Cover) === */
+        /* Gentle, glowing, inviting. No pressure. */
+
+        .gate-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 2rem;
+            cursor: pointer;
+            /* Whole area clickable */
+        }
+
+        /* The Orb / Hunab Ku */
+        .sanctuary-orb {
+            width: clamp(180px, 30vw, 240px);
+            height: clamp(180px, 30vw, 240px);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .orb-glow {
+            position: absolute;
+            inset: -20%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
+            animation: pulseLight 4s ease-in-out infinite;
+        }
+
+        .orb-core {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Using standard Hunab Ku image if available, or fallback to pure light */
+        }
+
+        .orb-core img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+            animation: rotateSlow 60s linear infinite;
+        }
+
+        .gate-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .g-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            color: var(--text-main);
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .g-subtitle {
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            color: var(--text-light);
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .g-hint {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            opacity: 0.6;
+            animation: fadeHint 3s infinite;
+        }
+
+        /* === Scene 2: Selection (Pressed 3D Buttons) === */
+        /* Vertical, Centered, Pressed/Inset look */
+
+        .selection-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            gap: 1.5rem;
+            height: 100vh;
+            /* Force full height centering */
+        }
+
+        .sel-title {
+            font-size: 1.4rem;
+            letter-spacing: 0.2em;
+            color: var(--text-main);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .stamp-btn {
+            width: 100%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* Icon Left, Text Center/Right */
+            padding: 0 30px;
+            background: rgba(230, 219, 198, 0.4);
+            /* Subtle transparent stone */
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+
+            /* The Pressed Effect */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow:
+                inset 3px 3px 6px rgba(166, 145, 120, 0.5),
+                /* Dark inner shadow top-left */
+                inset -3px -3px 6px rgba(255, 255, 255, 0.6),
+                /* Light inner highlight bottom-right */
+                0 4px 10px rgba(0, 0, 0, 0.05);
+            /* Soft drop shadow */
+        }
+
+        .stamp-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(230, 219, 198, 0.6);
+            border-color: rgba(184, 134, 11, 0.3);
+        }
+
+        .stamp-btn:active {
+            transform: translateY(1px);
+            box-shadow:
+                inset 5px 5px 10px rgba(166, 145, 120, 0.7),
+                inset -5px -5px 10px rgba(255, 255, 255, 0.4);
+        }
+
+        .stamp-icon {
+            width: 36px;
+            height: 36px;
+            fill: #8B5A2B;
+            /* Bronze/Copper feel */
+            filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.5));
+            transition: 0.3s;
+        }
+
+        .stamp-btn:hover .stamp-icon {
+            fill: #B8860B;
+            /* Gold on hover */
+            transform: scale(1.1);
+        }
+
+        .stamp-text {
+            flex: 1;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #5D4037;
+            letter-spacing: 0.4em;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        /* === Scene 3: Oracle (Card & Ritual) === */
+
+        .oracle-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Card Container */
+        .card-frame {
+            background: #F2E8D5;
+            width: min(340px, 85vw);
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow:
+                0 20px 50px rgba(62, 39, 35, 0.3),
+                0 0 0 1px rgba(184, 134, 11, 0.1);
+            text-align: center;
+            position: relative;
+            display: none;
+            /* Hidden by default */
+            /* Paper texture overlay on card */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        .card-frame.show {
+            display: block;
+            animation: cardFloatUp 1s var(--ease-out);
+        }
+
+        /* Tone & Glyph Logic (Red House Standard) */
+        .kin-visual-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            /* Fixed elegant spacing */
+            margin-bottom: 25px;
+        }
+
+        /* Tone: Dots Top, Bars Bottom. Black. */
+        .tone-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            /* Space between dots and bars */
+        }
+
+        .dots-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .t-dot {
+            width: 13px;
+            height: 13px;
+            background: #2D2A26;
+            /* Dark Charcoal/Black */
+            border-radius: 50%;
+            /* Subtle depth */
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .bars-col {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .t-bar {
+            width: 70px;
+            height: 10px;
+            background: #2D2A26;
+            border-radius: 5px;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Glyph: No Box, Direct Manifestation */
+        .glyph-img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            /* No border, no background */
+            filter: drop-shadow(0 5px 10px rgba(62, 39, 35, 0.2));
+        }
+
+        /* Text info */
+        .kin-code {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #8D6E63;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .kin-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #3E2723;
+            letter-spacing: 0.15em;
+            margin-bottom: 30px;
+        }
+
+        .guide-text {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 3px solid #BCAAA4;
+        }
+
+        .guide-label {
+            display: block;
+            font-size: 0.8rem;
+            color: #8D6E63;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .guide-content {
+            font-size: 1rem;
+            color: #4E342E;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* Spin Stage */
+        .spin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .spin-number {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            color: #5D4037;
+            opacity: 0.5;
+            margin-bottom: 30px;
+            font-weight: 900;
+        }
+
+        .anchor-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #8B5A2B, #6D4C41);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            box-shadow: 0 10px 20px rgba(62, 39, 35, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .anchor-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(62, 39, 35, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* Nav Buttons */
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #8D6E63;
+            color: #5D4037;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            letter-spacing: 0.1em;
+            transition: all 0.2s;
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .nav-btn:hover {
+            background: rgba(141, 110, 99, 0.1);
+            color: #3E2723;
+            border-color: #3E2723;
+        }
+
+        /* === History (Runestones) === */
+        /* Collapsible on mobile, Fixed Right on Desktop */
+        .rune-dock {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 50;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .rune-stone {
+            width: 38px;
+            height: 44px;
+            background: #4E342E;
+            color: #D7CCC8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            box-shadow:
+                0 4px 6px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid #3E2723;
+        }
+
+        .rune-stone:hover {
+            transform: scale(1.1);
+            background: #5D4037;
+            color: #fff;
+        }
+
+        /* Mobile specific for Runestones */
+        @media(max-width: 600px) {
+            .rune-dock {
+                position: fixed;
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+                left: auto;
+                transform: none;
+                flex-direction: row-reverse;
+                /* Newest first */
+                width: auto;
+                background: rgba(62, 39, 35, 0.8);
+                border: 1px solid #8D6E63;
+                padding: 8px;
+            }
+
+            .rune-stone {
+                width: 32px;
+                height: 38px;
+                font-size: 0.7rem;
+            }
+
+            .orb-core img {
+                width: 80%;
+                height: 80%;
+            }
+        }
+
+        /* Animation Keyframes */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes rotateSlow {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulseLight {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes fadeHint {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes cardFloatUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div class="texture"></div>
+    <div class="halo-glow"></div>
+
+    <!-- Scene 1: Sanctuary Gate -->
+    <section id="s_cover" class="scene active" onclick="goSelection()">
+        <div class="gate-container">
+            <div class="sanctuary-orb">
+                <div class="orb-glow"></div>
+                <div class="orb-core">
+                    <img src="../images/hunab-ku-1.png" alt="Hunab Ku">
+                </div>
+            </div>
+            <div class="gate-text">
+                <div class="g-title">南方 · 金穗</div>
+                <div class="g-subtitle">GOLDEN SANCTUARY</div>
+            </div>
+            <div class="g-hint">統合歷程 · 收穫智慧</div>
+        </div>
+    </section>
+
+    <!-- Scene 2: Selection (Pressed 3D Buttons) -->
+    <section id="s_selection" class="scene">
+        <div class="selection-layout">
+            <div class="sel-title">請選擇一座祭壇</div>
+
+            <!-- Stamped Buttons -->
+            <div class="stamp-btn" onclick="startRitual('financial', '財務')">
+                <svg class="stamp-icon" viewBox="0 0 24 24">
+                    <path d="M12,2L2,22h20L12,2z M12,6l6,12H6L12,6z" />
+                </svg>
+                <div class="stamp-text">財務</div>
+            </div>
+
+            <div class="stamp-btn" onclick="startRitual('career', '事業')">
+                <svg class="stamp-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M20,6h-4V4c0-1.1-0.9-2-2-2h-4C8.9,2,8,2.9,8,4v2H4C2.9,6,2,6.9,2,8v11c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8C22,6.9,21.1,6,20,6z" />
+                </svg>
+                <div class="stamp-text">事業</div>
+            </div>
+
+            <div class="stamp-btn" onclick="startRitual('relationship', '感情')">
+                <svg class="stamp-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z" />
+                </svg>
+                <div class="stamp-text">感情</div>
+            </div>
+
+            <div class="stamp-btn" onclick="startRitual('health', '健康')">
+                <svg class="stamp-icon" viewBox="0 0 24 24">
+                    <path d="M19,3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V5C21,3.9,20.1,3,19,3z" />
+                </svg>
+                <div class="stamp-text">健康</div>
+            </div>
+
+            <div class="stamp-btn" onclick="startRitual('growth', '成長')">
+                <svg class="stamp-icon" viewBox="0 0 24 24">
+                    <path d="M12,2c-5.52,0-10,4.48-10,10s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z" />
+                </svg>
+                <div class="stamp-text">成長</div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Scene 3: Oracle (Card & Ritual) -->
+    <section id="s_oracle" class="scene">
+        <div class="oracle-center">
+
+            <!-- Spin State -->
+            <div id="spinState" class="spin-container">
+                <div class="spin-number" id="spinNum">1</div>
+                <button class="anchor-btn" onclick="stopAndReveal()">ANCHOR | 定頻</button>
+            </div>
+
+            <!-- Result Card -->
+            <div id="cardFrame" class="card-frame">
+                <!-- Injected dynamically -->
+            </div>
+
+            <!-- Navigation -->
+            <div id="navActions" class="nav-actions" style="display:none;">
+                <button class="nav-btn" onclick="goHome()">回首頁</button>
+                <button class="nav-btn" onclick="goSelection()">再選一次</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Runestones -->
+    <div id="runeDock" class="rune-dock" style="display:none;"></div>
+
+    <script>
+        /* --- Logic --- */
+        let spinInterval = null;
+        let currentTheme = null;
+        let history = JSON.parse(localStorage.getItem('yRunes8')) || []; // New storage key for V8
+
+        const TONE_NAMES = ['磁性', '月亮', '電力', '自我存在', '超頻', '韻律', '共鳴', '銀河', '太陽', '行星', '光譜', '水晶', '宇宙'];
+        const GLYPH_NAMES = ['紅龍', '白風', '藍夜', '黃種子', '紅蛇', '白世界橋', '藍手', '黃星星', '紅月', '白狗', '藍猴', '黃人', '紅天行者', '白巫師', '藍鷹', '黃戰士', '紅地球', '白鏡', '藍風暴', '黃太陽'];
+
+        function switchS(id) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            setTimeout(() => document.getElementById(id).classList.add('active'), 50);
+        }
+
+        function goSelection() { switchS('s_selection'); }
+
+        function goHome() {
+            switchS('s_cover');
+            // Optional: clear history display if needed, but keeping it is better UX
+        }
+
+        function startRitual(tid, tname) {
+            currentTheme = { id: tid, name: tname };
+            switchS('s_oracle');
+
+            // Reset UI
+            document.getElementById('spinState').style.display = 'flex';
+            document.getElementById('cardFrame').classList.remove('show');
+            document.getElementById('navActions').style.display = 'none';
+
+            if (spinInterval) clearInterval(spinInterval);
+            spinInterval = setInterval(() => {
+                document.getElementById('spinNum').innerText = Math.floor(Math.random() * 260) + 1;
+            }, 50);
+        }
+
+        function stopAndReveal() {
+            clearInterval(spinInterval);
+            const kin = Math.floor(Math.random() * 260) + 1;
+
+            // Save
+            history.unshift({ kin: kin });
+            if (history.length > 5) history.pop();
+            localStorage.setItem('yRunes8', JSON.stringify(history));
+            renderRunes();
+
+            renderCard(kin);
+        }
+
+        function renderCard(kin) {
+            const toneId = (kin - 1) % 13 + 1;
+            const glyphId = (kin - 1) % 20 + 1;
+            const sealPad = String(glyphId).padStart(2, '0');
+
+            // Render Tone (Red House Logic: Dots top, Bars bottom)
+            const bars = Math.floor(toneId / 5);
+            const dots = toneId % 5;
+
+            let toneHtml = '';
+            if (dots > 0) toneHtml += `<div class="dots-row">${Array(dots).fill('<div class="t-dot"></div>').join('')}</div>`;
+            if (bars > 0) toneHtml += `<div class="bars-col">${Array(bars).fill('<div class="t-bar"></div>').join('')}</div>`;
+
+            // Data
+            const data = (typeof kinData !== 'undefined' && kinData[kin]) ? kinData[kin] : {
+                alignment: "靜心感受當下。",
+                grounding: "喝一杯水，回到中心。"
+            };
+
+            const html = `
+                <div class="kin-visual-stack">
+                    <div class="tone-group">${toneHtml}</div>
+                    <img class="glyph-img" src="../images/${sealPad}.png" onerror="this.src='https://via.placeholder.com/90'">
+                </div>
+                
+                <div class="kin-code">KIN ${kin}</div>
+                <div class="kin-title">${TONE_NAMES[toneId - 1]}的${GLYPH_NAMES[glyphId - 1]}</div>
+
+                <div class="guide-text">
+                    <span class="guide-label">Alignment · 調頻</span>
+                    <div class="guide-content">${data.alignment}</div>
+                </div>
+
+                <div class="guide-text" style="margin-bottom:0;">
+                    <span class="guide-label">Grounding · 落地</span>
+                    <div class="guide-content">${data.grounding}</div>
+                </div>
+
+                <div style="margin-top:25px; font-size:0.8rem; opacity:0.6; letter-spacing:0.1em; color:#5D4037;">
+                    ✦ ${currentTheme.name}指引 ✦
+                </div>
+            `;
+
+            const card = document.getElementById('cardFrame');
+            card.innerHTML = html;
+
+            document.getElementById('spinState').style.display = 'none';
+            card.classList.add('show');
+            document.getElementById('navActions').style.display = 'flex';
+        }
+
+        function renderRunes() {
+            const dock = document.getElementById('runeDock');
+            if (history.length === 0) { dock.style.display = 'none'; return; }
+            dock.style.display = 'flex';
+            dock.innerHTML = history.map(h => `
+                <div class="rune-stone" onclick="recall(${h.kin})">${h.kin}</div>
+            `).join('');
+        }
+
+        function recall(kin) {
+            currentTheme = currentTheme || { name: '回顧' };
+            switchS('s_oracle');
+            document.getElementById('spinState').style.display = 'none';
+            document.getElementById('cardFrame').classList.remove('show');
+            document.getElementById('navActions').style.display = 'none';
+            setTimeout(() => renderCard(kin), 50);
+        }
+
+        window.onload = function () {
+            renderRunes();
+        };
+
+    </script>
+</body>
+
+</html>

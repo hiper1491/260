@@ -1,0 +1,276 @@
+{
+  "version": "2026-01-19",
+  "lang": "zh-TW",
+  "notes": {
+    "design_intent": "維持你目前『高頻/低頻/調頻行動』的引導語氣；圖騰僅保留你實用的核心層；額外補上每圖騰 5 組關鍵詞、每調性 3 組動詞，便於三卡合盤句生成。"
+  },
+  "placeholders": {
+    "{PAST_TONE}": "過去調性名稱",
+    "{PAST_SEAL}": "過去圖騰名稱",
+    "{PAST_KW_A}": "過去圖騰關鍵詞A(從 seal_keywords 擇一)",
+    "{PRESENT_TONE}": "現在調性名稱",
+    "{PRESENT_SEAL}": "現在圖騰名稱",
+    "{PRESENT_VERB}": "現在調性動詞(從 tone_verbs 擇一)",
+    "{PRESENT_KW_B}": "現在圖騰關鍵詞B(從 seal_keywords 擇一)",
+    "{FUTURE_TONE}": "未來調性名稱",
+    "{FUTURE_SEAL}": "未來圖騰名稱",
+    "{FUTURE_STATE}": "未來調性狀態(建議用 tones[future].high_freq or key_feel)",
+    "{FUTURE_KW_C}": "未來圖騰關鍵詞C(從 seal_keywords 擇一)",
+    "{THEME}": "主題提煉(從三張 core 或 keywords 萃取)"
+  },
+
+  "tones": {
+    "1_magnetic": {
+      "name_zh": "磁性",
+      "core_question": "我的目的是什麼？",
+      "key_feel": ["開頭", "吸引", "聚焦"],
+      "high_freq": "知道自己為什麼要做",
+      "low_freq": "很忙但沒方向",
+      "align_action": "回到最初動機",
+      "verbs": ["吸引", "統一", "召喚"]
+    },
+    "2_lunar": {
+      "name_zh": "月亮",
+      "core_question": "我卡住的點是什麼？",
+      "key_feel": ["拉扯", "挑戰", "情緒浮現"],
+      "high_freq": "能看見問題本身",
+      "low_freq": "情緒起伏、覺得人生很難",
+      "align_action": "允許卡住，先看清楚",
+      "verbs": ["極化", "挑戰", "二元對照"]
+    },
+    "3_electric": {
+      "name_zh": "電力",
+      "core_question": "我如何服務？",
+      "key_feel": ["事情開始動起來"],
+      "high_freq": "知道自己在幫誰",
+      "low_freq": "做很多但很空",
+      "align_action": "找回連結對象",
+      "verbs": ["啟動", "服務", "連結"]
+    },
+    "4_self_existing": {
+      "name_zh": "自我存在",
+      "core_question": "我要用什麼形式？",
+      "key_feel": ["定型", "結構", "選擇"],
+      "high_freq": "架構清楚",
+      "low_freq": "想太多、卡在選擇",
+      "align_action": "先選一個能落地的方式",
+      "verbs": ["定義", "測量", "建立形式"]
+    },
+    "5_overtone": {
+      "name_zh": "超頻",
+      "core_question": "我的力量在哪？",
+      "key_feel": ["能量被放大"],
+      "high_freq": "自然站出來",
+      "low_freq": "想掌控一切",
+      "align_action": "信任自己，不用撐",
+      "verbs": ["賦權", "命令", "放射"]
+    },
+    "6_rhythmic": {
+      "name_zh": "韻律",
+      "core_question": "如何取得平衡？",
+      "key_feel": ["節奏調整"],
+      "high_freq": "剛剛好",
+      "low_freq": "忙亂、失衡",
+      "align_action": "整理生活節奏",
+      "verbs": ["平衡", "組織", "流動同步"]
+    },
+    "7_resonant": {
+      "name_zh": "共振",
+      "aliases_zh": ["共鳴"],
+      "core_question": "我如何對齊？",
+      "key_feel": ["感受被放大"],
+      "high_freq": "直覺準",
+      "low_freq": "太敏感、容易亂",
+      "align_action": "回到身體感覺",
+      "verbs": ["調頻", "管道", "和諧共振"]
+    },
+    "8_galactic": {
+      "name_zh": "銀河星系",
+      "aliases_zh": ["銀河"],
+      "core_question": "我有沒有活出我相信的？",
+      "key_feel": ["價值觀檢視"],
+      "high_freq": "表裡一致",
+      "low_freq": "說一套做一套",
+      "align_action": "對自己誠實",
+      "verbs": ["整合", "模範", "和諧融合"]
+    },
+    "9_solar": {
+      "name_zh": "太陽",
+      "core_question": "我如何完成？",
+      "key_feel": ["聚焦", "推進"],
+      "high_freq": "方向清楚",
+      "low_freq": "急著收尾",
+      "align_action": "穩住，不用趕",
+      "verbs": ["脈動", "意圖", "完成顯化"]
+    },
+    "10_planetary": {
+      "name_zh": "行星",
+      "core_question": "我如何顯化？",
+      "key_feel": ["事情正在發生"],
+      "high_freq": "真的做出來了",
+      "low_freq": "卡在細節",
+      "align_action": "完成比完美重要",
+      "verbs": ["顯化", "完美", "產出呈現"]
+    },
+    "11_spectral": {
+      "name_zh": "光譜",
+      "core_question": "我該放下什麼？",
+      "key_feel": ["解構", "釋放"],
+      "high_freq": "放得很快",
+      "low_freq": "情緒炸裂",
+      "align_action": "讓能量走完",
+      "verbs": ["釋放", "溶解", "解放淨化"]
+    },
+    "12_crystal": {
+      "name_zh": "水晶",
+      "core_question": "我如何與他人合作？",
+      "key_feel": ["關係被啟動"],
+      "high_freq": "互相支持",
+      "low_freq": "過度付出",
+      "align_action": "回到平等",
+      "verbs": ["合作", "奉獻", "透明協作"]
+    },
+    "13_cosmic": {
+      "name_zh": "宇宙",
+      "core_question": "我如何存在於當下？",
+      "key_feel": ["完成", "回收"],
+      "high_freq": "安靜、完整",
+      "low_freq": "捨不得結束",
+      "align_action": "允許結束",
+      "verbs": ["超越", "臨在", "圓滿整合"]
+    }
+  },
+
+  "seals": {
+    "1_red_dragon": {
+      "name_zh": "紅龍",
+      "keywords": ["誕生", "滋養", "源頭", "生命之母", "創化能量"],
+      "core": "被支持、值得存在"
+    },
+    "2_white_wind": {
+      "name_zh": "白風",
+      "keywords": ["靈性", "溝通", "呼吸", "神聖訊息", "聖靈之風"],
+      "core": "真誠表達與連結"
+    },
+    "3_blue_night": {
+      "name_zh": "藍夜",
+      "keywords": ["夢想", "豐盛", "直覺", "內在寶藏", "夜之神殿"],
+      "core": "向內孕育的夢"
+    },
+    "4_yellow_seed": {
+      "name_zh": "黃種子",
+      "keywords": ["目標", "覺醒", "開花", "潛能綻放", "生命之花"],
+      "core": "知道自己在往哪裡長"
+    },
+    "5_red_serpent": {
+      "name_zh": "紅蛇",
+      "keywords": ["生存", "本能", "生命力", "昆達里尼", "肉身智慧"],
+      "core": "身體的智慧"
+    },
+    "6_white_worldbridger": {
+      "name_zh": "白世界橋",
+      "keywords": ["連結", "死亡", "機會", "橋接世界", "臣服釋放"],
+      "core": "放手帶來新可能"
+    },
+    "7_blue_hand": {
+      "name_zh": "藍手",
+      "keywords": ["實踐", "療癒", "完成", "雙手創造", "知曉之門"],
+      "core": "完成本身就是療癒"
+    },
+    "8_yellow_star": {
+      "name_zh": "黃星星",
+      "keywords": ["優雅", "美學", "和諧", "星之藝術", "優美典雅"],
+      "core": "對齊後自然和諧"
+    },
+    "9_red_moon": {
+      "name_zh": "紅月",
+      "keywords": ["淨化", "流動", "情緒", "宇宙之水", "生命之流"],
+      "core": "情緒與記憶的流動"
+    },
+    "10_white_dog": {
+      "name_zh": "白狗",
+      "keywords": ["忠誠", "愛", "心靈", "無條件的愛", "心之忠誠"],
+      "core": "真誠的情感連結"
+    },
+    "11_blue_monkey": {
+      "name_zh": "藍猴",
+      "keywords": ["遊戲", "魔術", "幻象", "神聖遊戲", "魔法之猴"],
+      "core": "玩心與內在小孩"
+    },
+    "12_yellow_human": {
+      "name_zh": "黃人",
+      "keywords": ["自由意志", "智慧", "影響", "自由選擇", "人類智慧"],
+      "core": "為選擇負責"
+    },
+    "13_red_skywalker": {
+      "name_zh": "紅天行者",
+      "keywords": ["探索", "空間", "行走", "天空行者", "無垠探索"],
+      "core": "在移動中醒來"
+    },
+    "14_white_wizard": {
+      "name_zh": "白巫師",
+      "keywords": ["魔法", "接收", "永恆", "心靈魔法師", "接納之力"],
+      "core": "信任與接受帶來魔法"
+    },
+    "15_blue_eagle": {
+      "name_zh": "藍鷹",
+      "keywords": ["視野", "遠見", "創造", "鷹眼洞察", "心智飛翔"],
+      "core": "高視角但要記得降落"
+    },
+    "16_yellow_warrior": {
+      "name_zh": "黃戰士",
+      "keywords": ["勇氣", "智能", "探問", "無懼戰士", "質疑之力"],
+      "core": "用提問穿越恐懼"
+    },
+    "17_red_earth": {
+      "name_zh": "紅地球",
+      "keywords": ["導航", "共時", "進化", "地球母親", "神聖航行"],
+      "core": "站在當下，路會出現"
+    },
+    "18_white_mirror": {
+      "name_zh": "白鏡",
+      "keywords": ["映照", "秩序", "無盡", "內在鏡子", "真實映現"],
+      "core": "看清真相後的自由"
+    },
+    "19_blue_storm": {
+      "name_zh": "藍風暴",
+      "keywords": ["轉化", "催化", "自我創生", "風暴之力", "蛻變能量"],
+      "core": "轉化與重啟"
+    },
+    "20_yellow_sun": {
+      "name_zh": "黃太陽",
+      "keywords": ["啟蒙", "生命", "合一", "宇宙之火", "光之普照"],
+      "core": "無條件的愛與存在本身"
+    }
+  },
+
+  "blue_temple_three_card_templates": {
+    "style": "神聖但不艱澀；詩意但具體；適合 60-80 字左右的合盤金句。",
+    "templates": [
+      {
+        "id": "BT3_v1_classic",
+        "name": "經典合盤句（你原本的公式版）",
+        "pattern": "從【{PAST_SEAL}】的【{PAST_KW_A}】出發，經由【{PRESENT_TONE}】的【{PRESENT_VERB}】，在【{PRESENT_SEAL}】的【{PRESENT_KW_B}】裡校準方向，正流向【{FUTURE_SEAL}】的【{FUTURE_KW_C}】與【{FUTURE_STATE}】。你的時間之流正在編織一段關於【{THEME}】的旅程。"
+      },
+      {
+        "id": "BT3_v2_soft_ritual",
+        "name": "柔和儀式版（更像引導者口吻）",
+        "pattern": "你已走過【{PAST_SEAL}】的【{PAST_KW_A}】，現在讓【{PRESENT_TONE}】帶你【{PRESENT_VERB}】，把心放進【{PRESENT_SEAL}】的【{PRESENT_KW_B}】裡。接下來，你會更自然地進入【{FUTURE_SEAL}】的【{FUTURE_KW_C}】，抵達【{FUTURE_STATE}】——這就是【{THEME}】正在成形的方式。"
+      },
+      {
+        "id": "BT3_v3_minimal_strong",
+        "name": "極簡強句版（短、穩、可做 UI 主句）",
+        "pattern": "從【{PAST_KW_A}】到【{PRESENT_VERB}】，你在【{PRESENT_KW_B}】裡轉向，並走向【{FUTURE_KW_C}】的【{FUTURE_STATE}】；主題是【{THEME}】。"
+      },
+      {
+        "id": "BT3_v4_two_lines_ui",
+        "name": "雙行 UI 版（上句敘事＋下句落地）",
+        "pattern": "上句：從【{PAST_SEAL}】的【{PAST_KW_A}】，經由【{PRESENT_TONE}】的【{PRESENT_VERB}】，走向【{FUTURE_SEAL}】的【{FUTURE_KW_C}】。\n下句：把主題收束成一句——【{THEME}】；此刻只要先做到：套用【{PRESENT_TONE}】的調頻行動（tones[{PRESENT_TONE}].align_action）。"
+      }
+    ],
+    "theme_extraction_hint": {
+      "rule": "THEME 建議從三張的 core 各取一個名詞片段，再做 6-10 字提煉",
+      "example": "（被支持）＋（完成療癒）＋（無條件的愛）→「在被支持中完成療癒，回到愛」"
+    }
+  }
+}

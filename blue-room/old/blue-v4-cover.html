@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>西方 · 轉煉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      color: #e8f4ff;
+      background: 
+        radial-gradient(1200px 800px at 50% 30%, rgba(255, 179, 71, 0.08), transparent 70%),
+        linear-gradient(135deg, #050911 0%, #0d1424 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 星空 */
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #e8f4ff;
+      animation: twinkle 4s infinite ease-in-out;
+    }
+    .star.s1 { width: 1px; height: 1px; }
+    .star.s2 { width: 2px; height: 2px; box-shadow: 0 0 6px rgba(107, 157, 255, 0.6); }
+    .star.s3 { width: 2px; height: 2px; background: #ffb347; box-shadow: 0 0 8px rgba(255, 179, 71, 0.7); }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* 主卡片 */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(600px, 90%);
+      text-align: center;
+      animation: fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.2rem);
+      letter-spacing: 0.18em;
+      margin: 24px 0;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffb347 0%, #e8f4ff 40%, #6b9dff 70%, #ffb347 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 30px rgba(255, 179, 71, 0.3));
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: rgba(232, 244, 255, 0.7);
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .essence {
+      font-size: clamp(0.92rem, 2vw, 1.05rem);
+      color: rgba(232, 244, 255, 0.5);
+      line-height: 1.9;
+      margin-bottom: 50px;
+    }
+
+    /* Hunab Ku 圓門 */
+    .disc {
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      margin: 40px auto;
+      border: 2px solid rgba(255, 179, 71, 0.2);
+      background: radial-gradient(circle at 35% 35%, rgba(255, 179, 71, 0.12) 0%, rgba(107, 157, 255, 0.08) 40%, transparent 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 0 80px rgba(255, 179, 71, 0.2), 0 30px 60px rgba(0, 0, 0, 0.5);
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 80px rgba(255, 179, 71, 0.2), 0 30px 60px rgba(0, 0, 0, 0.5);
+      }
+      50% {
+        transform: scale(1.03);
+        box-shadow: 0 0 100px rgba(255, 179, 71, 0.3), 0 35px 70px rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    .disc::after {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 179, 71, 0.08);
+      animation: pulse 5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    .disc img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      opacity: 0.85;
+      filter: brightness(1.1) drop-shadow(0 0 25px rgba(255, 179, 71, 0.3));
+      animation: rotate 50s linear infinite;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 按鈕 */
+    .btn {
+      background: transparent;
+      border: 2px solid #ffb347;
+      color: #ffb347;
+      padding: 16px 50px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.4s;
+      letter-spacing: 0.15em;
+      font-family: 'Noto Serif TC', serif;
+      box-shadow: 0 0 30px rgba(255, 179, 71, 0.15);
+    }
+
+    .btn:hover {
+      background: #ffb347;
+      color: #050911;
+      box-shadow: 0 0 40px rgba(255, 179, 71, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .hint {
+      margin-top: 35px;
+      font-size: 0.95rem;
+      opacity: 0.4;
+      font-style: italic;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+
+  <div class="card">
+    <h1>西方 · 轉煉</h1>
+    <div class="subtitle">蛻變與業力的轉化之流</div>
+    <div class="essence">穿越舊有模式，讓深層的轉變自然發生</div>
+    
+    <div class="disc">
+      <img src="../images/hunab-ku-1.png" alt="Hunab Ku" onerror="this.style.opacity='0.3'">
+    </div>
+    
+    <button class="btn" onclick="goInner()">開啟煉金陣列</button>
+    <div class="hint">這是一場跨越時間的靜心</div>
+  </div>
+
+  <script>
+    // 星空生成
+    const starsDiv = document.getElementById('stars');
+    const types = ['s1', 's1', 's1', 's1', 's2', 's2', 's3'];
+    
+    for (let i = 0; i < 150; i++) {
+      const star = document.createElement('div');
+      star.className = `star ${types[Math.floor(Math.random() * types.length)]}`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 4}s`;
+      starsDiv.appendChild(star);
+    }
+
+    function goInner() {
+      parent.postMessage({ type: 'NAV', to: 'inner' }, '*');
+    }
+
+    function postHeight() {
+      const h = document.documentElement.scrollHeight;
+      parent.postMessage({ type: 'HEIGHT', id: 'cover', height: h }, '*');
+    }
+
+    window.onload = postHeight;
+  </script>
+</body>
+</html>

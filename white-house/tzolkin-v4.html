@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卓爾金曆 · 260 KIN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', 'Microsoft JhengHei', serif;
+            background: radial-gradient(ellipse at center, #fdfcfb 0%, #f7f5f2 40%, #ebe8e3 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 神聖幾何背景 */
+        .sacred-geometry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(120deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 頁面進入動畫 */
+        .page-container {
+            opacity: 0;
+            animation: fadeIn 2s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 標題區 */
+        .header {
+            text-align: center;
+            padding: 20px 20px 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            color: #5a5a5a;
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 14px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 卓爾金曆容器 */
+        .tzolkin-container {
+            width: 100%;
+            height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .tzolkin-wrapper {
+            width: fit-content;
+            height: fit-content;
+            max-width: 95vw;
+            max-height: calc(100vh - 100px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 260 格網格 - 13欄×20行 */
+        .tzolkin-grid {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+            grid-auto-flow: column;  /* 重要：先填欄，再填行 */
+            gap: 2px;
+            width: min(94vw, calc(82vh * 13 / 20));
+            height: min(82vh, calc(94vw * 20 / 13));
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        /* KIN 格子 */
+        .kin-cell {
+            position: relative;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(200, 200, 200, 0.4);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: clamp(9px, 1.2vw, 16px);
+            font-weight: 500;
+            color: #5a5a5a;
+        }
+
+        .kin-cell:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+            border-color: rgba(212, 175, 55, 0.6);
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* GAP 日 */
+        .kin-cell.gap {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.35) 0%, rgba(102, 187, 106, 0.45) 100%);
+            border-color: rgba(76, 175, 80, 0.6);
+        }
+
+        .kin-cell.gap:hover {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.5) 0%, rgba(102, 187, 106, 0.6) 100%);
+        }
+
+        /* 被選中的格子 - 靜態高亮（方案 A） */
+        .kin-cell.selected {
+            border: 3px solid rgba(212, 175, 55, 0.9);
+            background: rgba(255, 250, 235, 0.9);
+            font-weight: 600;
+            color: #4a4a4a;
+            z-index: 50;
+        }
+
+        /* 光點 - 純粹金色圓點 + 靜態光暈（方案 B） */
+        .light-orb {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+
+        .light-orb.active {
+            display: block;
+        }
+
+        .orb-core {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 250, 1) 0%, 
+                rgba(255, 250, 235, 0.95) 25%,
+                rgba(250, 240, 210, 0.85) 50%,
+                rgba(240, 225, 180, 0.5) 75%,
+                rgba(230, 210, 150, 0.2) 100%
+            );
+            box-shadow: 
+                0 0 15px rgba(255, 248, 220, 0.7),
+                0 0 30px rgba(240, 220, 160, 0.4),
+                inset 0 0 12px rgba(255, 255, 240, 0.8);
+        }
+
+        /* 完全移除波紋和動畫 */
+
+        /* KIN 卡片系統 */
+        .kin-card-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .kin-card-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .kin-card {
+            position: relative;
+            width: 500px;
+            background: linear-gradient(135deg, rgba(255, 252, 245, 0.98), rgba(250, 245, 235, 0.98));
+            border: 3px solid rgba(212, 175, 55, 0.8);
+            border-radius: 20px;
+            padding: 50px 40px 40px;
+            box-shadow: 0 15px 60px rgba(0, 0, 0, 0.4);
+            transform: scale(0.9);
+            transition: transform 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .kin-card-overlay.show .kin-card {
+            transform: scale(1);
+        }
+
+        /* 倒數計時圓環 */
+        .countdown-ring {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+        }
+
+        .countdown-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .countdown-ring-circle {
+            fill: none;
+            stroke: rgba(200, 200, 200, 0.3);
+            stroke-width: 4;
+        }
+
+        .countdown-ring-progress {
+            fill: none;
+            stroke: rgba(212, 175, 55, 0.9);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .countdown-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: 600;
+            color: rgba(120, 95, 60, 0.9);
+        }
+
+        /* 關閉按鈕 */
+        .kin-card-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid rgba(180, 180, 180, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            color: #888;
+        }
+
+        .kin-card-close:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(212, 175, 55, 0.7);
+            color: #555;
+            transform: scale(1.1);
+        }
+
+        /* 卡片內容 */
+        .kin-card-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .kin-number {
+            font-size: 16px;
+            letter-spacing: 3px;
+            color: rgba(140, 110, 70, 0.8);
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .kin-name {
+            font-size: 32px;
+            letter-spacing: 8px;
+            color: rgba(90, 70, 40, 0.95);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .wavespell-label {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            border-radius: 20px;
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: rgba(120, 95, 60, 0.9);
+        }
+
+        .kin-card-body {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 調性區域（紅屋樣式） */
+        .tone-area {
+            height: 72px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 0 0 72px;
+        }
+
+        .tone-dots {
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .tone-bars {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tone-dot {
+            width: 22px;
+            height: 22px;
+            background: #000;
+            border-radius: 50%;
+        }
+
+        .tone-bar {
+            width: 190px;
+            height: 16px;
+            background: #000;
+            border-radius: 8px;
+        }
+
+        /* 圖騰區域（紅屋樣式） */
+        .glyph-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            flex: 0 0 200px;
+            align-items: center;
+        }
+
+        .glyph-frame {
+            display: inline-flex;
+            padding: 10px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.14);
+            box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.30), inset 0 -6px 16px rgba(255, 255, 255, 0.24), 0 14px 28px rgba(0, 0, 0, 0.18);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .glyph-frame:hover {
+            transform: translateY(-2px);
+        }
+
+        .glyph-img {
+            height: 180px;
+            border-radius: 16px;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.24));
+        }
+
+        /* 圖騰圖片 */
+        .seal-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 15px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            object-fit: cover;
+        }
+
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .kin-card {
+                width: 90vw;
+                padding: 45px 30px 35px;
+            }
+
+            .kin-name {
+                font-size: 26px;
+                letter-spacing: 6px;
+            }
+
+            .kin-card-body {
+                flex-direction: column;
+                gap: 25px;
+            }
+
+            .seal-image {
+                width: 160px;
+                height: 160px;
+            }
+        }
+
+        /* 放大門動畫 */
+        .portal-gate {
+            position: fixed;
+            background: radial-gradient(circle, rgba(255, 250, 235, 0.95), rgba(240, 225, 180, 0.9));
+            border: 3px solid rgba(212, 175, 55, 0.8);
+            border-radius: 8px;
+            z-index: 3000;
+            transform-origin: center;
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .portal-gate.expanding {
+            transform: scale(15);
+            opacity: 1;
+            border-radius: 0;
+        }
+
+        body.portal-blur {
+            transition: filter 1s ease;
+        }
+
+        body.portal-blur .tzolkin-container {
+            filter: blur(10px);
+        }
+
+        /* Hunab Ku 定錨按鈕（無文字，緩慢旋轉） */
+        .anchor-button {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: 4px solid rgba(212, 175, 55, 0.75);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            z-index: 1000;
+            box-shadow: 0 8px 35px rgba(212, 175, 55, 0.45);
+        }
+
+        .anchor-button:hover {
+            background: rgba(255, 250, 240, 1);
+            border-color: rgba(212, 175, 55, 1);
+            box-shadow: 0 10px 45px rgba(212, 175, 55, 0.65);
+            transform: translateX(-50%) scale(1.08);
+        }
+
+        .anchor-button.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .anchor-button img {
+            width: 75px;
+            height: 75px;
+            opacity: 0.9;
+            animation: hunabKuRotate 60s linear infinite;
+        }
+
+        @keyframes hunabKuRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 響應式 */
+        @media (max-width: 1024px) {
+            .tzolkin-grid {
+                gap: 1.5px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 22px;
+                letter-spacing: 10px;
+            }
+
+            .tzolkin-container {
+                height: calc(100vh - 60px);
+            }
+
+            .tzolkin-grid {
+                gap: 1px;
+                width: min(95vw, calc(95vh * 13 / 20));
+                height: min(95vh, calc(95vw * 20 / 13));
+            }
+
+            .anchor-button {
+                width: 90px;
+                height: 90px;
+                bottom: 40px;
+            }
+
+            .anchor-button img {
+                width: 56px;
+                height: 56px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sacred-geometry-bg"></div>
+    
+    <div id="tzolkinPageView" class="page-container">
+        <div class="header">
+            <h1>卓爾金曆</h1>
+        </div>
+
+        <div class="tzolkin-container">
+            <div class="tzolkin-wrapper">
+                <div class="tzolkin-grid" id="tzolkinGrid">
+                    <!-- 由 JavaScript 動態生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 光點 -->
+        <div class="light-orb" id="lightOrb">
+            <div class="orb-core"></div>
+        </div>
+
+        <!-- Hunab Ku 定錨按鈕（無文字，緩慢旋轉） -->
+        <div class="anchor-button" id="anchorButton">
+            <img src="../images/hunab-ku-1.png" alt="Hunab Ku">
+        </div>
+
+        <!-- KIN 卡片 -->
+        <div class="kin-card-overlay" id="kinCardOverlay">
+            <div class="kin-card">
+                <!-- 倒數計時 -->
+                <div class="countdown-ring">
+                    <svg width="70" height="70">
+                        <circle class="countdown-ring-circle" cx="35" cy="35" r="32"></circle>
+                        <circle class="countdown-ring-progress" id="countdownProgress" cx="35" cy="35" r="32"></circle>
+                    </svg>
+                    <div class="countdown-text" id="countdownText">19</div>
+                </div>
+
+                <!-- 關閉按鈕 -->
+                <div class="kin-card-close" id="kinCardClose">✕</div>
+
+                <!-- 卡片內容 -->
+                <div class="kin-card-header">
+                    <div class="kin-number" id="kinNumber">KIN 1</div>
+                </div>
+
+                <!-- 調性符號（上） -->
+                <div class="tone-area" id="toneSymbol">
+                    <!-- 由 JavaScript 動態生成 -->
+                </div>
+
+                <!-- 圖騰（中） -->
+                <div class="glyph-area">
+                    <div class="glyph-frame">
+                        <img class="glyph-img" id="sealImage" src="../images/01.png" alt="圖騰">
+                    </div>
+                </div>
+
+                <!-- 名字和波符（下） -->
+                <div class="kin-name" id="kinName">紅磁性龍</div>
+                <div class="wavespell-label" id="wavespellLabel">紅龍波</div>
+            </div>
+        </div>
+    </div>
+    </div>  <!-- 結束 tzolkinPageView -->
+
+    <script>
+        // ============================================
+        // 卓爾金曆完整數據
+        // ============================================
+        
+        // 20 太陽印記（圖騰）
+        const solarSeals = [
+            { id: 1, name: '紅龍', color: 'red' },
+            { id: 2, name: '白風', color: 'white' },
+            { id: 3, name: '藍夜', color: 'blue' },
+            { id: 4, name: '黃種子', color: 'yellow' },
+            { id: 5, name: '紅蛇', color: 'red' },
+            { id: 6, name: '白世界橋', color: 'white' },
+            { id: 7, name: '藍手', color: 'blue' },
+            { id: 8, name: '黃星星', color: 'yellow' },
+            { id: 9, name: '紅月', color: 'red' },
+            { id: 10, name: '白狗', color: 'white' },
+            { id: 11, name: '藍猴', color: 'blue' },
+            { id: 12, name: '黃人', color: 'yellow' },
+            { id: 13, name: '紅天行者', color: 'red' },
+            { id: 14, name: '白巫師', color: 'white' },
+            { id: 15, name: '藍鷹', color: 'blue' },
+            { id: 16, name: '黃戰士', color: 'yellow' },
+            { id: 17, name: '紅地球', color: 'red' },
+            { id: 18, name: '白鏡', color: 'white' },
+            { id: 19, name: '藍風暴', color: 'blue' },
+            { id: 20, name: '黃太陽', color: 'yellow' }
+        ];
+
+        // 13 銀河音調（調性）
+        const galacticTones = [
+            { id: 1, name: '磁性' },
+            { id: 2, name: '月亮' },
+            { id: 3, name: '電力' },
+            { id: 4, name: '自我存在' },
+            { id: 5, name: '超頻' },
+            { id: 6, name: '韻律' },
+            { id: 7, name: '共振' },
+            { id: 8, name: '銀河' },
+            { id: 9, name: '太陽' },
+            { id: 10, name: '行星' },
+            { id: 11, name: '光譜' },
+            { id: 12, name: '水晶' },
+            { id: 13, name: '宇宙' }
+        ];
+
+        // 20 波符
+        const wavespells = [
+            '紅龍波', '白巫師波', '藍手波', '黃太陽波', '紅天行者波',
+            '白世界橋波', '藍風暴波', '黃人波', '紅蛇波', '白鏡波',
+            '藍猴波', '黃種子波', '紅地球波', '白狗波', '藍夜波',
+            '黃戰士波', '紅月波', '白風波', '藍鷹波', '黃星星波'
+        ];
+
+        // GAP 日（52 天）
+        const gapDays = [1, 20, 22, 39, 43, 50, 51, 58, 64, 69, 72, 77, 85, 88, 93, 96, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 165, 168, 173, 176, 184, 189, 192, 197, 203, 210, 211, 218, 222, 239, 241, 260];
+
+        // 獲取 KIN 完整資訊
+        function getKinInfo(kin) {
+            const sealIndex = (kin - 1) % 20;
+            const toneId = ((kin - 1) % 13) + 1;
+            const wavespellIndex = Math.floor((kin - 1) / 13);
+            
+            const seal = solarSeals[sealIndex];
+            const tone = galacticTones[toneId - 1];
+            const wavespell = wavespells[wavespellIndex];
+            const isGap = gapDays.includes(kin);
+            
+            return {
+                kin,
+                seal,
+                tone,
+                wavespell,
+                isGap,
+                fullName: `${tone.name}的${seal.name}`
+            };
+        }
+
+        // 生成調性符號 HTML
+        function renderToneSymbol(toneId) {
+            let html = '';
+            
+            // 上面的點（1-4 個）
+            const dots = Math.min(toneId, 4);
+            if (dots > 0) {
+                html += '<div class="tone-dots">';
+                for (let i = 0; i < dots; i++) {
+                    html += '<div class="tone-dot"></div>';
+                }
+                html += '</div>';
+            }
+            
+            // 下面的橫線（每 5 一條，最多 2 條）
+            const bars = Math.floor((toneId - 1) / 5);
+            if (bars > 0) {
+                html += '<div class="tone-bars">';
+                for (let i = 0; i < bars; i++) {
+                    html += '<div class="tone-bar"></div>';
+                }
+                html += '</div>';
+            }
+            
+            return html;
+        }
+
+        // ============================================
+        // DOM 元素
+        // ============================================
+        const grid = document.getElementById('tzolkinGrid');
+        const lightOrb = document.getElementById('lightOrb');
+        const anchorButton = document.getElementById('anchorButton');
+        
+        // KIN 卡片元素
+        const kinCardOverlay = document.getElementById('kinCardOverlay');
+        const kinCardClose = document.getElementById('kinCardClose');
+        const kinNumber = document.getElementById('kinNumber');
+        const kinName = document.getElementById('kinName');
+        const wavespellLabel = document.getElementById('wavespellLabel');
+        const toneSymbol = document.getElementById('toneSymbol');
+        const sealImage = document.getElementById('sealImage');
+        const countdownText = document.getElementById('countdownText');
+        const countdownProgress = document.getElementById('countdownProgress');
+
+        let currentKin = 1;
+        let isJumping = false;
+        let jumpInterval = null;
+        let selectedKin = null;
+        let countdownInterval = null;
+
+        // ============================================
+        // KIN 卡片系統
+        // ============================================
+        
+        function showKinCard(kin) {
+            const info = getKinInfo(kin);
+            console.log('=== 顯示 KIN 卡片 ===');
+            console.log('KIN:', kin);
+            
+            // 計算調性ID和圖騰索引（同紅屋）
+            const toneId = (kin - 1) % 13 + 1;
+            const glyphId = (kin - 1) % 20;
+            
+            // 調性名字和圖騰名字
+            const toneNames = ["磁性的", "月亮的", "電力的", "自我存在的", "超頻的", "韻律的", "共鳴的", "銀河的", "太陽的", "行星的", "光譜的", "水晶的", "宇宙的"];
+            const glyphNames = ["紅龍", "白風", "藍夜", "黃種子", "紅蛇", "白世界橋", "藍手", "黃星星", "紅月", "白狗", "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹", "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"];
+            
+            // 更新 KIN 編號
+            kinNumber.textContent = `KIN ${kin}`;
+            
+            // 更新 KIN 名字（調性 + 圖騰）
+            kinName.textContent = toneNames[toneId - 1] + glyphNames[glyphId];
+            
+            // 更新波符
+            const wavespellIndex = Math.floor((kin - 1) / 13);
+            const wavespells = [
+                '紅龍波', '白巫師波', '藍手波', '黃太陽波', '紅天行者波',
+                '白世界橋波', '藍風暴波', '黃人波', '紅蛇波', '白鏡波',
+                '藍猴波', '黃種子波', '紅地球波', '白狗波', '藍夜波',
+                '黃戰士波', '紅月波', '白風波', '藍鷹波', '黃星星波'
+            ];
+            wavespellLabel.textContent = wavespells[wavespellIndex];
+            
+            // 生成調性符號（同紅屋的邏輯）
+            const dots = toneId % 5;
+            const bars = Math.floor(toneId / 5);
+            
+            let toneHTML = '';
+            
+            // 點（上）
+            if (dots > 0) {
+                toneHTML += '<div class="tone-dots">';
+                for (let i = 0; i < dots; i++) {
+                    toneHTML += '<div class="tone-dot"></div>';
+                }
+                toneHTML += '</div>';
+            }
+            
+            // 線（下）
+            if (bars > 0) {
+                toneHTML += '<div class="tone-bars">';
+                for (let i = 0; i < bars; i++) {
+                    toneHTML += '<div class="tone-bar"></div>';
+                }
+                toneHTML += '</div>';
+            }
+            
+            toneSymbol.innerHTML = toneHTML;
+            
+            // 圖騰圖片路徑（同紅屋）
+            sealImage.src = `../images/${String(glyphId + 1).padStart(2, '0')}.png`;
+            
+            console.log('KIN:', kin, '調性ID:', toneId, '圖騰索引:', glyphId);
+            console.log('圖片路徑:', sealImage.src);
+            
+            // 顯示卡片
+            kinCardOverlay.classList.add('show');
+            
+            // 開始 19 秒倒數
+            startCountdown(19);
+        }
+
+        function hideKinCard() {
+            kinCardOverlay.classList.remove('show');
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            
+            console.log('=== KIN 卡片已關閉 ===');
+            console.log('現在可以點擊選中的格子進入深度解讀');
+            
+            // 確保選中的格子有點擊事件
+            if (selectedKin) {
+                const cell = document.getElementById(`cell-${selectedKin}`);
+                if (cell) {
+                    console.log('重新綁定格子點擊事件:', selectedKin);
+                    
+                    // 加入超明顯的視覺提示
+                    cell.style.cursor = 'pointer';
+                    cell.style.animation = 'pulse 1.5s infinite';
+                    
+                    // 移除舊事件
+                    const newCell = cell.cloneNode(true);
+                    cell.parentNode.replaceChild(newCell, cell);
+                    
+                    // 綁定新事件
+                    newCell.style.cursor = 'pointer';
+                    newCell.style.animation = 'pulse 1.5s infinite';
+                    
+                    newCell.addEventListener('click', function(e) {
+                        console.log('!!! 格子被點擊 !!!', selectedKin);
+                        alert(`點擊成功！準備進入 KIN ${selectedKin} 深度解讀`);
+                        enterDeepReading(selectedKin, newCell);
+                    });
+                    
+                    console.log('✅ 點擊事件已綁定，格子應該會閃爍');
+                }
+            }
+        }
+
+        /* 脈動動畫 */
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { 
+                    transform: scale(1);
+                    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+                }
+                50% { 
+                    transform: scale(1.05);
+                    box-shadow: 0 0 20px 5px rgba(212, 175, 55, 0.7);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        function startCountdown(seconds) {
+            let remaining = seconds;
+            const circumference = 2 * Math.PI * 32; // 圓周長
+            
+            countdownProgress.style.strokeDasharray = circumference;
+            countdownProgress.style.strokeDashoffset = 0;
+            
+            countdownText.textContent = remaining;
+            
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            countdownInterval = setInterval(() => {
+                remaining--;
+                countdownText.textContent = remaining;
+                
+                // 更新圓環進度
+                const progress = remaining / seconds;
+                const offset = circumference * (1 - progress);
+                countdownProgress.style.strokeDashoffset = offset;
+                
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    hideKinCard();
+                }
+            }, 1000);
+        }
+
+        // 關閉按鈕事件
+        kinCardClose.addEventListener('click', hideKinCard);
+        
+        // 點擊遮罩關閉
+        kinCardOverlay.addEventListener('click', (e) => {
+            if (e.target === kinCardOverlay) {
+                hideKinCard();
+            }
+        });
+
+        // ============================================
+        // 生成 260 格（13欄×20行）
+        // ============================================
+        function generateGrid() {
+            console.log('開始生成 260 格...');
+            grid.innerHTML = '';
+
+            // 直接生成 1-260，CSS Grid 的 grid-auto-flow: column 會自動按欄排列
+            for (let kin = 1; kin <= 260; kin++) {
+                const isGap = gapDays.includes(kin);
+                
+                const cell = document.createElement('div');
+                cell.className = `kin-cell${isGap ? ' gap' : ''}`;
+                cell.setAttribute('data-kin', kin);
+                cell.id = `cell-${kin}`;
+                cell.textContent = kin;
+                
+                grid.appendChild(cell);
+            }
+
+            console.log(`已生成 ${grid.children.length} 個格子`);
+            console.log('排列方式：第一欄 1-20，第二欄 21-40...');
+        }
+
+        // ============================================
+        // 光點跳動系統
+        // ============================================
+        function positionLightOrb(kin) {
+            const cell = document.getElementById(`cell-${kin}`);
+            if (!cell) {
+                console.warn(`找不到格子: cell-${kin}`);
+                return;
+            }
+
+            const rect = cell.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+            // 光點 50px，所以偏移 25px
+            lightOrb.style.left = (rect.left + scrollLeft + rect.width / 2 - 25) + 'px';
+            lightOrb.style.top = (rect.top + scrollTop + rect.height / 2 - 25) + 'px';
+            lightOrb.classList.add('active');
+        }
+
+        function startJumping() {
+            console.log('開始光點隨機跳動...');
+            isJumping = true;
+            
+            const cells = document.querySelectorAll('.kin-cell');
+            const cellCount = cells.length;
+
+            function jump() {
+                if (!isJumping) return;
+
+                // 隨機選擇一個格子
+                const randomIndex = Math.floor(Math.random() * cellCount);
+                currentKin = parseInt(cells[randomIndex].dataset.kin);
+                
+                positionLightOrb(currentKin);
+
+                // 隨機速度 80-150ms
+                const speed = 80 + Math.random() * 70;
+                
+                jumpInterval = setTimeout(jump, speed);
+            }
+
+            jump();
+        }
+
+        function stopJumpingRandom() {
+            console.log('點擊定錨按鈕，開始加速跳動...');
+            
+            // 加速跳動
+            let fastSpeed = 30; // 很快的速度
+            let fastJumpCount = 0;
+            const fastJumpMax = 20; // 快速跳動 20 次
+            
+            isJumping = false;
+            if (jumpInterval) {
+                clearTimeout(jumpInterval);
+            }
+
+            function fastJump() {
+                currentKin = (currentKin % 260) + 1;
+                positionLightOrb(currentKin);
+                fastJumpCount++;
+
+                if (fastJumpCount < fastJumpMax) {
+                    setTimeout(fastJump, fastSpeed);
+                } else {
+                    // 隨機選擇一個 KIN
+                    const randomKin = Math.floor(Math.random() * 260) + 1;
+                    finalizeSelection(randomKin);
+                }
+            }
+
+            fastJump();
+        }
+
+        function finalizeSelection(kin) {
+            console.log(`宇宙選定 KIN ${kin}`);
+            selectedKin = kin;
+            
+            // 光點移動到選定的格子
+            positionLightOrb(kin);
+            
+            // 500ms 後光點完全消失
+            setTimeout(() => {
+                lightOrb.classList.remove('active');
+                lightOrb.style.display = 'none';
+            }, 500);
+            
+            // 移除之前的高亮
+            document.querySelectorAll('.kin-cell.selected').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+            
+            // 格子靜態高亮
+            const cell = document.getElementById(`cell-${kin}`);
+            if (cell) {
+                cell.classList.add('selected');
+                
+                // 加入點擊事件：點擊進入深度解讀
+                cell.style.cursor = 'pointer';
+                cell.addEventListener('click', () => {
+                    enterDeepReading(kin, cell);
+                });
+            }
+            
+            // 隱藏定錨按鈕
+            anchorButton.classList.add('hidden');
+            
+            // 1 秒後顯示 KIN 卡片
+            setTimeout(() => {
+                showKinCard(kin);
+            }, 1000);
+        }
+
+        function enterDeepReading(kin, cell) {
+            console.log('=== 進入深度解讀 ===');
+            console.log('KIN:', kin);
+            
+            // 直接顯示深度解讀頁面（內嵌）
+            showDeepReading(kin);
+        }
+
+
+        // ============================================
+        // 事件監聽
+        // ============================================
+        anchorButton.addEventListener('click', () => {
+            if (isJumping) {
+                stopJumpingRandom();
+            }
+        });
+
+        // ============================================
+        // 初始化
+        // ============================================
+        console.log('初始化卓爾金曆...');
+        generateGrid();
+
+        // 頁面載入 2 秒後開始光點跳動
+        setTimeout(() => {
+            startJumping();
+        }, 2000);
+
+        // ============================================
+        // 深度解讀頁面系統（內嵌）
+        // ============================================
+        const deepReadingView = document.getElementById('deepReadingView');
+        const backFromReading = document.getElementById('backFromReading');
+
+        // 顯示深度解讀
+        function showDeepReading(kin) {
+            const info = getKinInfo(kin);
+            
+            // 更新深度解讀頁面內容
+            document.getElementById('deepKinTitle').textContent = info.fullName;
+            document.getElementById('deepKinSubtitle').textContent = `KIN ${kin}`;
+            document.getElementById('deepSealImage').src = `./images/${String(info.seal.id).padStart(2, '0')}.png`;
+            
+            // 暫時使用默認內容（實際應從完整數據庫載入）
+            const syncMsg = `${info.tone.name}的${info.seal.name}，把你帶入深度的靈性體驗。`;
+            document.getElementById('deepSyncMessage').textContent = syncMsg;
+            document.getElementById('deepHighFrequency').textContent = '展現你的最高潛能';
+            document.getElementById('deepLowFrequency').textContent = '覺察你的成長邊界';
+            document.getElementById('deepAlignment').textContent = '今天的校準方向';
+            
+            // 隱藏260格視圖，顯示深度解讀
+            document.getElementById('tzolkinPageView').style.display = 'none';
+            deepReadingView.style.display = 'block';
+            
+            console.log('顯示深度解讀:', kin, info);
+        }
+
+        // 返回260格
+        function backToTzolkin() {
+            document.getElementById('tzolkinPageView').style.display = 'block';
+            deepReadingView.style.display = 'none';
+        }
+
+        if (backFromReading) {
+            backFromReading.addEventListener('click', backToTzolkin);
+        }
+    </script>
+
+    <!-- 深度解讀頁面（隱藏，點擊後才顯示） -->
+    <div id="deepReadingView" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, #FFFEF9 0%, #FFF9EB 30%, #FFF3D9 70%, #FFEEC4 100%); overflow-y: auto; z-index: 50; padding: 60px 40px 40px; opacity: 0; animation: fadeIn 1s ease forwards;">
+        <button id="backFromReading" style="position: fixed; top: 30px; left: 30px; padding: 12px 24px; background: rgba(255, 255, 255, 0.8); border: 1.5px solid rgba(212, 175, 55, 0.5); border-radius: 25px; font-size: 14px; letter-spacing: 3px; color: rgba(100, 80, 50, 0.85); cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px); z-index: 100;">← 返回卓爾金曆</button>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 60px;">
+                <div id="deepKinTitle" style="font-size: 48px; font-weight: 700; letter-spacing: 12px; color: rgba(90, 70, 40, 0.95); margin-bottom: 20px;">磁性的紅龍</div>
+                <div id="deepKinSubtitle" style="font-size: 18px; letter-spacing: 6px; color: rgba(120, 95, 60, 0.8); font-weight: 300;">KIN 1</div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 60px;">
+                <img id="deepSealImage" src="./images/01.png" alt="圖騰" style="width: 200px; height: 200px; border-radius: 20px; border: 3px solid rgba(212, 175, 55, 0.4); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);">
+            </div>
+
+            <div id="deepSyncMessage" style="background: linear-gradient(135deg, rgba(255, 250, 235, 0.95), rgba(250, 240, 220, 0.9)); border: 3px solid rgba(212, 175, 55, 0.5); padding: 50px; text-align: center; font-size: 19px; line-height: 2.5; color: rgba(80, 65, 45, 0.95); font-weight: 400; letter-spacing: 2px; box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2); margin-bottom: 30px; border-radius: 20px;">
+                磁性的紅龍，把你帶回「最原初的滋養」。
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.7); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; margin-bottom: 30px; backdrop-filter: blur(10px);">
+                <div style="font-size: 20px; font-weight: 600; letter-spacing: 4px; color: rgba(120, 95, 60, 0.9); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);">高頻展現</div>
+                <div id="deepHighFrequency" style="font-size: 17px; line-height: 2.2; color: rgba(70, 60, 45, 0.9); letter-spacing: 1.5px;">信任生命、願意被支持</div>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.7); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; margin-bottom: 30px; backdrop-filter: blur(10px);">
+                <div style="font-size: 20px; font-weight: 600; letter-spacing: 4px; color: rgba(120, 95, 60, 0.9); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);">低頻模式</div>
+                <div id="deepLowFrequency" style="font-size: 17px; line-height: 2.2; color: rgba(70, 60, 45, 0.9); letter-spacing: 1.5px;">過度逞強、把需求吞下去</div>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.7); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 40px; margin-bottom: 30px; backdrop-filter: blur(10px);">
+                <div style="font-size: 20px; font-weight: 600; letter-spacing: 4px; color: rgba(120, 95, 60, 0.9); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);">今日校準</div>
+                <div id="deepAlignment" style="font-size: 17px; line-height: 2.2; color: rgba(70, 60, 45, 0.9); letter-spacing: 1.5px;">給自己溫柔的開始</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

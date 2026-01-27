@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>西方 · 轉煉 - 封面</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-void: #050911;
+      --bg-deep: #0d1424;
+      --fire-gold: #ffb347;
+      --nebula-blue: #6b9dff;
+      --star-white: #e8f4ff;
+      --line: rgba(255, 179, 71, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      color: var(--star-white);
+      background:
+        radial-gradient(1200px 800px at 50% 30%, rgba(255, 179, 71, 0.08), transparent 70%),
+        radial-gradient(900px 600px at 80% 100%, rgba(107, 157, 255, 0.06), transparent 65%),
+        linear-gradient(135deg, var(--bg-void) 0%, var(--bg-deep) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 星空 */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      animation: twinkle 4s infinite ease-in-out;
+    }
+
+    .star.small {
+      width: 1px;
+      height: 1px;
+      background: var(--star-white);
+    }
+
+    .star.medium {
+      width: 2px;
+      height: 2px;
+      background: var(--nebula-blue);
+      box-shadow: 0 0 6px rgba(107, 157, 255, 0.6);
+    }
+
+    .star.fire {
+      width: 2px;
+      height: 2px;
+      background: var(--fire-gold);
+      box-shadow: 0 0 8px rgba(255, 179, 71, 0.7);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* 煉金霧氣 */
+    .mist {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.15;
+      background:
+        radial-gradient(600px 400px at 30% 70%, rgba(255, 159, 67, 0.3), transparent 70%),
+        radial-gradient(500px 350px at 70% 20%, rgba(107, 157, 255, 0.25), transparent 65%);
+      animation: mistFloat 40s infinite alternate ease-in-out;
+    }
+
+    @keyframes mistFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(25px, -20px) scale(1.15); }
+    }
+
+    /* 主卡片 */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(600px, 90%);
+      text-align: center;
+      animation: fadeIn 1.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .kicker {
+      font-family: 'Cormorant Garamond', serif;
+      letter-spacing: 0.45em;
+      color: var(--fire-gold);
+      opacity: 0.85;
+      font-size: 1.05rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(255, 179, 71, 0.4);
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.2rem);
+      letter-spacing: 0.18em;
+      margin: 24px 0;
+      font-weight: 900;
+      background: linear-gradient(135deg,
+        var(--fire-gold) 0%,
+        var(--star-white) 40%,
+        var(--nebula-blue) 70%,
+        var(--fire-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 30px rgba(255, 179, 71, 0.3));
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: rgba(232, 244, 255, 0.7);
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .essence {
+      font-size: clamp(0.92rem, 2vw, 1.05rem);
+      color: rgba(232, 244, 255, 0.5);
+      line-height: 1.9;
+      margin-bottom: 50px;
+    }
+
+    /* Hunab Ku 門 - 保持圓形 */
+    .disc {
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      margin: 40px auto;
+      border: 2px solid var(--line);
+      background:
+        radial-gradient(circle at 35% 35%,
+          rgba(255, 179, 71, 0.12) 0%,
+          rgba(107, 157, 255, 0.08) 40%,
+          transparent 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow:
+        0 0 80px rgba(255, 179, 71, 0.2),
+        0 30px 60px rgba(0, 0, 0, 0.5);
+      animation: breatheDisc 6s ease-in-out infinite;
+    }
+
+    @keyframes breatheDisc {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 80px rgba(255, 179, 71, 0.2),
+          0 30px 60px rgba(0, 0, 0, 0.5);
+      }
+      50% {
+        transform: scale(1.02);
+        box-shadow:
+          0 0 100px rgba(255, 179, 71, 0.3),
+          0 35px 70px rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    .disc::after {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 179, 71, 0.08);
+      animation: pulse 5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    .disc img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      opacity: 0.85;
+      filter: drop-shadow(0 0 25px rgba(255, 179, 71, 0.3));
+      animation: slowRotate 50s linear infinite;
+    }
+
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 進入按鈕 */
+    .btn {
+      background: transparent;
+      border: 2px solid var(--fire-gold);
+      color: var(--fire-gold);
+      padding: 16px 50px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.15em;
+      font-family: 'Noto Serif TC', serif;
+      box-shadow: 0 0 30px rgba(255, 179, 71, 0.15);
+    }
+
+    .btn:hover {
+      background: var(--fire-gold);
+      color: var(--bg-void);
+      box-shadow: 0 0 40px rgba(255, 179, 71, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .hint {
+      margin-top: 35px;
+      font-size: 0.95rem;
+      opacity: 0.4;
+      font-style: italic;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+  <div class="mist"></div>
+
+  <div class="card">
+    <div class="kicker">Western Alchemy</div>
+    <h1>西方 · 轉煉</h1>
+    <div class="subtitle">蛻變與業力的轉化之流</div>
+    <div class="essence">穿越舊有模式，讓深層的轉變自然發生</div>
+    
+    <div class="disc">
+      <img src="../images/hunab-ku-1.png" alt="Hunab Ku">
+    </div>
+    
+    <button class="btn" onclick="goInner()">開啟煉金陣列</button>
+    <div class="hint">這是一場跨越時間的靜心</div>
+  </div>
+
+  <script>
+    // 星空生成
+    const starsDiv = document.getElementById('stars');
+    const starTypes = ['small', 'small', 'small', 'small', 'medium', 'medium', 'fire'];
+    
+    for (let i = 0; i < 150; i++) {
+      const star = document.createElement('div');
+      star.className = `star ${starTypes[Math.floor(Math.random() * starTypes.length)]}`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 4}s`;
+      starsDiv.appendChild(star);
+    }
+
+    function goInner() {
+      parent.postMessage({ type: 'NAV', to: 'inner' }, '*');
+    }
+
+    function postHeight() {
+      const h = document.documentElement.scrollHeight;
+      parent.postMessage({ type: 'HEIGHT', id: 'cover', height: h }, '*');
+    }
+
+    window.onload = postHeight;
+  </script>
+</body>
+</html>

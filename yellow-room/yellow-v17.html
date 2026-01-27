@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>南方 · 金穗聖殿</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Cinzel:wght@600;900&display=swap"
+        rel="stylesheet">
+    <script src="kinData.js"></script>
+    <style>
+        :root {
+            /* Theme: Ancient Stone & Gold */
+            --bg-base: #2c241b;
+            --stone-highlight: #4a3b2a;
+            --stone-mid: #2d241e;
+            --stone-shadow: #140d09;
+            --gold-main: #FFB300;
+            --gold-bright: #FFD54F;
+            --gold-dark: #B8860B;
+            --parchment: #F2E3C9;
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: #F5F5F5;
+            font-family: 'Noto Serif TC', serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* === Stone Texture Background === */
+        .stone-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: #2D241E;
+        }
+
+        .stone-filter-layer {
+            position: absolute;
+            inset: 0;
+            opacity: 0.35;
+            mix-blend-mode: overlay;
+            filter: contrast(120%) brightness(90%);
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 30%, #0d0805 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Scenes */
+        .scene {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+            transform: scale(0.98);
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+        }
+
+        /* Scene 1: Harvest Cover (Preserved V11/V14 Style) */
+        .cover-content {
+            text-align: center;
+        }
+
+        .t-main {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            color: #E8DCC5;
+            letter-spacing: 0.15em;
+            text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.8);
+            background: linear-gradient(to bottom, #FFF8E1 0%, #D4AF37 60%, #8B4513 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .t-sub {
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            color: #BFAFA0;
+            letter-spacing: 0.3em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .harvest-emblem-wrap {
+            position: relative;
+            width: clamp(200px, 40vw, 280px);
+            height: clamp(200px, 40vw, 280px);
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .emblem-ring {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            animation: rotateRing 60s linear infinite;
+        }
+
+        .wheat-svg {
+            width: 80%;
+            height: 80%;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5));
+            transition: transform 0.5s var(--ease-elastic);
+            fill: url(#goldGradient);
+        }
+
+        .harvest-emblem-wrap:hover .wheat-svg {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.6));
+        }
+
+        .start-btn-frame {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            background: linear-gradient(180deg, rgba(44, 36, 27, 0.8) 0%, rgba(20, 15, 10, 0.9) 100%);
+            color: #E8DCC5;
+            font-size: 1.2rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.5s;
+            font-family: 'Noto Serif TC', serif;
+            border-radius: 4px;
+        }
+
+        .start-btn-frame:hover {
+            border-color: #FFD700;
+            color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+
+        /* === Scene 2: The Five Keys (3D Stone Selection) === */
+
+        .sel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            gap: 4vh;
+        }
+
+        .sel-header {
+            text-align: center;
+            margin-bottom: 2vh;
+        }
+
+        .sel-main {
+            font-size: 2rem;
+            color: #E8DCC5;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+        }
+
+        .sel-sub {
+            font-size: 1rem;
+            color: #8D6E63;
+            letter-spacing: 0.2em;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        /* The 5 Keys Layout */
+        .keys-layout {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* 3D Stamped Key Button */
+        .key-stamp {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #2D241E;
+            /* Stone Base */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+
+            /* Deep Inset Shadow */
+            box-shadow:
+                inset 6px 6px 12px rgba(0, 0, 0, 0.8),
+                inset -2px -2px 8px rgba(255, 255, 255, 0.05),
+                0 10px 20px rgba(0, 0, 0, 0.5);
+
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 15px;
+        }
+
+        .key-stamp:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                inset 4px 4px 8px rgba(0, 0, 0, 0.9),
+                inset -2px -2px 6px rgba(255, 255, 255, 0.08),
+                0 12px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .key-stamp:active {
+            transform: scale(0.95);
+            box-shadow:
+                inset 8px 8px 16px rgba(0, 0, 0, 0.95),
+                inset -1px -1px 4px rgba(255, 255, 255, 0.02),
+                0 5px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Spiritual Icon Styling */
+        .key-svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.8));
+            fill: url(#iconGradient);
+            /* Use Gold Gradient */
+            transition: transform 0.3s var(--ease-elastic);
+        }
+
+        .key-stamp:hover .key-svg {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4));
+        }
+
+        .key-label {
+            font-size: 1rem;
+            color: #A1887F;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Mobile Adjust: Vertical Stack */
+        @media (max-width: 768px) {
+            .keys-layout {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .key-stamp {
+                width: 100%;
+                height: 75px;
+                border-radius: 12px;
+                flex-direction: row;
+                gap: 20px;
+                padding: 0 20px;
+                justify-content: flex-start;
+            }
+
+            .key-svg {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 0;
+            }
+
+            .key-label {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* === Scene 3: Oracle === */
+        .oracle-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .card-final {
+            background: var(--parchment);
+            color: #3E2723;
+            width: min(340px, 90vw);
+            padding: 40px 30px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(139, 69, 19, 0.2);
+            animation: popUp 0.6s var(--ease-elastic);
+            margin: auto;
+        }
+
+        /* Tone Logic Styles (Strict 13 Moon) */
+        .tone-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .tone-dots-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            width: 100%;
+            min-height: 14px;
+            align-items: center;
+        }
+
+        /* Dots Top */
+        .tone-bars-col {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Bars Bottom (Stack) */
+
+        .t-dot {
+            width: 14px;
+            height: 14px;
+            background: #3E2723;
+            border-radius: 50%;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .t-bar {
+            width: 70px;
+            height: 10px;
+            background: #3E2723;
+            border-radius: 6px;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .glyph-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin: 10px 0;
+            mix-blend-mode: multiply;
+            filter: drop-shadow(0 4px 6px rgba(62, 39, 35, 0.3));
+        }
+
+        .nav-row {
+            margin-top: 30px;
+            display: none;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #FFB300;
+            color: #FFB300;
+            padding: 8px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 179, 0, 0.1);
+            border-color: #FFD54F;
+            color: #FFD54F;
+        }
+
+        .spin-count {
+            font-size: 4rem;
+            font-family: 'Cinzel';
+            color: #B8860B;
+        }
+
+        .connect-btn {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #B8860B 0%, #8B6508 100%);
+            color: #E8DCC5;
+            padding: 15px 50px;
+            border-radius: 2px;
+            font-size: 1.1rem;
+            border: 1px solid #FFD700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.1em;
+        }
+
+        @keyframes rotateRing {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes popUp {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Stone Texture -->
+    <div class="stone-bg">
+        <svg class="stone-filter-layer" width="100%" height="100%">
+            <filter id="stoneNoise">
+                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+                <feColorMatrix type="saturate" values="0" />
+                <feComponentTransfer>
+                    <feFuncR type="linear" slope="0.4" intercept="0.25" />
+                    <feFuncG type="linear" slope="0.4" intercept="0.25" />
+                    <feFuncB type="linear" slope="0.4" intercept="0.25" />
+                </feComponentTransfer>
+            </filter>
+            <rect width="100%" height="100%" filter="url(#stoneNoise)" />
+        </svg>
+        <div class="vignette"></div>
+    </div>
+
+    <!-- SVG Definitions -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
+        xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#FFECB3;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#FFC107;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#FF8F00;stop-opacity:1" />
+            </linearGradient>
+
+            <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#FFD54F;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+            </linearGradient>
+
+            <!-- Wheat Symbol -->
+            <symbol id="icon-wheat" viewBox="0 0 100 100">
+                <path d="M50,90 C50,90 50,20 50,20" stroke="url(#goldGradient)" stroke-width="4" stroke-linecap="round"
+                    fill="none" />
+                <path d="M50,70 C30,60 30,40 50,30" fill="url(#goldGradient)" />
+                <path d="M50,55 C35,45 35,35 50,25" fill="url(#goldGradient)" />
+                <path d="M50,40 C40,35 40,30 50,22" fill="url(#goldGradient)" />
+                <path d="M50,70 C70,60 70,40 50,30" fill="url(#goldGradient)" />
+                <path d="M50,55 C65,45 65,35 50,25" fill="url(#goldGradient)" />
+                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" stroke-width="2" />
+            </symbol>
+
+            <!-- Financial: Endless Knot / Coin Stack -->
+            <symbol id="icon-financial" viewBox="0 0 24 24">
+                <path
+                    d="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 1,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 1,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 1,1 8,12A4,4 0 0,1 12,8Z" />
+                <!-- Concentric circles for coin -->
+            </symbol>
+
+            <!-- Career: Dharma Wheel / Compass -->
+            <symbol id="icon-career" viewBox="0 0 24 24">
+                <path d="M12,2L14.5,9H21.5L16,13L18,20L12,16L6,20L8,13L2.5,9H9.5L12,2Z" />
+                <!-- Star shape -->
+            </symbol>
+
+            <!-- Relationship: Interlocking Hearts / Rings -->
+            <symbol id="icon-relationship" viewBox="0 0 24 24">
+                <path
+                    d="M12,8 C14,4 18,4 18,8 C18,11 15,13 12,16 C9,13 6,11 6,8 C6,4 10,4 12,8 Z M12,18 C14,14 18,14 18,18 C18,21 15,23 12,20 C9,23 6,21 6,18 C6,14 10,14 12,18 Z" />
+                <!-- Simple reflection heart -->
+            </symbol>
+
+            <!-- Health: Spiral / Healing -->
+            <symbol id="icon-health" viewBox="0 0 24 24">
+                <path
+                    d="M12,2 A10,10 0 0,0 2,12 A10,10 0 0,0 12,22 A10,10 0 0,0 22,12 A10,10 0 0,0 12,2 M12,6 A6,6 0 0,1 18,12 A6,6 0 0,1 12,18 A6,6 0 0,1 6,12 A6,6 0 0,1 12,6 M12,9 A3,3 0 0,0 9,12 A3,3 0 0,0 12,15 A3,3 0 0,0 15,12 A3,3 0 0,0 12,9" />
+                <!-- Spiral effect by concentric -->
+            </symbol>
+
+            <!-- Growth: Lotus -->
+            <symbol id="icon-growth" viewBox="0 0 24 24">
+                <path
+                    d="M12,2C12,2 8,7 8,12C8,15 10,18 12,22C14,18 16,15 16,12C16,7 12,2 12,2M12,8C12,8 10,10 10,12C10,13 11,14 12,15C13,14 14,13 14,12C14,10 12,8 12,8M6,14C6,14 4,16 4,18C4,20 6,21 8,21C7,20 6,19 6,18C6,17 7,15 8,14C7,14 6,14 6,14M18,14C17,14 16,15 17,18C17,19 16,20 16,21C18,21 20,20 20,18C20,16 18,14 18,14Z" />
+            </symbol>
+        </defs>
+    </svg>
+
+    <!-- Scene 1: Cover -->
+    <section id="s_gate" class="scene active" onclick="goSelection()">
+        <div class="cover-content">
+            <div class="t-main">南方 · 金穗</div>
+            <div class="t-sub">THE GOLDEN HARVEST</div>
+            <div class="harvest-emblem-wrap">
+                <div class="emblem-ring"></div>
+                <svg class="wheat-svg">
+                    <use href="#icon-wheat"></use>
+                </svg>
+            </div>
+            <div class="start-btn-frame">開啟豐盛之門</div>
+        </div>
+    </section>
+
+    <!-- Scene 2: 5 Golden Keys (Stamps with Spiritual Icons) -->
+    <section id="s_selection" class="scene">
+        <div class="sel-container">
+            <div class="sel-header">
+                <div class="sel-main">五大生命印記</div>
+                <div class="sel-sub">點擊門章 · 領取對應指引</div>
+            </div>
+
+            <div class="keys-layout">
+                <!-- Financial: Coin/Mandala -->
+                <div class="key-stamp" onclick="start('financial', '財務')">
+                    <svg class="key-svg">
+                        <use href="#icon-financial"></use>
+                    </svg>
+                    <div class="key-label">財務</div>
+                </div>
+                <!-- Career: Star/Path -->
+                <div class="key-stamp" onclick="start('career', '事業')">
+                    <svg class="key-svg">
+                        <use href="#icon-career"></use>
+                    </svg>
+                    <div class="key-label">事業</div>
+                </div>
+                <!-- Relationship: Union -->
+                <div class="key-stamp" onclick="start('relationship', '感情')">
+                    <svg class="key-svg">
+                        <use href="#icon-relationship"></use>
+                    </svg>
+                    <div class="key-label">感情</div>
+                </div>
+                <!-- Health: Spiral/Energy -->
+                <div class="key-stamp" onclick="start('health', '健康')">
+                    <svg class="key-svg">
+                        <use href="#icon-health"></use>
+                    </svg>
+                    <div class="key-label">健康</div>
+                </div>
+                <!-- Growth: Lotus -->
+                <div class="key-stamp" onclick="start('growth', '成長')">
+                    <svg class="key-svg">
+                        <use href="#icon-growth"></use>
+                    </svg>
+                    <div class="key-label">成長</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scene 3: Oracle -->
+    <section id="s_oracle" class="scene">
+        <div class="oracle-layout">
+            <div id="minigame" style="text-align:center;">
+                <div id="spinNum" class="spin-count">1</div>
+                <button class="connect-btn" onclick="reveal()">連結宇宙頻率...</button>
+            </div>
+
+            <div id="card" class="card-final">
+                <!-- Inner populated by JS -->
+            </div>
+
+            <div id="nav" class="nav-row">
+                <button class="nav-btn" onclick="goHome()">回首頁</button>
+                <button class="nav-btn" onclick="goSel()">再選一次</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let interval = null;
+        let theme = '';
+
+        function switchS(id) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        function goSelection() { clean(); switchS('s_selection'); }
+        function goHome() { clean(); switchS('s_gate'); }
+        function goSel() { clean(); switchS('s_selection'); }
+        function clean() {
+            document.getElementById('card').classList.remove('show');
+            document.getElementById('nav').style.display = 'none';
+        }
+
+        function start(tid, tname) {
+            theme = tname;
+            switchS('s_oracle');
+            document.getElementById('minigame').style.display = 'block';
+            document.getElementById('card').style.display = 'none';
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => {
+                document.getElementById('spinNum').innerText = Math.floor(Math.random() * 260) + 1;
+            }, 50);
+        }
+
+        function reveal() {
+            clearInterval(interval);
+            const kin = Math.floor(Math.random() * 260) + 1;
+
+            // 13 Moon Logic
+            const toneId = (kin - 1) % 13 + 1;
+            const glyphId = (kin - 1) % 20 + 1;
+            const sealPad = String(glyphId).padStart(2, '0');
+            const toneNames = ['磁性', '月亮', '電力', '自我存在', '超頻', '韻律', '共鳴', '銀河', '太陽', '行星', '光譜', '水晶', '宇宙'];
+            const glyphNames = ['紅龍', '白風', '藍夜', '黃種子', '紅蛇', '白世界橋', '藍手', '黃星星', '紅月', '白狗', '藍猴', '黃人', '紅天行者', '白巫師', '藍鷹', '黃戰士', '紅地球', '白鏡', '藍風暴', '黃太陽'];
+
+            /* Render Tone Code: Dots Top, Bars Bottom Stack */
+            const barCount = Math.floor((toneId - 0.1) / 5);
+            const dotCount = toneId - (barCount * 5);
+
+            let dotsHtml = '';
+            if (dotCount > 0) {
+                dotsHtml = `<div class="tone-dots-row">${Array(dotCount).fill('<div class="t-dot"></div>').join('')}</div>`;
+            }
+            let barsHtml = '';
+            if (barCount > 0) {
+                barsHtml = `<div class="tone-bars-col">${Array(barCount).fill('<div class="t-bar"></div>').join('')}</div>`;
+            }
+
+            const data = (typeof kinData !== 'undefined' && kinData[kin]) ? kinData[kin] : { alignment: '...', grounding: '...' };
+
+            const c = document.getElementById('card');
+            c.innerHTML = `
+                <div style="font-family:'Cinzel'; color:#B8860B; font-weight:700; margin-bottom:10px;">KIN ${kin}</div>
+                
+                <!-- Tone/Glyph Visual Block -->
+                <div style="display:flex; flex-direction:column; align-items:center; width:100%; margin-bottom:20px;">
+                    <div class="tone-container">
+                        ${dotsHtml}
+                        ${barsHtml}
+                    </div>
+                    
+                    <img src="../images/${sealPad}.png" class="glyph-img" onerror="this.src='https://via.placeholder.com/120'">
+                </div>
+
+                <div style="font-size:1.4rem; font-weight:900; color:#3E2723; margin-bottom:20px;">${toneNames[toneId - 1]}的${glyphNames[glyphId - 1]}</div>
+                
+                <!-- Text Content -->
+                <div style="text-align:left; width:100%;">
+                    <div style="margin-bottom:15px; border-left:4px solid #B8860B; padding-left:12px;">
+                        <div style="font-size:0.8rem; font-weight:700; color:#8D6E63; margin-bottom:4px;">調頻 ALIGNMENT</div>
+                        <div style="color:#4E342E; font-size:1rem; line-height:1.5;">${data.alignment}</div>
+                    </div>
+                    
+                    <div style="margin-bottom:15px; border-left:4px solid #5D4037; padding-left:12px;">
+                        <div style="font-size:0.8rem; font-weight:700; color:#8D6E63; margin-bottom:4px;">落地 GROUNDING</div>
+                        <div style="color:#4E342E; font-size:1rem; line-height:1.5;">${data.grounding}</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:20px; font-size:0.8rem; color:#A1887F; letter-spacing:0.15em; border-top:1px solid #D7CCC8; padding-top:10px; width:100%;">
+                    ✦ ${theme}指引 ✦
+                </div>
+            `;
+
+            document.getElementById('minigame').style.display = 'none';
+            c.style.display = 'block';
+            c.classList.add('show');
+            document.getElementById('nav').style.display = 'flex';
+        }
+    </script>
+</body>
+
+</html>

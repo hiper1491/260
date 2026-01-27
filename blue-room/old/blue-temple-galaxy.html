@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>西方 · 轉煉 | 藍色神廟</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* 銀河靈性配色 */
+      --bg-deep: #0a0e27;
+      --bg-mid: #1a1f3a;
+      --bg-nebula: #1d1535;
+      
+      --galaxy-light: #a8b8ff;
+      --star-glow: #c5d4ff;
+      --nebula-glow: #d4a5ff;
+      
+      --alchemy-gold: #ffd89b;
+      --sacred-cyan: #7dd3fc;
+      
+      --text-main: #dbe7ef;
+      --text-muted: rgba(219, 231, 239, 0.76);
+      
+      --glass: rgba(255, 255, 255, 0.06);
+      --glow-soft: rgba(168, 184, 255, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background: 
+        radial-gradient(1400px 900px at 50% -8%, rgba(168, 184, 255, 0.12), transparent 65%),
+        radial-gradient(1000px 700px at 80% 100%, rgba(212, 165, 255, 0.08), transparent 60%),
+        radial-gradient(1200px 800px at 20% 50%, rgba(125, 211, 252, 0.06), transparent 62%),
+        linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-mid) 40%, var(--bg-nebula) 70%, var(--bg-mid) 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 銀河星空層 */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.8;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--star-glow);
+      animation: twinkle 4.5s infinite ease-in-out;
+    }
+
+    .star.small { width: 1px; height: 1px; }
+    .star.medium { width: 2px; height: 2px; }
+    .star.large { 
+      width: 3px; 
+      height: 3px; 
+      box-shadow: 0 0 8px rgba(197, 212, 255, 0.6);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.3); }
+    }
+
+    /* 星雲霧氣層 */
+    .nebula {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.15;
+      background:
+        radial-gradient(600px 400px at 30% 20%, rgba(212, 165, 255, 0.3), transparent 70%),
+        radial-gradient(500px 350px at 70% 80%, rgba(125, 211, 252, 0.25), transparent 65%);
+      animation: nebulaDrift 60s infinite alternate ease-in-out;
+    }
+
+    @keyframes nebulaDrift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -20px) scale(1.1); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 120px;
+    }
+
+    /* 標題區 */
+    .mast {
+      text-align: center;
+      margin: 20px 0 40px;
+    }
+
+    .mast .kicker {
+      font-family: 'Cormorant Garamond', serif;
+      letter-spacing: 0.28em;
+      color: var(--galaxy-light);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-shadow: 0 0 20px rgba(168, 184, 255, 0.4);
+      text-transform: uppercase;
+    }
+
+    .mast h1 {
+      margin-top: 16px;
+      font-weight: 900;
+      font-size: 2.6rem;
+      letter-spacing: 0.15em;
+      background: linear-gradient(135deg, var(--alchemy-gold) 0%, var(--galaxy-light) 50%, var(--sacred-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 30px rgba(168, 184, 255, 0.3));
+    }
+
+    .mast .subtitle {
+      margin-top: 12px;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+
+    .mast .essence {
+      margin-top: 18px;
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: rgba(168, 184, 255, 0.7);
+      font-weight: 400;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 三位面板 */
+    .panel {
+      margin-top: 50px;
+      padding: 24px 20px;
+      border-radius: 24px;
+      background: var(--glass);
+      border: 1px solid rgba(168, 184, 255, 0.15);
+      backdrop-filter: blur(20px);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .three { 
+        grid-template-columns: 1fr; 
+        gap: 40px;
+      }
+    }
+
+    /* 單個位置槽 */
+    .slot {
+      background: rgba(26, 31, 58, 0.4);
+      border: 1px solid rgba(168, 184, 255, 0.12);
+      border-radius: 20px;
+      padding: 24px 20px 28px;
+      min-height: 680px;
+      box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .slot:hover {
+      border-color: rgba(168, 184, 255, 0.25);
+      box-shadow: 
+        0 15px 50px rgba(168, 184, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* 位置標籤 */
+    .label {
+      font-size: 1.25rem;
+      color: var(--alchemy-gold);
+      margin-top: 8px;
+      margin-bottom: 8px;
+      letter-spacing: 0.12em;
+      font-weight: 900;
+      text-shadow: 0 0 20px rgba(255, 216, 155, 0.4);
+    }
+
+    .subline {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+      opacity: 0.85;
+    }
+
+    /* 舞台區 */
+    .stage {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 10px 0;
+      flex: 1;
+    }
+
+    /* Hunab Ku 門容器 */
+    .gate-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.4s ease;
+      max-height: 300px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slot.revealed .gate-wrap {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-12px);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    /* Hunab Ku 門 */
+    .gate-disc {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle at 35% 35%, 
+          rgba(168, 184, 255, 0.25) 0%, 
+          rgba(125, 211, 252, 0.15) 30%,
+          rgba(10, 14, 39, 0.5) 70%);
+      box-shadow: 
+        0 0 0 2px rgba(168, 184, 255, 0.2) inset,
+        0 0 60px rgba(168, 184, 255, 0.15),
+        0 20px 50px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: breatheGate 6s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes breatheGate {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 
+          0 0 0 2px rgba(168, 184, 255, 0.2) inset,
+          0 0 60px rgba(168, 184, 255, 0.15),
+          0 20px 50px rgba(0, 0, 0, 0.3);
+      }
+      50% {
+        transform: scale(1.02);
+        box-shadow: 
+          0 0 0 2px rgba(168, 184, 255, 0.35) inset,
+          0 0 80px rgba(168, 184, 255, 0.25),
+          0 25px 60px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    .gate-disc:hover {
+      transform: scale(1.03);
+      box-shadow: 
+        0 0 0 2px rgba(168, 184, 255, 0.4) inset,
+        0 0 90px rgba(168, 184, 255, 0.3),
+        0 25px 65px rgba(0, 0, 0, 0.4);
+    }
+
+    .gate-disc img {
+      width: 85%;
+      height: 85%;
+      object-fit: contain;
+      opacity: 0.9;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.3));
+      animation: slowRotate 40s linear infinite;
+    }
+
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 輪動文字 */
+    .spin-line {
+      height: 24px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      color: rgba(168, 184, 255, 0.7);
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .slot.spinning .spin-line {
+      opacity: 1;
+      transform: translateY(0);
+      animation: textShimmer 1.5s ease-in-out infinite;
+    }
+
+    @keyframes textShimmer {
+      0%, 100% { color: rgba(168, 184, 255, 0.7); }
+      50% { color: rgba(255, 216, 155, 0.9); }
+    }
+
+    /* 翻動/脈動動畫 */
+    .slot.flipping .gate-disc {
+      animation: nudgeGate 0.35s ease both;
+    }
+
+    @keyframes nudgeGate {
+      to {
+        transform: scale(0.95);
+        opacity: 0.75;
+      }
+    }
+
+    .slot.spinning .gate-disc {
+      animation: pulseGate 1s ease both;
+    }
+
+    @keyframes pulseGate {
+      0% {
+        transform: scale(1);
+        box-shadow: 
+          0 0 0 2px rgba(168, 184, 255, 0.2) inset,
+          0 0 60px rgba(168, 184, 255, 0.15);
+      }
+      40% {
+        transform: scale(1.08);
+        box-shadow: 
+          0 0 0 3px rgba(255, 216, 155, 0.4) inset,
+          0 0 100px rgba(255, 216, 155, 0.3);
+      }
+      70% {
+        transform: scale(1.03);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* 卡片容器 */
+    .face {
+      width: min(400px, 100%);
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .slot.revealing .face {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 核心卡片 */
+    .core-card {
+      width: 100%;
+      background: rgba(236, 234, 229, 0.96);
+      border-radius: 16px;
+      padding: 24px 20px 24px;
+      box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+      color: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 調性視覺化 */
+    .tone-area-mini {
+      height: 80px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .tone-area-mini.no-dots .tone-dots {
+      display: none;
+    }
+
+    .tone-dots {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .tone-bars {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .tone-dot {
+      width: 24px;
+      height: 24px;
+      background: #000;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .tone-bar {
+      width: 200px;
+      height: 18px;
+      background: #000;
+      border-radius: 9px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 圖騰圖示 */
+    .glyph-img {
+      width: clamp(130px, 20vw, 170px);
+      height: clamp(130px, 20vw, 170px);
+      object-fit: contain;
+      filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.2));
+      margin-top: 4px;
+    }
+
+    /* KIN 編號 */
+    .kin-id {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      line-height: 1;
+      margin-top: 4px;
+    }
+
+    /* 印記名稱 */
+    .kin-name {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* 波符標籤 */
+    .wave-pill {
+      margin-top: 8px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #222;
+      font-size: 0.98rem;
+    }
+
+    .wave-pill .mini-glyph {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
+    }
+
+    /* 空殼狀態 */
+    .skeleton .tone-area-mini {
+      opacity: 0;
+    }
+
+    .skeleton .glyph-img {
+      opacity: 0;
+    }
+
+    .skeleton .kin-id,
+    .skeleton .kin-name {
+      opacity: 0.25;
+    }
+
+    .skeleton .wave-pill {
+      display: none;
+    }
+
+    /* 提示文字 */
+    .hintline {
+      font-size: 0.92rem;
+      color: rgba(168, 184, 255, 0.6);
+      margin-top: 12px;
+      min-height: 1.6em;
+      line-height: 1.6;
+    }
+
+    /* 版本標籤 */
+    .ver {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      background: rgba(10, 14, 39, 0.8);
+      border: 1px solid rgba(168, 184, 255, 0.25);
+      color: var(--galaxy-light);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      z-index: 10;
+      opacity: 0.9;
+      backdrop-filter: blur(10px);
+    }
+
+    /* 合盤金句區 (待實作) */
+    .synthesis {
+      margin-top: 40px;
+      padding: 30px 25px;
+      background: var(--glass);
+      border: 1px solid rgba(168, 184, 255, 0.2);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .synthesis.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .synthesis-text {
+      font-size: 1.15rem;
+      line-height: 2;
+      color: var(--text-main);
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .synthesis-highlight {
+      color: var(--alchemy-gold);
+      font-weight: 800;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 星空層 -->
+  <div class="stars" id="stars"></div>
+  
+  <!-- 星雲層 -->
+  <div class="nebula"></div>
+
+  <div class="container">
+    <section class="scene active" id="sceneHall">
+      <!-- 標題區 -->
+      <div class="mast">
+        <div class="kicker">Western Gate · Alchemy of Transformation</div>
+        <h1>西方 · 轉煉</h1>
+        <div class="subtitle">蛻變與業力的轉化之流</div>
+        <div class="essence">
+          穿越舊有模式,讓深層的轉變自然發生。<br>
+          這是煉金術的三個維度,同時存在於你的意識中。
+        </div>
+      </div>
+
+      <!-- 三位面板 -->
+      <div class="panel">
+        <div class="three">
+          <!-- 業力種子 -->
+          <div class="slot" data-position="karma">
+            <div class="label">業力種子</div>
+            <div class="subline">已內化、仍在推動你的一股力</div>
+
+            <div class="stage">
+              <div class="gate-wrap">
+                <div class="gate-disc" onclick="reveal(event, this)">
+                  <img src="./images/hunab-ku-1.png" alt="Hunab-Ku" onerror="this.style.opacity='0.3'">
+                </div>
+                <div class="spin-line">　</div>
+              </div>
+
+              <div class="face"></div>
+            </div>
+
+            <div class="hintline">點擊 Hunab Ku,讓業力種子顯形</div>
+          </div>
+
+          <!-- 煉金之爐 -->
+          <div class="slot" data-position="furnace">
+            <div class="label">煉金之爐</div>
+            <div class="subline">你正在燃燒、正在鬆動的核心</div>
+
+            <div class="stage">
+              <div class="gate-wrap">
+                <div class="gate-disc" onclick="reveal(event, this)">
+                  <img src="./images/hunab-ku-1.png" alt="Hunab-Ku" onerror="this.style.opacity='0.3'">
+                </div>
+                <div class="spin-line">　</div>
+              </div>
+
+              <div class="face"></div>
+            </div>
+
+            <div class="hintline">點擊 Hunab Ku,進入煉金之爐</div>
+          </div>
+
+          <!-- 蛻變之門 -->
+          <div class="slot" data-position="rebirth">
+            <div class="label">蛻變之門</div>
+            <div class="subline">尚未成形、卻已拉住你的門檻</div>
+
+            <div class="stage">
+              <div class="gate-wrap">
+                <div class="gate-disc" onclick="reveal(event, this)">
+                  <img src="./images/hunab-ku-1.png" alt="Hunab-Ku" onerror="this.style.opacity='0.3'">
+                </div>
+                <div class="spin-line">　</div>
+              </div>
+
+              <div class="face"></div>
+            </div>
+
+            <div class="hintline">點擊 Hunab Ku,穿越蛻變之門</div>
+          </div>
+        </div>
+
+        <!-- 合盤金句 (三張全翻開後顯示) -->
+        <div class="synthesis" id="synthesis">
+          <div class="synthesis-text">
+            從<span class="synthesis-highlight">業力種子的誕生滋養</span>,<br>
+            經由<span class="synthesis-highlight">煉金之爐的意圖顯化</span>,<br>
+            蛻變為<span class="synthesis-highlight">新生之門的無限探索</span>。<br><br>
+            這是一場關於<span class="synthesis-highlight">從根源覺醒、透過魔法整合、邁向自由行走</span>的煉金術。
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="ver">BLUE TEMPLE · Galaxy v1.0</div>
+
+  <!-- 核心 JS -->
+  <script src="./core/temple-core.js"></script>
+  <script src="./core/temple_brain_final.js"></script>
+  <script src="./core/kin-card-core.js"></script>
+
+  <script>
+    // ═══════════════════════════════════════
+    // 🌌 銀河星空生成
+    // ═══════════════════════════════════════
+    const starsDiv = document.getElementById('stars');
+    const starSizes = ['small', 'small', 'small', 'medium', 'medium', 'large'];
+    
+    for (let i = 0; i < 150; i++) {
+      const star = document.createElement('div');
+      star.className = `star ${starSizes[Math.floor(Math.random() * starSizes.length)]}`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 4.5}s`;
+      starsDiv.appendChild(star);
+    }
+
+    // ═══════════════════════════════════════
+    // 🧠 後備大腦 (如果核心 JS 未載入)
+    // ═══════════════════════════════════════
+    function fallbackBrain() {
+      const SOLAR_SEALS = [
+        { id: 1, name: "紅龍" }, { id: 2, name: "白風" }, { id: 3, name: "藍夜" },
+        { id: 4, name: "黃種子" }, { id: 5, name: "紅蛇" }, { id: 6, name: "白世界橋" },
+        { id: 7, name: "藍手" }, { id: 8, name: "黃星星" }, { id: 9, name: "紅月" },
+        { id: 10, name: "白狗" }, { id: 11, name: "藍猴" }, { id: 12, name: "黃人" },
+        { id: 13, name: "紅天行者" }, { id: 14, name: "白巫師" }, { id: 15, name: "藍鷹" },
+        { id: 16, name: "黃戰士" }, { id: 17, name: "紅地球" }, { id: 18, name: "白鏡" },
+        { id: 19, name: "藍風暴" }, { id: 20, name: "黃太陽" }
+      ];
+
+      const GALACTIC_TONES = [
+        "磁性", "月亮", "電力", "自我存在", "超頻", "韻律",
+        "共振", "銀河", "太陽", "行星", "光譜", "水晶", "宇宙"
+      ];
+
+      return {
+        drawRandomKIN: () => Math.floor(Math.random() * 260) + 1,
+        getTone: (k) => ({ id: ((k - 1) % 13) + 1, name: GALACTIC_TONES[(k - 1) % 13] }),
+        getSeal: (k) => SOLAR_SEALS[(k - 1) % 20],
+        getFullName: (k) => `${GALACTIC_TONES[(k - 1) % 13]}的${SOLAR_SEALS[(k - 1) % 20].name}`,
+        getWavespell: (k) => {
+          const start = Math.floor((k - 1) / 13) * 13 + 1;
+          const end = start + 12;
+          const seal = SOLAR_SEALS[(start - 1) % 20].name;
+          return { start, end, seal };
+        }
+      };
+    }
+
+    const BRAIN = (window.TEMPLE_BRAIN && typeof window.TEMPLE_BRAIN.getSeal === "function")
+      ? window.TEMPLE_BRAIN
+      : fallbackBrain();
+
+    // ═══════════════════════════════════════
+    // 🎨 調性視覺化
+    // ═══════════════════════════════════════
+    const toneIdOfKin = (kin) => ((kin - 1) % 13) + 1;
+    const sealIdOfKin = (kin) => ((kin - 1) % 20) + 1;
+
+    function renderToneMarksInto(container, toneId) {
+      const bars = Math.floor(toneId / 5);
+      const dots = toneId % 5;
+
+      container.classList.toggle("no-dots", dots === 0);
+
+      const dotsRow = container.querySelector(".tone-dots");
+      const barsCol = container.querySelector(".tone-bars");
+      dotsRow.innerHTML = "";
+      barsCol.innerHTML = "";
+
+      for (let i = 0; i < dots; i++) {
+        const d = document.createElement("div");
+        d.className = "tone-dot";
+        dotsRow.appendChild(d);
+      }
+
+      for (let i = 0; i < bars; i++) {
+        const b = document.createElement("div");
+        b.className = "tone-bar";
+        barsCol.appendChild(b);
+      }
+    }
+
+    // ═══════════════════════════════════════
+    // 🃏 卡片骨架
+    // ═══════════════════════════════════════
+    function skeletonHTML() {
+      return `
+        <div class="core-card skeleton">
+          <div class="tone-area-mini">
+            <div class="tone-dots"></div>
+            <div class="tone-bars"></div>
+          </div>
+          <img class="glyph-img" alt="">
+          <div class="kin-id">KIN —</div>
+          <div class="kin-name">　</div>
+          <div class="wave-pill"></div>
+        </div>
+      `;
+    }
+
+    // ═══════════════════════════════════════
+    // 🎴 填充卡片資訊
+    // ═══════════════════════════════════════
+    function fillFace(faceEl, kin) {
+      const toneId = toneIdOfKin(kin);
+      const sealId = sealIdOfKin(kin);
+      const fullName = BRAIN.getFullName(kin);
+      const wave = BRAIN.getWavespell(kin);
+      const imgSrc = `./images/${String(sealId).padStart(2, '0')}.png`;
+
+      const card = faceEl.querySelector(".core-card");
+      card.classList.remove("skeleton");
+
+      renderToneMarksInto(faceEl.querySelector(".tone-area-mini"), toneId);
+
+      const glyph = faceEl.querySelector(".glyph-img");
+      glyph.src = imgSrc;
+      glyph.alt = fullName;
+      glyph.style.opacity = "1";
+
+      faceEl.querySelector(".kin-id").textContent = `KIN ${kin}`;
+      faceEl.querySelector(".kin-name").textContent = fullName;
+
+      const pill = faceEl.querySelector(".wave-pill");
+      pill.innerHTML = `
+        <img class="mini-glyph" src="${imgSrc}" alt="" onerror="this.style.display='none'">
+        <span>${wave.seal}波（KIN ${wave.start}-${wave.end}）</span>
+      `;
+      pill.style.display = "flex";
+    }
+
+    // ═══════════════════════════════════════
+    // 🌀 顯形動畫
+    // ═══════════════════════════════════════
+    let revealedCount = 0;
+
+    function reveal(e, discEl) {
+      e.stopPropagation();
+      const slot = discEl.closest(".slot");
+      
+      if (slot.dataset.busy === "1") return;
+      slot.dataset.busy = "1";
+
+      const kin = BRAIN.drawRandomKIN();
+      const spinLine = slot.querySelector(".spin-line");
+
+      // 1️⃣ 翻動階段
+      slot.classList.add("flipping");
+
+      setTimeout(() => {
+        slot.classList.remove("flipping");
+        slot.classList.add("revealing");
+
+        const face = slot.querySelector(".face");
+        face.innerHTML = skeletonHTML();
+
+        // 2️⃣ 開始輪動
+        slot.classList.add("spinning");
+        
+        const spinTimer = setInterval(() => {
+          const fake = BRAIN.drawRandomKIN();
+          spinLine.textContent = `${BRAIN.getTone(fake).name} · ${BRAIN.getSeal(fake).name}`;
+        }, 70);
+
+        // 3️⃣ 停止輪動並顯形
+        setTimeout(() => {
+          clearInterval(spinTimer);
+          spinLine.textContent = `${BRAIN.getTone(kin).name} · ${BRAIN.getSeal(kin).name}`;
+
+          fillFace(face, kin);
+
+          slot.classList.remove("spinning");
+          slot.classList.add("revealed");
+          slot.dataset.busy = "0";
+
+          // 檢查是否三張全部翻開
+          revealedCount++;
+          if (revealedCount === 3) {
+            setTimeout(() => {
+              document.getElementById('synthesis').classList.add('active');
+            }, 500);
+          }
+        }, 1000);
+      }, 280);
+    }
+  </script>
+</body>
+</html>

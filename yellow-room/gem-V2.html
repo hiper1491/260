@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>南方・黃色小屋 gem-V2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-malt: #D4A76A;      /* 麥芽金 */
+      --gold-amber: #B8860B;     /* 琥珀金 */
+      --bg-stone: #1C1812;       /* 深沉石室 */
+      --card-bg: #F5E6CA;        /* 羊皮紙底色 */
+      --text-dark: #3D3121;
+      --transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-stone); color: var(--gold-malt); font-family: 'Noto Serif TC', serif; overflow-x: hidden; height: 100vh; }
+
+    /* --- 場景控制 --- */
+    .scene { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: var(--transition); z-index: 10; padding: 20px; }
+    .scene.active { opacity: 1; pointer-events: all; }
+
+    /* --- 第一幕：金穗之門 (Cover) --- */
+    #scene-gate { z-index: 100; background: radial-gradient(circle at 50% 40%, #2A241B 0%, #110E0A 100%); text-align: center; }
+    .gate-title { font-family: 'Cinzel', serif; font-size: clamp(2.2rem, 8vw, 3.5rem); letter-spacing: 0.8rem; margin-bottom: 1.5rem; color: var(--gold-malt); text-shadow: 0 0 20px rgba(212, 167, 106, 0.4); }
+    .gate-desc { line-height: 2.2; opacity: 0.8; margin-bottom: 4rem; font-size: 1.1rem; }
+    .gate-trigger { width: 120px; height: 120px; border: 1px solid var(--gold-amber); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(184, 134, 11, 0.2); animation: gatePulse 4s infinite; transition: 0.5s; }
+    .gate-trigger:hover { background: rgba(212, 167, 106, 0.1); transform: scale(1.05); }
+
+    /* --- 第二幕：聖域選單 (Sanctuary) --- */
+    #scene-sanctuary { background-image: radial-gradient(circle at 50% 50%, #2a2215 0%, #1c1812 100%); overflow-y: auto; justify-content: flex-start; padding-top: 8vh; }
+    .sanctuary-header { margin-bottom: 60px; text-align: center; }
+    .stamps-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; max-width: 1000px; margin: 0 auto 100px; }
+    
+    .stamp-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; background: none; border: none; width: 150px; transition: 0.4s; position: relative; }
+    .stamp-body { 
+      width: 130px; height: 130px; border-radius: 50%; 
+      background: linear-gradient(135deg, #3d3121, #1a1208); 
+      display: flex; align-items: center; justify-content: center; margin-bottom: 20px; 
+      border: 1px solid rgba(212, 167, 106, 0.15); 
+      box-shadow: inset 8px 8px 16px rgba(0,0,0,0.8), inset -2px -2px 8px rgba(255,255,255,0.05), 0 15px 30px rgba(0,0,0,0.6); 
+    }
+    .stamp-body span { font-size: 1.8rem; font-weight: 900; color: rgba(212, 167, 106, 0.6); text-shadow: -1px -1px 0px rgba(0,0,0,0.8); }
+    .stamp-name { color: var(--gold-malt); font-weight: 600; letter-spacing: 0.3rem; font-size: 1.2rem; }
+
+    /* --- 第三幕：過場呼吸 (Breathe) --- */
+    .focus-seal { width: 180px; height: 180px; border-radius: 50%; background: var(--gold-amber); box-shadow: 0 0 80px var(--gold-amber); margin-bottom: 4rem; animation: ritualBreathe 5s infinite; }
+    .breathe-text { font-size: 1.4rem; letter-spacing: 0.6rem; margin-bottom: 4rem; color: var(--gold-malt); text-align: center; }
+    .draw-btn { padding: 20px 70px; background: var(--gold-malt); color: var(--bg-stone); border: none; font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 1.3rem; letter-spacing: 0.5rem; cursor: pointer; border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transition: 0.3s; }
+    .draw-btn:hover { background: #fff; transform: translateY(-3px); }
+
+    /* --- 第四幕：正統指引卡片 (Oracle) --- */
+    #scene-oracle { overflow-y: auto; padding: 60px 20px; }
+    .oracle-card { background-color: var(--card-bg); width: 100%; max-width: 420px; padding: 40px; border-radius: 12px; border: 1px solid var(--gold-malt); box-shadow: 0 30px 70px rgba(0,0,0,0.8); color: var(--text-dark); position: relative; }
+    
+    /* 正統調性在上 */
+    .card-tone { text-align: center; margin-bottom: 25px; min-height: 40px; }
+    .tone-bar { height: 8px; background: #000; margin: 4px auto; border-radius: 4px; width: 70px; }
+    .tone-dot { width: 12px; height: 12px; background: #000; border-radius: 50%; display: inline-block; margin: 0 4px; }
+    
+    /* 圖騰在下（標準圓角白框） */
+    .card-seal-box { width: 140px; height: 140px; background: #fff; margin: 0 auto 25px; border-radius: 18px; display: flex; align-items: center; justify-content: center; border: 2px solid #ddd; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
+    .card-seal-box img { width: 85%; }
+    
+    .card-kin-info { text-align: center; margin-bottom: 35px; }
+    .kin-number { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.8rem; color: #000; }
+    
+    /* 文案權重強化 */
+    .guide-section { margin-bottom: 30px; border-left: 5px solid var(--gold-amber); padding-left: 20px; text-align: left; }
+    .section-label { font-size: 0.9rem; font-weight: 600; opacity: 0.5; margin-bottom: 8px; }
+    .section-content { font-size: 1.5rem; font-weight: 900; color: #1a1204; line-height: 1.5; }
+
+    /* --- 動畫 & 手機版 --- */
+    @keyframes gatePulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
+    @keyframes ritualBreathe { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.08); opacity: 1; } }
+    @media (max-width: 600px) { 
+      .stamps-grid { flex-direction: column; align-items: center; gap: 40px; } 
+      .stamp-item { width: 100%; }
+      .gate-title { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <section id="scene-gate" class="scene active">
+    <div class="gate-content">
+      <h1 class="gate-title">南方・金穗</h1>
+      <p class="gate-desc">成熟、覺醒與豐盛的果實<br>整合走過的歷程，收穫屬於你的智慧與成果</p>
+      <div style="display: flex; justify-content: center;">
+        <div class="gate-trigger" onclick="pushGate()">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scene-sanctuary" class="scene">
+    <div class="sanctuary-header">
+      <h2 style="letter-spacing: 0.5rem; margin-bottom: 15px; font-family: 'Cinzel', serif;">黃色小屋</h2>
+      <p style="opacity: 0.6; letter-spacing: 0.2rem;">收穫與指引 · Guidance Room</p>
+    </div>
+    <div class="stamps-grid">
+      <button class="stamp-item" onclick="prepareBreathe('財務')"><div class="stamp-body"><span>財</span></div><span class="stamp-name">財務</span></button>
+      <button class="stamp-item" onclick="prepareBreathe('事業')"><div class="stamp-body"><span>事</span></div><span class="stamp-name">事業</span></button>
+      <button class="stamp-item" onclick="prepareBreathe('感情')"><div class="stamp-body"><span>感</span></div><span class="stamp-name">感情</span></button>
+      <button class="stamp-item" onclick="prepareBreathe('健康')"><div class="stamp-body"><span>健</span></div><span class="stamp-name">健康</span></button>
+      <button class="stamp-item" onclick="prepareBreathe('成長')"><div class="stamp-body"><span>成</span></div><span class="stamp-name">成長</span></button>
+    </div>
+  </section>
+
+  <section id="scene-breathe" class="scene">
+    <div class="focus-seal"></div>
+    <p id="breatheText" class="breathe-text">請深呼吸，穩定心念</p>
+    <button class="draw-btn" onclick="drawOracle()">獲獲豐盛指引</button>
+  </section>
+
+  <section id="scene-oracle" class="scene">
+    <div class="oracle-card" id="oracleCard"></div>
+    <button class="draw-btn" style="margin-top: 40px; font-size: 1.1rem; padding: 15px 40px;" onclick="switchScene('scene-sanctuary')">回小屋繼續收穫</button>
+  </section>
+
+  <script>
+    let currentTheme = "";
+
+    function switchScene(id) {
+      document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(id);
+      target.classList.add('active');
+    }
+
+    function pushGate() {
+      switchScene('scene-sanctuary');
+    }
+
+    function prepareBreathe(theme) {
+      currentTheme = theme;
+      document.getElementById('breatheText').innerText = `針對 [${theme}]，請深呼吸...`;
+      switchScene('scene-breathe');
+    }
+
+    function drawOracle() {
+      // 純亂數共時抽牌 1-260
+      const kin = Math.floor(Math.random() * 260) + 1;
+      const tone = ((kin - 1) % 13) + 1;
+      const sealId = ((kin - 1) % 20) + 1;
+      const card = document.getElementById('oracleCard');
+
+      // 調性符號邏輯
+      let toneHtml = '';
+      const bars = Math.floor(tone / 5);
+      const dots = tone % 5;
+      for(let i=0; i<bars; i++) toneHtml += '<div class="tone-bar"></div>';
+      if(dots > 0) {
+        toneHtml += '<div style="margin-top:5px;">';
+        for(let i=0; i<dots; i++) toneHtml += '<div class="tone-dot"></div>';
+        toneHtml += '</div>';
+      }
+
+      card.innerHTML = `
+        <div class="card-tone">${toneHtml}</div>
+        <div class="card-seal-box">
+          <img src="../images/${sealId.toString().padStart(2, '0')}.png" onerror="this.src='https://via.placeholder.com/100?text=Seal'">
+        </div>
+        <div class="card-kin-info">
+          <div class="kin-number">KIN ${kin}</div>
+          <p style="font-weight:900; letter-spacing:0.1rem; margin-top:5px;">[${currentTheme}] 的智慧果實</p>
+        </div>
+        <div class="guide-section">
+          <p class="section-label">調頻建議 Alignment</p>
+          <div class="section-content">聽從第一時間的身體反應</div>
+        </div>
+        <div class="guide-section">
+          <p class="section-label">落地行動 Grounding</p>
+          <div class="section-content">進行伸展運動，讓能量流動</div>
+        </div>
+      `;
+      switchScene('scene-oracle');
+    }
+  </script>
+</body>
+</html>

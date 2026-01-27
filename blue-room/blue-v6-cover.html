@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>西方 · 轉煉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --abyss-black: #0a0a0f;
+      --deep-blue: #0d1633;
+      --obsidian: #1a1520;
+      --lava-orange: #ff6b35;
+      --forge-red: #d64933;
+      --metal-glow: #ffaa66;
+      --stone-blue: #2d3e5f;
+      --ash-gray: #4a4a52;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      color: #e8f4ff;
+      background: 
+        radial-gradient(1000px 800px at 50% 60%, rgba(255, 107, 53, 0.15), transparent 70%),
+        linear-gradient(135deg, var(--abyss-black) 0%, var(--obsidian) 50%, var(--deep-blue) 100%);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 灰燼粒子 */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--ash-gray);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 8s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+      50% { transform: translateY(-30px) translateX(10px); opacity: 0.6; }
+    }
+
+    /* 主卡片 */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(600px, 90%);
+      text-align: center;
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 3.2rem);
+      letter-spacing: 0.18em;
+      margin: 24px 0;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--metal-glow) 0%, #e8f4ff 50%, var(--lava-orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.3));
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: rgba(232, 244, 255, 0.7);
+      letter-spacing: 0.08em;
+      margin-bottom: 50px;
+      font-weight: 600;
+    }
+
+    /* 煉金爐核心 */
+    .forge-core {
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 50px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 火焰層（前景） */
+    .flame-layer {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 170, 102, 0.4) 0%, transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(255, 107, 53, 0.3) 0%, transparent 60%);
+      animation: flameRotate 8s linear infinite;
+      filter: blur(8px);
+    }
+
+    @keyframes flameRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 熱浪扭曲層 */
+    .heatwave {
+      position: absolute;
+      inset: 10%;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle, rgba(255, 107, 53, 0.2) 0%, transparent 70%);
+      animation: heatPulse 3s ease-in-out infinite;
+      filter: blur(12px);
+    }
+
+    @keyframes heatPulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.6; }
+    }
+
+    /* Hunab Ku 深處層 - 圓形 */
+    .hunab-deep {
+      position: absolute;
+      inset: 15%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(13, 22, 51, 0.8) 0%, transparent 100%);
+      animation: deepPulse 6s ease-in-out infinite;
+    }
+
+    @keyframes deepPulse {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+
+    .hunab-deep img {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+      opacity: 0.4;
+      filter: brightness(0.8) drop-shadow(0 0 20px rgba(255, 107, 53, 0.3));
+      animation: slowRotate 50s linear infinite;
+      border-radius: 50%;
+    }
+
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 黑曜石底座 - 圓形 */
+    .obsidian-base {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(45, 62, 95, 0.3);
+      box-shadow: 
+        0 0 60px rgba(255, 107, 53, 0.2),
+        0 30px 80px rgba(0, 0, 0, 0.7),
+        inset 0 2px 10px rgba(255, 170, 102, 0.1);
+    }
+
+    /* 儀式文字 */
+    .ritual-text {
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      color: rgba(232, 244, 255, 0.8);
+      line-height: 2;
+      margin-bottom: 40px;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+
+    /* 進入按鈕 */
+    .enter-btn {
+      background: transparent;
+      border: 2px solid var(--ash-gray);
+      color: var(--ash-gray);
+      padding: 16px 50px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: not-allowed;
+      transition: all 0.6s;
+      letter-spacing: 0.15em;
+      font-family: 'Noto Serif TC', serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .enter-btn.ready {
+      border-color: var(--lava-orange);
+      color: var(--lava-orange);
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+      animation: btnGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes btnGlow {
+      0%, 100% { box-shadow: 0 0 30px rgba(255, 107, 53, 0.3); }
+      50% { box-shadow: 0 0 50px rgba(255, 107, 53, 0.6); }
+    }
+
+    .enter-btn.ready:hover {
+      background: var(--lava-orange);
+      color: var(--abyss-black);
+      box-shadow: 0 0 60px rgba(255, 107, 53, 0.7);
+    }
+
+    .hint {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      opacity: 0.4;
+      font-style: italic;
+      letter-spacing: 0.05em;
+    }
+
+    /* 倒數提示 */
+    .countdown {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.85rem;
+      color: var(--metal-glow);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .enter-btn:not(.ready):hover .countdown {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <div class="card">
+    <h1>西方 · 轉煉</h1>
+    <div class="subtitle">蛻變與業力的轉化之流</div>
+    
+    <div class="forge-core">
+      <div class="obsidian-base"></div>
+      <div class="flame-layer"></div>
+      <div class="heatwave"></div>
+      <div class="hunab-deep">
+        <img src="../images/hunab-ku-1.png" alt="Hunab Ku" onerror="this.style.opacity='0.2'">
+      </div>
+    </div>
+    
+    <div class="ritual-text">
+      你準備好，<br>
+      讓某些東西不再回來了嗎？
+    </div>
+    
+    <button class="enter-btn" id="enterBtn" onclick="tryEnter()">
+      進入煉金密室
+      <div class="countdown" id="countdown"></div>
+    </button>
+    
+    <div class="hint">這是一場不可逆的靜心</div>
+  </div>
+
+  <script>
+    // 灰燼粒子生成
+    const particlesDiv = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.top = `${Math.random() * 100}%`;
+      particle.style.animationDelay = `${Math.random() * 8}s`;
+      particlesDiv.appendChild(particle);
+    }
+
+    // 3秒倒數機制
+    const enterBtn = document.getElementById('enterBtn');
+    const countdownDiv = document.getElementById('countdown');
+    let timeLeft = 3;
+    let canEnter = false;
+
+    const timer = setInterval(() => {
+      timeLeft--;
+      if (timeLeft > 0) {
+        countdownDiv.textContent = `${timeLeft} 秒後可進入`;
+      } else {
+        clearInterval(timer);
+        enterBtn.classList.add('ready');
+        countdownDiv.textContent = '';
+        canEnter = true;
+      }
+    }, 1000);
+
+    function tryEnter() {
+      if (canEnter) {
+        parent.postMessage({ type: 'NAV', to: 'inner' }, '*');
+      }
+    }
+
+    function postHeight() {
+      const h = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+      parent.postMessage({ type: 'HEIGHT', id: 'cover', height: h }, '*');
+    }
+
+    window.onload = postHeight;
+    window.onresize = postHeight;
+  </script>
+</body>
+</html>

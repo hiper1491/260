@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIN 深度解讀 - 卓爾金神廟</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background: linear-gradient(180deg, #FFFEF9 0%, #FFF9EB 30%, #FFF3D9 70%, #FFEEC4 100%);
+            min-height: 100vh;
+            padding: 60px 40px 40px;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 返回按鈕 */
+        .back-button {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1.5px solid rgba(212, 175, 55, 0.5);
+            border-radius: 25px;
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: rgba(100, 80, 50, 0.85);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 250, 240, 1);
+            border-color: rgba(212, 175, 55, 0.8);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* 容器 */
+        .reading-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* 標題區 */
+        .reading-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .kin-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 12px;
+            color: rgba(90, 70, 40, 0.95);
+            margin-bottom: 20px;
+        }
+
+        .kin-subtitle {
+            font-size: 18px;
+            letter-spacing: 6px;
+            color: rgba(120, 95, 60, 0.8);
+            font-weight: 300;
+        }
+
+        /* 調性視覺 */
+        .tone-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .tone-dots {
+            display: flex;
+            gap: 14px;
+        }
+
+        .tone-dot {
+            width: 22px;
+            height: 22px;
+            background: rgba(90, 70, 40, 0.8);
+            border-radius: 50%;
+        }
+
+        .tone-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tone-bar {
+            width: 190px;
+            height: 16px;
+            background: rgba(90, 70, 40, 0.8);
+            border-radius: 8px;
+        }
+
+        /* 圖騰圖片 */
+        .seal-display {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .seal-display img {
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            border: 3px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 內容區塊 */
+        .reading-section {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: rgba(120, 95, 60, 0.9);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .section-content {
+            font-size: 17px;
+            line-height: 2.2;
+            color: rgba(70, 60, 45, 0.9);
+            letter-spacing: 1.5px;
+        }
+
+        /* 同步訊息區（特殊樣式）*/
+        .sync-message {
+            background: linear-gradient(135deg, rgba(255, 250, 235, 0.95), rgba(250, 240, 220, 0.9));
+            border: 3px solid rgba(212, 175, 55, 0.5);
+            padding: 50px;
+            text-align: center;
+            font-size: 19px;
+            line-height: 2.5;
+            color: rgba(80, 65, 45, 0.95);
+            font-weight: 400;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 響應式 */
+        @media (max-width: 768px) {
+            body {
+                padding: 80px 20px 40px;
+            }
+
+            .back-button {
+                top: 20px;
+                left: 20px;
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+
+            .kin-title {
+                font-size: 32px;
+                letter-spacing: 8px;
+            }
+
+            .kin-subtitle {
+                font-size: 15px;
+                letter-spacing: 4px;
+            }
+
+            .seal-display img {
+                width: 160px;
+                height: 160px;
+            }
+
+            .reading-section {
+                padding: 30px 25px;
+            }
+
+            .section-title {
+                font-size: 17px;
+                letter-spacing: 3px;
+            }
+
+            .section-content {
+                font-size: 15px;
+                line-height: 2;
+            }
+
+            .sync-message {
+                padding: 35px 25px;
+                font-size: 16px;
+                line-height: 2.2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="history.back()">← 返回卓爾金曆</button>
+
+    <div class="reading-container">
+        <div class="reading-header">
+            <div class="kin-subtitle" id="kinSubtitle">KIN 1</div>
+            
+            <!-- 調性視覺 -->
+            <div class="tone-visual" id="toneVisual"></div>
+            
+            <div class="kin-title" id="kinTitle">磁性的紅龍</div>
+        </div>
+
+        <div class="seal-display">
+            <img id="sealImage" src="../images/01.png" alt="圖騰">
+        </div>
+
+        <div class="reading-section sync-message" id="syncMessage">
+            磁性的紅龍，把你帶回「最原初的滋養」。今天先照顧自己，宇宙才會更願意把路打開。
+        </div>
+
+        <div class="reading-section">
+            <div class="section-title">高頻展現</div>
+            <div class="section-content" id="highFrequency">
+                信任生命、願意被支持，把新開始落在日常的小事上。
+            </div>
+        </div>
+
+        <div class="reading-section">
+            <div class="section-title">低頻模式</div>
+            <div class="section-content" id="lowFrequency">
+                過度逞強、把需求吞下去，或用忙碌掩蓋不安。
+            </div>
+        </div>
+
+        <div class="reading-section">
+            <div class="section-title">今日校準</div>
+            <div class="section-content" id="alignment">
+                給自己一個溫柔的開始：補水、吃一頓像家一樣的食物，並說出你真正需要什麼。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 從 URL 取得 KIN
+        const urlParams = new URLSearchParams(window.location.search);
+        const kin = parseInt(urlParams.get('kin')) || 1;
+
+        // 卓爾金數據
+        const solarSeals = [
+            { id: 1, name: '紅龍' }, { id: 2, name: '白風' }, { id: 3, name: '藍夜' }, { id: 4, name: '黃種子' },
+            { id: 5, name: '紅蛇' }, { id: 6, name: '白世界橋' }, { id: 7, name: '藍手' }, { id: 8, name: '黃星星' },
+            { id: 9, name: '紅月' }, { id: 10, name: '白狗' }, { id: 11, name: '藍猴' }, { id: 12, name: '黃人' },
+            { id: 13, name: '紅天行者' }, { id: 14, name: '白巫師' }, { id: 15, name: '藍鷹' }, { id: 16, name: '黃戰士' },
+            { id: 17, name: '紅地球' }, { id: 18, name: '白鏡' }, { id: 19, name: '藍風暴' }, { id: 20, name: '黃太陽' }
+        ];
+
+        const galacticTones = [
+            { id: 1, name: '磁性' }, { id: 2, name: '月亮' }, { id: 3, name: '電力' }, { id: 4, name: '自我存在' },
+            { id: 5, name: '超頻' }, { id: 6, name: '韻律' }, { id: 7, name: '共振' }, { id: 8, name: '銀河' },
+            { id: 9, name: '太陽' }, { id: 10, name: '行星' }, { id: 11, name: '光譜' }, { id: 12, name: '水晶' },
+            { id: 13, name: '宇宙' }
+        ];
+
+        // 深度解讀內容（簡化版）
+        const kinReadings = {
+            1: {
+                synchronicMessage: "磁性的紅龍，把你帶回「最原初的滋養」。今天先照顧自己，宇宙才會更願意把路打開。",
+                highFrequency: "信任生命、願意被支持，把新開始落在日常的小事上。",
+                lowFrequency: "過度逞強、把需求吞下去，或用忙碌掩蓋不安。",
+                alignment: "給自己一個溫柔的開始：補水、吃一頓像家一樣的食物，並說出你真正需要什麼。"
+            }
+            // TODO: 加入所有 260 個 KIN 的資料
+        };
+
+        function getKinInfo(kin) {
+            const sealIndex = (kin - 1) % 20;
+            const toneId = ((kin - 1) % 13) + 1;
+            
+            const seal = solarSeals[sealIndex];
+            const tone = galacticTones[toneId - 1];
+            
+            return {
+                seal,
+                tone,
+                toneId,
+                fullName: `${tone.name}的${seal.name}`
+            };
+        }
+
+        function renderTone(toneId) {
+            const bars = Math.floor((toneId - 1) / 5);
+            const dots = toneId - (bars * 5);
+            
+            let html = '';
+            
+            if (dots > 0) {
+                html += '<div class="tone-dots">';
+                for (let i = 0; i < dots; i++) {
+                    html += '<div class="tone-dot"></div>';
+                }
+                html += '</div>';
+            }
+            
+            if (bars > 0) {
+                html += '<div class="tone-bars">';
+                for (let i = 0; i < bars; i++) {
+                    html += '<div class="tone-bar"></div>';
+                }
+                html += '</div>';
+            }
+            
+            return html;
+        }
+
+        // 顯示內容
+        const info = getKinInfo(kin);
+        const reading = kinReadings[kin] || kinReadings[1];
+
+        document.getElementById('kinSubtitle').textContent = `KIN ${kin}`;
+        document.getElementById('toneVisual').innerHTML = renderTone(info.toneId);
+        document.getElementById('kinTitle').textContent = info.fullName;
+        document.getElementById('sealImage').src = `../images/${String(info.seal.id).padStart(2, '0')}.png`;
+        document.getElementById('syncMessage').textContent = reading.synchronicMessage;
+        document.getElementById('highFrequency').textContent = reading.highFrequency;
+        document.getElementById('lowFrequency').textContent = reading.lowFrequency;
+        document.getElementById('alignment').textContent = reading.alignment;
+
+        console.log('深度解讀 KIN:', kin);
+        console.log('資訊:', info);
+    </script>
+</body>
+</html>

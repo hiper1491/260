@@ -1,144 +1,255 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>13 月亮曆 - 森林靜心場域 (修正版)</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #0d1b2a;
-            background-image: radial-gradient(circle, #1b263b 0%, #0d1b2a 100%);
-            font-family: sans-serif;
-            color: #e0e1dd;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>南方・黃色小屋 V5 (強制修正版)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-malt: #D4A76A;      /* 麥芽金 */
+      --gold-amber: #B8860B;     /* 琥珀金 */
+      --bg-stone: #1C1812;       /* 深沉石室 */
+      --card-bg: #F2E6D0;        /* 羊皮紙卡片色 */
+      --text-dark: #2A1B0D;      /* 深褐色文字 */
+      --transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        .container { text-align: center; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-stone); color: var(--gold-malt); font-family: 'Noto Serif TC', serif; overflow-x: hidden; height: 100vh; }
 
-        /* 儀式按鈕 */
-        .ritual-button {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: transparent;
-            border: 2px solid #778da9;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.5s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            outline: none;
-            box-shadow: 0 0 15px rgba(119, 141, 169, 0.3);
-        }
+    /* --- 場景控制 --- */
+    .scene { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: var(--transition); z-index: 10; padding: 20px; }
+    .scene.active { opacity: 1; pointer-events: all; }
 
-        .ritual-button:hover {
-            border-color: #e0e1dd;
-            box-shadow: 0 0 30px rgba(224, 225, 221, 0.5);
-        }
+    /* --- 第一幕：封面 (Gate) --- */
+    #scene-gate { z-index: 100; background: radial-gradient(circle at 50% 40%, #2A241B 0%, #110E0A 100%); }
+    .gate-content { text-align: center; }
+    .gate-title { font-family: 'Cinzel', serif; font-size: clamp(2.2rem, 8vw, 3.5rem); letter-spacing: 0.8rem; margin-bottom: 1.5rem; text-shadow: 0 0 20px rgba(212, 167, 106, 0.4); }
+    .gate-desc { line-height: 2.2; opacity: 0.8; margin-bottom: 4rem; font-size: 1.1rem; }
+    .gate-trigger { width: 120px; height: 120px; border: 1px solid var(--gold-amber); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 40px rgba(184, 134, 11, 0.2); animation: gatePulse 4s infinite; }
 
-        .ritual-button.playing {
-            animation: breathe 4s infinite ease-in-out;
-            border-color: #415a77;
-        }
+    /* --- 第二幕：聖域選單 (Sanctuary) --- */
+    #scene-sanctuary { background-image: radial-gradient(circle at 50% 50%, #2a2215 0%, #1c1812 100%); overflow-y: auto; justify-content: flex-start; padding-top: 8vh; }
+    .sanctuary-header { text-align: center; margin-bottom: 4rem; }
+    .stamps-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; max-width: 1100px; padding-bottom: 100px; }
+    
+    .stamp-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; background: none; border: none; width: 160px; transition: 0.4s; }
+    .stamp-item:hover { transform: translateY(-8px); }
+    
+    /* 修正：印記本體質感 */
+    .stamp-body { 
+      width: 130px; height: 130px; border-radius: 50%; 
+      background: linear-gradient(135deg, #3d3121, #1a1208); 
+      display: flex; align-items: center; justify-content: center; margin-bottom: 20px; 
+      border: 1px solid rgba(212, 167, 106, 0.2); 
+      /* 深度壓印陰影 */
+      box-shadow: 
+        inset 8px 8px 16px rgba(0,0,0,0.9), 
+        inset -2px -2px 5px rgba(255,255,255,0.05), 
+        0 15px 30px rgba(0,0,0,0.6); 
+    }
+    /* 修正：圖示改為抽象符號，並增加金屬光澤 */
+    .stamp-svg { width: 65%; height: 65%; fill: var(--gold-malt); filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8)); transition: 0.3s; opacity: 0.9; }
+    .stamp-item:hover .stamp-svg { filter: drop-shadow(0 0 10px var(--gold-amber)); transform: scale(1.05); }
+    .stamp-name { color: var(--gold-malt); font-weight: 600; letter-spacing: 0.3rem; font-size: 1.2rem; }
 
-        @keyframes breathe {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
-        }
+    /* --- 第三幕：過場呼吸 (Breathe) --- */
+    .focus-seal { width: 180px; height: 180px; border-radius: 50%; background: var(--gold-amber); box-shadow: 0 0 80px var(--gold-amber); margin-bottom: 4rem; animation: ritualBreathe 5s infinite; display: flex; align-items: center; justify-content: center; }
+    .focus-svg { width: 60%; height: 60%; fill: #1a1208; /* 過場時圖案變深色 */ }
+    .breathe-text { font-size: 1.4rem; letter-spacing: 0.6rem; color: var(--gold-malt); margin-bottom: 4rem; }
 
-        .status-text {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            opacity: 0.6;
-        }
-    </style>
+    /* --- 第四幕：正統指引卡片 (Oracle) --- */
+    #scene-oracle { overflow-y: auto; padding: 60px 20px; }
+    .oracle-card { 
+      background-color: var(--card-bg); 
+      /* 增加羊皮紙紋理 */
+      background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+      width: 100%; max-width: 420px; padding: 40px 30px; 
+      border-radius: 12px; border: 2px solid #D4A76A; box-shadow: 0 30px 70px rgba(0,0,0,0.9); 
+      color: var(--text-dark); position: relative; text-align: center;
+    }
+    
+    /* 【重大修正】調性結構：嚴格照抄紅屋規範 */
+    .card-tone-container { 
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin-bottom: 25px; min-height: 50px; /* 確保高度足夠 */
+    }
+    .tone-dots-row { 
+      display: flex; gap: 8px; margin-bottom: 6px; /* 點與槓之間的距離 */
+    }
+    .tone-bars-stack { 
+      display: flex; flex-direction: column; gap: 6px; /* 槓與槓之間的距離 */
+    }
+    .tone-dot { width: 14px; height: 14px; background: #2A1B0D; border-radius: 50%; box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2); }
+    .tone-bar { width: 75px; height: 12px; background: #2A1B0D; border-radius: 6px; box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2); }
+    
+    /* 【重大修正】移除白邊 */
+    .card-seal-box { 
+      width: 140px; height: 140px; margin: 0 auto 25px; 
+      display: flex; align-items: center; justify-content: center; 
+      /* 移除背景色、邊框和陰影，直接透視背景 */
+      background: none; border: none; box-shadow: none;
+    }
+    .card-seal-box img { width: 100%; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); }
+    
+    .card-kin-info { margin-bottom: 35px; }
+    .kin-number { font-family: 'Cinzel', serif; font-weight: 700; font-size: 2rem; color: #2A1B0D; }
+    .kin-text { font-weight: 900; letter-spacing: 0.1rem; margin-top: 5px; font-size: 1.1rem; opacity: 0.9; }
+    
+    /* 文案權重強化 */
+    .guide-section { margin-bottom: 30px; text-align: left; position: relative; padding-left: 25px; }
+    .guide-section::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 4px; background: var(--gold-amber); border-radius: 2px; }
+    .section-label { font-size: 0.9rem; font-weight: 700; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05rem; }
+    .section-content { font-size: 1.6rem; font-weight: 900; color: #1a1204; line-height: 1.4; }
+
+    /* --- 按鈕 --- */
+    .action-btn { 
+      padding: 18px 60px; background: linear-gradient(to bottom, #D4A76A, #B8860B); color: #1a1204; 
+      border: 1px solid #F2E6D0; font-family: 'Noto Serif TC', serif; font-weight: 900; font-size: 1.2rem; 
+      letter-spacing: 0.4rem; cursor: pointer; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+      text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    /* --- 動畫 --- */
+    @keyframes gatePulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 60px rgba(184, 134, 11, 0.4); } }
+    @keyframes ritualBreathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
+
+    /* 手機版：垂直階梯排列 */
+    @media (max-width: 600px) {
+      .stamps-grid { flex-direction: column; align-items: center; gap: 30px; }
+      .stamp-item { width: 100%; }
+      .gate-title { font-size: 2.2rem; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <button class="ritual-button" id="playBtn" disabled>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e0e1dd" stroke-width="1.5">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-        </button>
-        <p class="status-text" id="status">正在連結森林頻率...</p>
+  <section id="scene-gate" class="scene active">
+    <div class="gate-content">
+      <h1 class="gate-title">南方・金穗</h1>
+      <p class="gate-desc">成熟、覺醒與豐盛的果實<br>整合走過的歷程，收穫屬於你的智慧與成果</p>
+      <div style="display: flex; justify-content: center;">
+        <div class="gate-trigger" onclick="switchScene('scene-sanctuary')">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" /></svg>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <audio id="bgm" loop preload="auto">
-        <source src="https://upload.wikimedia.org/wikipedia/commons/2/21/Small_Stream_in_the_Forest.ogg" type="audio/ogg">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+  <section id="scene-sanctuary" class="scene">
+    <div class="sanctuary-header">
+      <h2 style="letter-spacing: 0.5rem; font-family: 'Cinzel', serif; margin-bottom: 10px;">黃色小屋</h2>
+      <p style="opacity: 0.6; letter-spacing: 0.2rem;">收穫與指引 · Guidance Room</p>
+    </div>
+    <div class="stamps-grid" id="stampsGrid">
+      </div>
+  </section>
 
-    <script>
-        const audio = document.getElementById('bgm');
-        const playBtn = document.getElementById('playBtn');
-        const statusText = document.getElementById('status');
-        let isPlaying = false;
+  <section id="scene-breathe" class="scene">
+    <div class="focus-seal" id="breatheSeal">
+      </div>
+    <p class="breathe-text" id="breatheText">請深呼吸，穩定心念</p>
+    <button class="action-btn" onclick="revealOracle()">獲取豐盛指引</button>
+  </section>
 
-        // 當音樂準備好可以播放時
-        audio.oncanplaythrough = () => {
-            playBtn.disabled = false;
-            statusText.innerText = "森林已就緒，請開啟儀式";
-        };
+  <section id="scene-oracle" class="scene">
+    <div class="oracle-card" id="oracleCard"></div>
+    <button class="action-btn" style="margin-top: 40px; background: none; border: 2px solid var(--gold-malt); color: var(--gold-malt); box-shadow:none;" onclick="switchScene('scene-sanctuary')">回小屋繼續收穫</button>
+  </section>
 
-        // 如果載入失敗
-        audio.onerror = () => {
-            statusText.innerText = "頻率連結失敗，請檢查網路或更換瀏覽器";
-        };
+  <script>
+    // 修正：替換為抽象、神聖幾何風格的 SVG 路徑
+    const THEMES = [
+      { id: 'financial', name: '財務', path: 'M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,18c-3.31,0-6-2.69-6-6s2.69-6,6-6 s6,2.69,6,6S15.31,18,12,18z M11,7h2v10h-2V7z M7,11h10v2H7V11z' }, // 抽象銅錢/羅盤
+      { id: 'career', name: '事業', path: 'M12,2L2,22h20L12,2z M12,6l6,12H6L12,6z M12,9l3,6H9L12,9z' }, // 上升的金字塔/箭頭
+      { id: 'relationship', name: '感情', path: 'M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,18c-3.31,0-6-2.69-6-6s2.69-6,6-6 s6,2.69,6,6S15.31,18,12,18z M8,12c0-2.21,1.79-4,4-4s4,1.79,4,4s-1.79,4-4,4S8,14.21,8,12z' }, // 雙環連結/同心圓
+      { id: 'health', name: '健康', path: 'M12,2L2,22h20L12,2z M12,6l-2,4l2,4l2-4L12,6z M10,18l2-4l2,4H10z' }, // 抽象生命之樹/能量流動
+      { id: 'growth', name: '成長', path: 'M12,2c-5.52,0-10,4.48-10,10s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,18c-3.31,0-6-2.69-6-6s2.69-6,6-6 s6,2.69,6,6S15.31,18,12,18z M12,14c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S13.1,14,12,14z' } // 螺旋/種子核心
+    ];
 
-        playBtn.addEventListener('click', () => {
-            if (!isPlaying) {
-                audio.volume = 0;
-                audio.play().then(() => {
-                    fadeIn(audio);
-                    playBtn.classList.add('playing');
-                    statusText.innerText = "能量流動中";
-                    isPlaying = true;
-                }).catch(err => {
-                    alert("瀏覽器阻擋了聲音，請再點擊一次試試看！");
-                });
-            } else {
-                fadeOut(audio);
-                playBtn.classList.remove('playing');
-                statusText.innerText = "森林頻率已靜止";
-                isPlaying = false;
-            }
-        });
+    let currentThemeData = null;
 
-        function fadeIn(audioElement) {
-            let vol = 0;
-            const timer = setInterval(() => {
-                vol += 0.05;
-                if (vol >= 0.6) {
-                    audioElement.volume = 0.6;
-                    clearInterval(timer);
-                } else {
-                    audioElement.volume = vol;
-                }
-            }, 100);
-        }
+    function init() {
+      const grid = document.getElementById('stampsGrid');
+      grid.innerHTML = THEMES.map(t => `
+        <button class="stamp-item" onclick="startBreathe('${t.id}')">
+          <div class="stamp-body">
+            <svg class="stamp-svg" viewBox="0 0 24 24">
+              <path d="${t.path}" />
+            </svg>
+          </div>
+          <span class="stamp-name">${t.name}</span>
+        </button>
+      `).join('');
+    }
 
-        function fadeOut(audioElement) {
-            let vol = audioElement.volume;
-            const timer = setInterval(() => {
-                vol -= 0.05;
-                if (vol <= 0) {
-                    audioElement.volume = 0;
-                    audioElement.pause();
-                    clearInterval(timer);
-                } else {
-                    audioElement.volume = vol;
-                }
-            }, 100);
-        }
-    </script>
+    function switchScene(id) {
+      document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function startBreathe(id) {
+      currentThemeData = THEMES.find(t => t.id === id);
+      document.getElementById('breatheText').innerText = `針對 [${currentThemeData.name}]，請深呼吸...`;
+      // 將選中的 SVG 放入過場
+      document.getElementById('breatheSeal').innerHTML = `
+        <svg class="focus-svg" viewBox="0 0 24 24">
+          <path d="${currentThemeData.path}" />
+        </svg>
+      `;
+      switchScene('scene-breathe');
+    }
+
+    function revealOracle() {
+      const kin = Math.floor(Math.random() * 260) + 1;
+      const tone = ((kin - 1) % 13) + 1;
+      const sealId = ((kin - 1) % 20) + 1;
+      const card = document.getElementById('oracleCard');
+
+      // 【重大修正】正統調性邏輯：點在上，槓在下
+      const bars = Math.floor(tone / 5);
+      const dots = tone % 5;
+      
+      let dotsHtml = '';
+      if (dots > 0) {
+        dotsHtml = '<div class="tone-dots-row">';
+        for(let i=0; i<dots; i++) dotsHtml += '<div class="tone-dot"></div>';
+        dotsHtml += '</div>';
+      }
+      
+      let barsHtml = '';
+      if (bars > 0) {
+        barsHtml = '<div class="tone-bars-stack">';
+        for(let i=0; i<bars; i++) barsHtml += '<div class="tone-bar"></div>';
+        barsHtml += '</div>';
+      }
+
+      card.innerHTML = `
+        <div class="card-tone-container">
+          ${dotsHtml}
+          ${barsHtml}
+        </div>
+        <div class="card-seal-box">
+          <img src="../images/${sealId.toString().padStart(2, '0')}.png" onerror="this.src='https://via.placeholder.com/100?text=Seal+Image+Not+Found'">
+        </div>
+        <div class="card-kin-info">
+          <div class="kin-number">KIN ${kin}</div>
+          <p class="kin-text">[${currentThemeData.name}] 的智慧顯化</p>
+        </div>
+        <div class="guide-section">
+          <p class="section-label">調頻建議 Alignment</p>
+          <div class="section-content">聽從第一時間的身體反應</div>
+        </div>
+        <div class="guide-section">
+          <p class="section-label">落地行動 Grounding</p>
+          <div class="section-content">進行伸展運動，讓能量流動</div>
+        </div>
+      `;
+      switchScene('scene-oracle');
+    }
+
+    window.onload = init;
+  </script>
 </body>
 </html>

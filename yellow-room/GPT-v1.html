@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>黃色小屋｜收穫與指引</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f1e6;
+      --paper:#fbf8f0;
+      --paper2:#fffaf0;
+      --ink:#3b3328;
+      --muted:#6b5f51;
+
+      --gold:#d7a62a;
+      --gold2:#f3c84b;
+      --gold3:#b58518;
+
+      --line:rgba(70,58,44,.15);
+      --shadow: 0 14px 34px rgba(0,0,0,.10);
+      --shadow2: 0 10px 22px rgba(0,0,0,.10);
+
+      --radius:18px;
+      --cardRadius:18px;
+
+      --focus: 0 0 0 3px rgba(215,166,42,.22);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;
+      font-family:"Noto Serif TC", serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(255,255,255,.9), rgba(255,255,255,0) 60%),
+        radial-gradient(900px 700px at 50% 120%, rgba(215,166,42,.10), rgba(215,166,42,0) 55%),
+        linear-gradient(180deg, #f7f2e8 0%, #f0e6d1 100%);
+      padding: 34px 18px 60px;
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    /* 大卡容器（你截圖那種白底大面板） */
+    .panel{
+      background: linear-gradient(180deg, var(--paper2), var(--paper));
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 40px 28px 34px;
+      position: relative;
+      overflow:hidden;
+    }
+
+    /* 淡淡紙紋/顆粒 */
+    .panel:before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(1px 1px at 12% 18%, rgba(60,50,40,.12), rgba(0,0,0,0) 60%),
+        radial-gradient(1px 1px at 78% 30%, rgba(60,50,40,.10), rgba(0,0,0,0) 60%),
+        radial-gradient(1px 1px at 35% 72%, rgba(60,50,40,.08), rgba(0,0,0,0) 60%),
+        radial-gradient(1px 1px at 62% 84%, rgba(60,50,40,.08), rgba(0,0,0,0) 60%),
+        radial-gradient(900px 380px at 50% 0%, rgba(215,166,42,.08), rgba(215,166,42,0) 70%);
+      opacity:.55;
+      pointer-events:none;
+      mix-blend-mode:multiply;
+    }
+
+    .panel > *{position:relative; z-index:1;}
+
+    /* Header */
+    .title{
+      font-family:"Cinzel","Noto Serif TC",serif;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-align:center;
+      font-size: 44px;
+      color: var(--gold3);
+    }
+    .subtitle{
+      margin-top: 10px;
+      text-align:center;
+      font-size: 18px;
+      letter-spacing:.10em;
+      color: var(--muted);
+    }
+    .divider{
+      width: 64px;
+      height: 3px;
+      border-radius: 3px;
+      margin: 18px auto 22px;
+      background: linear-gradient(90deg, rgba(215,166,42,0), rgba(215,166,42,.95), rgba(215,166,42,0));
+    }
+    .desc{
+      text-align:center;
+      line-height: 1.9;
+      font-size: 16px;
+      color: rgba(59,51,40,.85);
+      max-width: 660px;
+      margin: 0 auto 26px;
+    }
+
+    /* 主題卡片區 */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 20px;
+      margin-top: 18px;
+    }
+
+    /* 第五顆「成長」置左下（跟你截圖一致：第二列第一格） */
+    .grid .card.growth{
+      grid-column: 1 / span 1;
+    }
+
+    /* Card */
+    .card{
+      background: #fffdf7;
+      border: 2px solid rgba(215,166,42,.55);
+      border-radius: var(--cardRadius);
+      box-shadow: var(--shadow2);
+      padding: 22px 18px 18px;
+      text-align:center;
+      cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease, opacity .18s ease;
+      user-select:none;
+      position:relative;
+      min-height: 170px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+    }
+
+    .card:hover{ transform: translateY(-3px); }
+
+    .card:focus-visible{
+      outline:none;
+      box-shadow: var(--shadow2), var(--focus);
+    }
+
+    /* icon seal (圓形壓印章感，但保持乾淨) */
+    .seal{
+      width: 62px;
+      height: 62px;
+      border-radius: 999px;
+      display:grid;
+      place-items:center;
+      margin-bottom: 14px;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.85), rgba(255,255,255,0) 45%),
+        radial-gradient(circle at 70% 75%, rgba(0,0,0,.10), rgba(0,0,0,0) 55%),
+        linear-gradient(180deg, #f4d476, #d1a43b);
+      border: 1px solid rgba(0,0,0,.10);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.65),
+        inset 0 -2px 6px rgba(0,0,0,.18);
+    }
+
+    .seal svg{
+      width: 30px;
+      height: 30px;
+      stroke: rgba(59,51,40,.85);
+      fill: none;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,.35));
+      opacity:.95;
+    }
+
+    .labelZh{
+      font-weight:900;
+      letter-spacing:.10em;
+      font-size: 20px;
+      color: var(--gold3);
+      margin-bottom: 6px;
+    }
+    .labelEn{
+      font-family:"Cinzel",serif;
+      font-size: 15px;
+      letter-spacing:.12em;
+      color: rgba(59,51,40,.55);
+    }
+
+    /* 選中 / 非選中：S1 收斂 */
+    .card.dim{
+      opacity: .42;
+      filter: grayscale(.15);
+      transform: none;
+    }
+    .card.active{
+      opacity: 1;
+      filter:none;
+      transform: translateY(-4px);
+      border-color: rgba(215,166,42,.95);
+      box-shadow: 0 18px 42px rgba(0,0,0,.14);
+    }
+
+    /* S2 呼吸與按鈕區（跟你手機示意那個「請深呼吸＋獲取指引」） */
+    .ritual{
+      margin-top: 22px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 12px;
+      min-height: 0;
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events:none;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .ritual.show{
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events:auto;
+    }
+
+    .breath{
+      font-size: 18px;
+      letter-spacing: .10em;
+      color: rgba(59,51,40,.80);
+    }
+
+    .cta{
+      appearance:none;
+      border: 1px solid rgba(0,0,0,.10);
+      background: linear-gradient(180deg, #f6d36b, #d7a62a);
+      color: #2a2218;
+      font-weight:800;
+      letter-spacing:.14em;
+      padding: 12px 22px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: 0 12px 22px rgba(0,0,0,.14);
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+    }
+    .cta:hover{ transform: translateY(-2px); filter: brightness(1.03); }
+    .cta:active{ transform: translateY(0); }
+
+    /* 分隔線 + 歷史 */
+    .hr{
+      height: 1px;
+      background: linear-gradient(90deg, rgba(215,166,42,0), rgba(215,166,42,.45), rgba(215,166,42,0));
+      margin: 34px 0 22px;
+    }
+    .historyTitle{
+      text-align:center;
+      font-weight:900;
+      letter-spacing:.12em;
+      color: var(--gold3);
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .history{
+      max-width: 760px;
+      margin: 0 auto;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(70,58,44,.12);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .history ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .history li{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      padding: 10px 10px;
+      border-radius: 12px;
+      background: rgba(251,248,240,.85);
+      border: 1px solid rgba(70,58,44,.10);
+      color: rgba(59,51,40,.82);
+      font-size: 14px;
+      letter-spacing: .04em;
+    }
+    .tag{
+      font-weight:900;
+      color: #2a2218;
+      background: rgba(215,166,42,.18);
+      border: 1px solid rgba(215,166,42,.35);
+      padding: 6px 10px;
+      border-radius: 999px;
+      letter-spacing:.08em;
+      white-space:nowrap;
+    }
+    .muted{ color: rgba(59,51,40,.62); }
+
+    /* RWD */
+    @media (max-width: 980px){
+      .title{ font-size: 38px; }
+      .panel{ padding: 34px 18px 28px; }
+      .grid{ gap: 16px; }
+    }
+    @media (max-width: 760px){
+      .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid .card.growth{ grid-column: 1 / span 1; } /* 仍在左下 */
+      .card{ min-height: 164px; }
+    }
+    @media (max-width: 460px){
+      .title{ font-size: 32px; letter-spacing:.10em; }
+      .subtitle{ font-size: 16px; }
+      .desc{ font-size: 15px; }
+      .card{ padding: 18px 14px 14px; }
+      .labelZh{ font-size: 18px; }
+      .seal{ width: 56px; height: 56px; }
+      .seal svg{ width: 28px; height: 28px; }
+      .breath{ font-size: 16px; }
+      .cta{ width: 100%; max-width: 260px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="panel" aria-label="黃色小屋">
+      <h1 class="title">黃色小屋</h1>
+      <div class="subtitle">收穫與指引・Guidance Room</div>
+      <div class="divider"></div>
+
+      <p class="desc">
+        選擇一個生活領域，獲取專屬的印記指引與落地建議。<br>
+        深呼吸，讓直覺帶你找到此刻最需要的智慧果實。
+      </p>
+
+      <!-- S0/S1：主題選單 -->
+      <div class="grid" id="themeGrid">
+        <!-- 財務 -->
+        <button class="card" type="button" data-theme="financial" aria-label="財務 Financial">
+          <div class="seal" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M7.5 10.5c0 1.7 2 2.2 4.5 2.6s4.5.9 4.5 2.6c0 1.8-1.8 2.8-4.5 2.8s-4.5-1-4.5-2.8" />
+              <path d="M12 4v16" />
+              <path d="M8.5 7.5c.6-1.1 1.8-1.8 3.5-1.8 1.7 0 3 .7 3.5 1.8" />
+            </svg>
+          </div>
+          <div class="labelZh">財務</div>
+          <div class="labelEn">Financial</div>
+        </button>
+
+        <!-- 事業 -->
+        <button class="card" type="button" data-theme="career" aria-label="事業 Career">
+          <div class="seal" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M8 7V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1" />
+              <path d="M4.5 9.5h15v9.5a1.8 1.8 0 0 1-1.8 1.8H6.3A1.8 1.8 0 0 1 4.5 19V9.5z" />
+              <path d="M9 12h6" />
+            </svg>
+          </div>
+          <div class="labelZh">事業</div>
+          <div class="labelEn">Career</div>
+        </button>
+
+        <!-- 感情 -->
+        <button class="card" type="button" data-theme="relationship" aria-label="感情 Relationship">
+          <div class="seal" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 20s-7-4.6-9.2-9.1C1.5 8.1 3.2 5.8 6 5.4c1.6-.2 3.1.6 4 1.8.9-1.2 2.4-2 4-1.8 2.8.4 4.5 2.7 3.2 5.5C19 15.4 12 20 12 20z"/>
+            </svg>
+          </div>
+          <div class="labelZh">感情</div>
+          <div class="labelEn">Relationship</div>
+        </button>
+
+        <!-- 健康 -->
+        <button class="card" type="button" data-theme="health" aria-label="健康 Health">
+          <div class="seal" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3v6" />
+              <path d="M9 6h6" />
+              <path d="M6.5 10.5c0 5 2.6 9.5 5.5 10 2.9-.5 5.5-5 5.5-10" />
+              <path d="M8 13.5h8" />
+            </svg>
+          </div>
+          <div class="labelZh">健康</div>
+          <div class="labelEn">Health</div>
+        </button>
+
+        <!-- 成長 -->
+        <button class="card growth" type="button" data-theme="growth" aria-label="成長 Growth">
+          <div class="seal" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 20V10" />
+              <path d="M12 10c-3 0-5-2-6-5 3 1 6 1 6 5z" />
+              <path d="M12 10c3 0 5-2 6-5-3 1-6 1-6 5z" />
+              <path d="M8 20h8" />
+            </svg>
+          </div>
+          <div class="labelZh">成長</div>
+          <div class="labelEn">Growth</div>
+        </button>
+      </div>
+
+      <!-- S2：呼吸引導 + CTA（點了主題才出現） -->
+      <div class="ritual" id="ritual">
+        <div class="breath" id="breathText">請深呼吸，穩定心念</div>
+        <button class="cta" id="ctaBtn" type="button">獲取豐盛指引</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="historyTitle">最近指引紀錄</div>
+      <div class="history">
+        <ul id="historyList">
+          <!-- v1 先放示意，v2 再接真實資料 -->
+          <li><span class="tag">財務</span> <span class="muted">2026/01/26</span> — KIN 18 磁性的白鏡</li>
+          <li><span class="tag">感情</span> <span class="muted">2026/01/25</span> — KIN 74 太陽的白巫師</li>
+          <li><span class="tag">健康</span> <span class="muted">2026/01/24</span> — KIN 45 韻律的紅蛇</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ====== GPT-v1：S0 → S1 → S2（只做到顯示呼吸 + CTA；抽牌留到 v2） ======
+    const cards = Array.from(document.querySelectorAll(".card"));
+    const ritual = document.getElementById("ritual");
+    const breathText = document.getElementById("breathText");
+    const ctaBtn = document.getElementById("ctaBtn");
+
+    const THEME_TEXT = {
+      financial: { zh: "財務", cta: "獲取豐盛指引" },
+      career: { zh: "事業", cta: "獲取使命指引" },
+      relationship: { zh: "感情", cta: "獲取連結指引" },
+      health: { zh: "健康", cta: "獲取身心指引" },
+      growth: { zh: "成長", cta: "獲取蛻變指引" }
+    };
+
+    let currentTheme = null;
+    let s2Timer1 = null;
+    let s2Timer2 = null;
+
+    function enterS1(theme){
+      // S1：收斂（選中亮、其他退暗）
+      cards.forEach(c=>{
+        const t = c.dataset.theme;
+        c.classList.remove("active","dim");
+        if(t !== theme) c.classList.add("dim");
+      });
+      const active = cards.find(c => c.dataset.theme === theme);
+      if(active) active.classList.add("active");
+    }
+
+    function enterS2(theme){
+      // S2：呼吸文字 + CTA（不倒數、不閃）
+      clearTimeout(s2Timer1);
+      clearTimeout(s2Timer2);
+
+      const meta = THEME_TEXT[theme] || { zh:"", cta:"獲取指引" };
+      breathText.textContent = "請深呼吸，穩定心念";
+      ctaBtn.textContent = meta.cta;
+
+      // 稍微延遲「浮現」，讓儀式成立
+      ritual.classList.remove("show");
+      s2Timer1 = setTimeout(()=> ritual.classList.add("show"), 650);
+    }
+
+    cards.forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const theme = btn.dataset.theme;
+        currentTheme = theme;
+
+        enterS1(theme);
+        enterS2(theme);
+      });
+    });
+
+    ctaBtn.addEventListener("click", ()=>{
+      if(!currentTheme) return;
+      alert("GPT-v1：S3 抽牌尚未接上（GPT-v2 會接 kin-synthesis-data.json + 歷史 5 筆）");
+    });
+  </script>
+</body>
+</html>

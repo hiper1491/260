@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>南方・金穗｜黃色小屋（GPT-v5）</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg0:#0b0604;
+      --bg1:#160d08;
+
+      --amberA:#ffe0a6;
+      --amberB:#f2c65f;
+      --amberC:#d7a62a;
+      --amberD:#b07a16;
+
+      --ink:#f2e2be;
+      --ink2:rgba(242,226,190,.78);
+      --ink3:rgba(242,226,190,.55);
+
+      --panelR: 28px;
+      --ease: cubic-bezier(.2,.8,.2,1);
+
+      --deepShadow: 0 34px 110px rgba(0,0,0,.65);
+      --midShadow: 0 18px 55px rgba(0,0,0,.48);
+      --coinShadow: 0 22px 60px rgba(0,0,0,.60);
+
+      --maxw: 1100px;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+      min-height:100vh;
+      font-family:"Noto Serif TC", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 760px at 50% 8%, rgba(215,166,42,.15), rgba(215,166,42,0) 62%),
+        radial-gradient(900px 700px at 50% 115%, rgba(0,0,0,.78), rgba(0,0,0,0) 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    /* cinematic dust + grain */
+    body:before{
+      content:"";
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.08), rgba(0,0,0,0) 55%),
+        radial-gradient(1px 1px at 78% 30%, rgba(255,255,255,.07), rgba(0,0,0,0) 55%),
+        radial-gradient(1px 1px at 35% 72%, rgba(255,255,255,.06), rgba(0,0,0,0) 55%),
+        radial-gradient(1px 1px at 62% 84%, rgba(255,255,255,.05), rgba(0,0,0,0) 55%);
+      opacity:.45;
+      pointer-events:none;
+      mix-blend-mode:overlay;
+      filter: blur(.2px);
+    }
+
+    .wrap{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 28px 18px 90px;
+    }
+
+    /* ====== Temple Scene (match your mockup vibe) ====== */
+    .scene{
+      position:relative;
+      border-radius: var(--panelR);
+      overflow:hidden;
+      box-shadow: var(--deepShadow);
+      border: 1px solid rgba(255,255,255,.06);
+      min-height: 740px;
+
+      /* base */
+      background:
+        radial-gradient(1200px 720px at 50% 20%, rgba(255,210,130,.14), rgba(255,210,130,0) 62%),
+        radial-gradient(900px 700px at 50% 85%, rgba(0,0,0,.62), rgba(0,0,0,0) 60%),
+        linear-gradient(180deg, rgba(72,40,18,.42), rgba(10,5,3,.90));
+    }
+
+    /* vignette + depth */
+    .scene:after{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(closest-side at 50% 40%, rgba(0,0,0,0) 55%, rgba(0,0,0,.76) 100%);
+      opacity:.65;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    /* temple columns silhouette (depth) */
+    .depthCols{
+      position:absolute; inset:0;
+      z-index:0;
+      background:
+        /* far hall glow */
+        radial-gradient(600px 380px at 50% 38%, rgba(215,166,42,.18), rgba(215,166,42,0) 65%),
+        /* columns (blurred) */
+        repeating-linear-gradient(
+          90deg,
+          rgba(0,0,0,0) 0px,
+          rgba(0,0,0,0) 90px,
+          rgba(0,0,0,.18) 90px,
+          rgba(0,0,0,.18) 120px,
+          rgba(0,0,0,0) 120px,
+          rgba(0,0,0,0) 220px
+        );
+      filter: blur(2.2px);
+      opacity:.55;
+      transform: translateY(18px);
+      pointer-events:none;
+    }
+
+    /* arch frame hint (not a circle) */
+    .archFrame{
+      position:absolute;
+      inset:-220px -120px -180px -120px;
+      z-index:0;
+      pointer-events:none;
+      opacity:.55;
+      background:
+        radial-gradient(closest-side at 50% 58%,
+          rgba(255,225,160,.18),
+          rgba(255,225,160,0) 68%),
+        radial-gradient(closest-side at 50% 58%,
+          rgba(0,0,0,.40),
+          rgba(0,0,0,0) 78%),
+        conic-gradient(from 180deg at 50% 58%,
+          rgba(0,0,0,0) 0deg,
+          rgba(0,0,0,.28) 38deg,
+          rgba(0,0,0,0) 92deg,
+          rgba(0,0,0,.22) 150deg,
+          rgba(0,0,0,0) 232deg,
+          rgba(0,0,0,.26) 302deg,
+          rgba(0,0,0,0) 360deg
+        );
+      filter: blur(.3px);
+    }
+
+    /* top title */
+    .topTitle{
+      position:relative;
+      z-index:2;
+      text-align:center;
+      padding: 38px 18px 6px;
+    }
+    .topTitle h1{
+      font-family:"Cinzel","Noto Serif TC",serif;
+      font-weight:900;
+      letter-spacing:.14em;
+      font-size: clamp(34px, 4vw, 58px);
+      color: rgba(242,226,190,.92);
+      text-shadow: 0 18px 42px rgba(0,0,0,.70);
+    }
+    .topTitle .sub{
+      margin-top: 10px;
+      font-family:"Cinzel",serif;
+      letter-spacing:.22em;
+      color: rgba(242,226,190,.52);
+      font-size: 14px;
+    }
+    .goldLine{
+      width: 92px;
+      height: 2px;
+      border-radius: 2px;
+      margin: 16px auto 0;
+      background: linear-gradient(90deg, rgba(215,166,42,0), rgba(215,166,42,.92), rgba(215,166,42,0));
+      opacity:.95;
+    }
+
+    .stage{
+      position:relative;
+      z-index:2;
+      padding: 18px 18px 36px;
+    }
+    .hidden{ display:none !important; }
+
+    /* ====== Coin (embossed metal) ====== */
+    .coin{
+      width: min(360px, 72vw);
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      position:relative;
+      margin: 10px auto 0;
+      box-shadow: var(--coinShadow);
+      transform: translateZ(0);
+    }
+
+    /* outer metal ring */
+    .coin:before{
+      content:"";
+      position:absolute; inset:0;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 26% 22%, rgba(255,255,255,.25), rgba(255,255,255,0) 50%),
+        radial-gradient(circle at 70% 82%, rgba(0,0,0,.62), rgba(0,0,0,0) 62%),
+        linear-gradient(180deg, #f2d58a, #b07a16);
+      border: 1px solid rgba(0,0,0,.30);
+      box-shadow:
+        inset 0 2px 0 rgba(255,255,255,.18),
+        inset 0 -10px 22px rgba(0,0,0,.60);
+    }
+
+    /* engraved ring texture */
+    .coin .orn{
+      position:absolute;
+      inset: 10.5%;
+      border-radius:999px;
+      background:
+        repeating-conic-gradient(
+          from 0deg,
+          rgba(0,0,0,0) 0deg 10deg,
+          rgba(0,0,0,.18) 10deg 11deg,
+          rgba(0,0,0,0) 11deg 22deg
+        );
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        inset 0 -10px 18px rgba(0,0,0,.58);
+      opacity:.35;
+      filter: blur(.2px);
+    }
+
+    /* inner plate */
+    .coin .inner{
+      position:absolute;
+      inset: 22%;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 50% 36%, rgba(255,220,150,.18), rgba(255,220,150,0) 62%),
+        radial-gradient(circle at 50% 80%, rgba(0,0,0,.62), rgba(0,0,0,0) 58%),
+        linear-gradient(180deg, rgba(18,10,6,.92), rgba(8,4,3,.92));
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: inset 0 12px 26px rgba(0,0,0,.65);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+
+    /* subtle inner glow breathing (NOT particle rain) */
+    .coin .inner:before{
+      content:"";
+      position:absolute; inset:-18%;
+      background: radial-gradient(circle at 50% 42%, rgba(215,166,42,.22), rgba(215,166,42,0) 62%);
+      opacity:.55;
+      animation: innerBreath 8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes innerBreath{
+      0%,100%{ transform: scale(.985); opacity:.42; }
+      50%{ transform: scale(1.02); opacity:.65; }
+    }
+
+    .coin .text{
+      position:relative;
+      z-index:1;
+      font-weight:900;
+      letter-spacing:.18em;
+      font-size: clamp(26px, 4.6vw, 44px);
+      color: rgba(242,226,190,.92);
+      text-shadow: 0 18px 30px rgba(0,0,0,.75);
+    }
+
+    /* Gate copy & button */
+    .gateCopy{
+      text-align:center;
+      color: rgba(242,226,190,.70);
+      line-height: 1.95;
+      letter-spacing:.06em;
+      font-size: 15px;
+      max-width: 760px;
+      margin: 16px auto 0;
+      padding: 0 10px;
+    }
+
+    .btnGold{
+      margin: 18px auto 0;
+      display:inline-block;
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(247,217,138,.96), rgba(215,166,42,.96));
+      color: rgba(22,12,6,.96);
+      font-weight:900;
+      letter-spacing:.18em;
+      padding: 14px 26px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: 0 16px 34px rgba(0,0,0,.50);
+      transition: transform .18s var(--ease), filter .18s var(--ease);
+    }
+    .btnGold:hover{ transform: translateY(-2px); filter: brightness(1.03); }
+    .btnGold:active{ transform: translateY(0); }
+
+    /* ====== Inside layout like your mockup ====== */
+    .inside{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 14px;
+      padding: 6px 0 10px;
+    }
+
+    .breath{
+      margin-top: 6px;
+      color: rgba(242,226,190,.74);
+      letter-spacing:.10em;
+      font-size: 18px;
+      text-align:center;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity .35s var(--ease), transform .35s var(--ease);
+    }
+    .breath.show{ opacity:1; transform: translateY(0); }
+
+    .cta{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(247,217,138,.96), rgba(215,166,42,.96));
+      color: rgba(22,12,6,.96);
+      font-weight:900;
+      letter-spacing:.18em;
+      padding: 14px 26px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: 0 16px 34px rgba(0,0,0,.54);
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity .35s var(--ease), transform .35s var(--ease), filter .18s var(--ease);
+    }
+    .cta.show{ opacity:1; transform: translateY(0); }
+    .cta:hover{ filter: brightness(1.03); }
+
+    /* Desktop bottom 5 seals */
+    .themeRow{
+      width: 100%;
+      display:flex;
+      justify-content:center;
+      gap: 18px;
+      padding: 22px 0 6px;
+      flex-wrap: wrap;
+    }
+    .themeItem{
+      width: 110px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      user-select:none;
+      cursor:pointer;
+      transition: opacity .18s var(--ease), transform .18s var(--ease);
+    }
+
+    .miniCoin{
+      width: 86px;
+      aspect-ratio: 1/1;
+      border-radius:999px;
+      position:relative;
+      display:grid;
+      place-items:center;
+      box-shadow: 0 18px 44px rgba(0,0,0,.55);
+      background:
+        radial-gradient(circle at 26% 22%, rgba(255,255,255,.18), rgba(255,255,255,0) 52%),
+        radial-gradient(circle at 70% 82%, rgba(0,0,0,.62), rgba(0,0,0,0) 62%),
+        linear-gradient(180deg, #e9c874, #9d6712);
+      border: 1px solid rgba(0,0,0,.30);
+      overflow:hidden;
+    }
+    .miniCoin:before{
+      content:"";
+      position:absolute; inset:12%;
+      border-radius:999px;
+      background: radial-gradient(circle at 50% 42%, rgba(215,166,42,.14), rgba(215,166,42,0) 62%);
+      opacity:.55;
+      pointer-events:none;
+    }
+    .miniCoin svg{
+      width: 34px;
+      height: 34px;
+      fill:none;
+      stroke: rgba(242,226,190,.86);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 12px 14px rgba(0,0,0,.75));
+      opacity:.96;
+    }
+    .themeLabel{
+      margin-top: 10px;
+      text-align:center;
+      font-weight:800;
+      letter-spacing:.12em;
+      color: rgba(242,226,190,.72);
+      font-size: 14px;
+    }
+
+    .themeItem.dim{ opacity:.28; filter: grayscale(.15); }
+    .themeItem.active{ opacity:1; transform: translateY(-2px); }
+    .themeItem.active .miniCoin{
+      background:
+        radial-gradient(circle at 26% 22%, rgba(255,255,255,.22), rgba(255,255,255,0) 52%),
+        radial-gradient(circle at 70% 82%, rgba(0,0,0,.58), rgba(0,0,0,0) 62%),
+        linear-gradient(180deg, #f2d58a, #b07a16);
+    }
+
+    /* Mobile vertical list like mockup */
+    .mobileList{
+      width: min(480px, 92vw);
+      display:none;
+      flex-direction:column;
+      gap: 14px;
+      padding: 16px 0 6px;
+    }
+    .mItem{
+      display:flex;
+      align-items:center;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: 0 14px 28px rgba(0,0,0,.36);
+      cursor:pointer;
+      transition: transform .18s var(--ease), opacity .18s var(--ease);
+      user-select:none;
+    }
+    .mCoin{
+      width: 58px;
+      height: 58px;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 26% 22%, rgba(255,255,255,.18), rgba(255,255,255,0) 52%),
+        radial-gradient(circle at 70% 82%, rgba(0,0,0,.62), rgba(0,0,0,0) 62%),
+        linear-gradient(180deg, #e9c874, #9d6712);
+      border: 1px solid rgba(0,0,0,.30);
+      box-shadow: 0 14px 28px rgba(0,0,0,.46);
+      display:grid;
+      place-items:center;
+      flex: 0 0 auto;
+      overflow:hidden;
+    }
+    .mCoin svg{
+      width: 26px; height: 26px;
+      fill:none;
+      stroke: rgba(242,226,190,.88);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.75));
+    }
+    .mName{
+      font-weight:900;
+      letter-spacing:.14em;
+      color: rgba(242,226,190,.86);
+      font-size: 18px;
+    }
+    .mItem.dim{ opacity:.32; }
+    .mItem.active{ transform: translateY(-2px); opacity:1; }
+
+    @media (max-width: 680px){
+      .themeRow{ display:none; }
+      .mobileList{ display:flex; }
+      .scene{ min-height: 780px; }
+      .coin{ width: min(320px, 78vw); }
+    }
+    @media (max-width: 420px){
+      .breath{ font-size: 16px; }
+      .cta{ width: min(300px, 92vw); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="scene" role="application" aria-label="黃色小屋｜門後空間（示意圖風格）">
+      <div class="depthCols" aria-hidden="true"></div>
+      <div class="archFrame" aria-hidden="true"></div>
+
+      <div class="topTitle" aria-hidden="true">
+        <h1>南方・金穗</h1>
+        <div class="sub">DREAMSPELL SYNCHRONICITY</div>
+        <div class="goldLine"></div>
+      </div>
+
+      <!-- STAGE A: Gate -->
+      <section class="stage" id="stageGate">
+        <div class="coin" aria-hidden="true">
+          <div class="orn"></div>
+          <div class="inner">
+            <div class="text">金穗</div>
+          </div>
+        </div>
+
+        <div class="gateCopy">
+          成熟、覺醒與豐盛的果實。<br/>
+          你已在門後，請先穩住呼吸，再進入指引。
+        </div>
+
+        <div style="text-align:center;">
+          <button class="btnGold" id="btnEnter" type="button">進入黃屋</button>
+        </div>
+      </section>
+
+      <!-- STAGE B: Inside -->
+      <section class="stage hidden" id="stageInside">
+        <div class="inside">
+
+          <!-- main selected coin (big, like your mockup) -->
+          <div class="coin" aria-label="目前主題">
+            <div class="orn"></div>
+            <div class="inner">
+              <div class="text" id="focusText">財務</div>
+            </div>
+          </div>
+
+          <div class="breath" id="breathText">請深呼吸，穩定心念</div>
+          <button class="cta" id="ctaBtn" type="button">獲取豐盛指引</button>
+
+          <!-- Desktop row -->
+          <div class="themeRow" id="themeRow" aria-label="五個主題（桌機）">
+            <div class="themeItem active" data-theme="financial" tabindex="0" aria-label="財務">
+              <div class="miniCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7.5 10.5c0 1.7 2 2.2 4.5 2.6s4.5.9 4.5 2.6c0 1.8-1.8 2.8-4.5 2.8s-4.5-1-4.5-2.8" />
+                  <path d="M12 4v16" />
+                </svg>
+              </div>
+              <div class="themeLabel">財務</div>
+            </div>
+
+            <div class="themeItem dim" data-theme="career" tabindex="0" aria-label="事業">
+              <div class="miniCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M8 7V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1" />
+                  <path d="M5 9.5h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9z" />
+                </svg>
+              </div>
+              <div class="themeLabel">事業</div>
+            </div>
+
+            <div class="themeItem dim" data-theme="relationship" tabindex="0" aria-label="感情">
+              <div class="miniCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 20s-7-4.6-9.2-9.1C1.5 8.1 3.2 5.8 6 5.4c1.6-.2 3.1.6 4 1.8.9-1.2 2.4-2 4-1.8 2.8.4 4.5 2.7 3.2 5.5C19 15.4 12 20 12 20z"/>
+                </svg>
+              </div>
+              <div class="themeLabel">感情</div>
+            </div>
+
+            <div class="themeItem dim" data-theme="health" tabindex="0" aria-label="健康">
+              <div class="miniCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3v6" />
+                  <path d="M9 6h6" />
+                  <path d="M7 11c0 4.8 2.4 8.8 5 9.3 2.6-.5 5-4.5 5-9.3" />
+                </svg>
+              </div>
+              <div class="themeLabel">健康</div>
+            </div>
+
+            <div class="themeItem dim" data-theme="growth" tabindex="0" aria-label="成長">
+              <div class="miniCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 20V10" />
+                  <path d="M12 10c-3 0-5-2-6-5 3 1 6 1 6 5z" />
+                  <path d="M12 10c3 0 5-2 6-5-3 1-6 1-6 5z" />
+                </svg>
+              </div>
+              <div class="themeLabel">成長</div>
+            </div>
+          </div>
+
+          <!-- Mobile list -->
+          <div class="mobileList" id="mobileList" aria-label="五個主題（手機）">
+            <div class="mItem active" data-theme="financial" tabindex="0" aria-label="財務">
+              <div class="mCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7.5 10.5c0 1.7 2 2.2 4.5 2.6s4.5.9 4.5 2.6c0 1.8-1.8 2.8-4.5 2.8s-4.5-1-4.5-2.8" />
+                  <path d="M12 4v16" />
+                </svg>
+              </div>
+              <div class="mName">財務</div>
+            </div>
+
+            <div class="mItem dim" data-theme="career" tabindex="0" aria-label="事業">
+              <div class="mCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M8 7V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1" />
+                  <path d="M5 9.5h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9z" />
+                </svg>
+              </div>
+              <div class="mName">事業</div>
+            </div>
+
+            <div class="mItem dim" data-theme="relationship" tabindex="0" aria-label="感情">
+              <div class="mCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 20s-7-4.6-9.2-9.1C1.5 8.1 3.2 5.8 6 5.4c1.6-.2 3.1.6 4 1.8.9-1.2 2.4-2 4-1.8 2.8.4 4.5 2.7 3.2 5.5C19 15.4 12 20 12 20z"/>
+                </svg>
+              </div>
+              <div class="mName">感情</div>
+            </div>
+
+            <div class="mItem dim" data-theme="health" tabindex="0" aria-label="健康">
+              <div class="mCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3v6" />
+                  <path d="M9 6h6" />
+                  <path d="M7 11c0 4.8 2.4 8.8 5 9.3 2.6-.5 5-4.5 5-9.3" />
+                </svg>
+              </div>
+              <div class="mName">健康</div>
+            </div>
+
+            <div class="mItem dim" data-theme="growth" tabindex="0" aria-label="成長">
+              <div class="mCoin" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 20V10" />
+                  <path d="M12 10c-3 0-5-2-6-5 3 1 6 1 6 5z" />
+                  <path d="M12 10c3 0 5-2 6-5-3 1-6 1-6 5z" />
+                </svg>
+              </div>
+              <div class="mName">成長</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    // GPT-v5: match the mockup vibe (depth/arch/glow) + flow (gate -> inside)
+    // S3 (random KIN + guidance card) will be GPT-v6 after you approve the look.
+
+    const stageGate = document.getElementById('stageGate');
+    const stageInside = document.getElementById('stageInside');
+    const btnEnter = document.getElementById('btnEnter');
+
+    const focusText = document.getElementById('focusText');
+    const breathText = document.getElementById('breathText');
+    const ctaBtn = document.getElementById('ctaBtn');
+
+    const themeRow = document.getElementById('themeRow');
+    const mobileList = document.getElementById('mobileList');
+
+    const THEME_META = {
+      financial: { zh:"財務", cta:"獲取豐盛指引" },
+      career: { zh:"事業", cta:"獲取使命指引" },
+      relationship: { zh:"感情", cta:"獲取連結指引" },
+      health: { zh:"健康", cta:"獲取身心指引" },
+      growth: { zh:"成長", cta:"獲取蛻變指引" }
+    };
+
+    let currentTheme = "financial";
+    let timerBreath = null;
+    let timerCTA = null;
+
+    function showInside(){
+      stageGate.classList.add('hidden');
+      stageInside.classList.remove('hidden');
+      setTheme(currentTheme, true);
+    }
+
+    function setTheme(theme, first=false){
+      currentTheme = theme;
+      const meta = THEME_META[theme] || THEME_META.financial;
+      focusText.textContent = meta.zh;
+
+      // update dim/active desktop
+      if(themeRow){
+        themeRow.querySelectorAll('.themeItem').forEach(it=>{
+          it.classList.remove('active','dim');
+          if(it.dataset.theme !== theme) it.classList.add('dim');
+          else it.classList.add('active');
+        });
+      }
+      // update dim/active mobile
+      if(mobileList){
+        mobileList.querySelectorAll('.mItem').forEach(it=>{
+          it.classList.remove('active','dim');
+          if(it.dataset.theme !== theme) it.classList.add('dim');
+          else it.classList.add('active');
+        });
+      }
+
+      clearTimeout(timerBreath);
+      clearTimeout(timerCTA);
+
+      breathText.classList.remove('show');
+      ctaBtn.classList.remove('show');
+
+      const t0 = first ? 420 : 520;
+      const t1 = first ? 820 : 920;
+
+      timerBreath = setTimeout(()=> breathText.classList.add('show'), t0);
+      timerCTA = setTimeout(()=>{
+        ctaBtn.textContent = meta.cta;
+        ctaBtn.classList.add('show');
+      }, t1);
+    }
+
+    function bind(container, selector){
+      container.querySelectorAll(selector).forEach(it=>{
+        it.addEventListener('click', ()=> setTheme(it.dataset.theme));
+        it.addEventListener('keydown', (e)=>{
+          if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setTheme(it.dataset.theme); }
+        });
+      });
+    }
+
+    btnEnter.addEventListener('click', showInside);
+    if(themeRow) bind(themeRow, '.themeItem');
+    if(mobileList) bind(mobileList, '.mItem');
+
+    ctaBtn.addEventListener('click', ()=>{
+      alert("GPT-v5：目前只做『示意圖風格』與流程。你確認美感後，我下一版 GPT-v6 直接接 kinData.js 抽牌 + 神諭卡 + 歷史 5 筆。");
+    });
+  </script>
+</body>
+</html>

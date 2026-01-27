@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黃色小屋 - 獲取指引</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #fef5e7 0%, #f9e79f 50%, #f4d03f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5d4e37;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .theme-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f4c430, #ffa500);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        /* 深呼吸階段 */
+        .breathe-stage {
+            text-align: center;
+        }
+
+        .breathe-circle {
+            width: 200px;
+            height: 200px;
+            margin: 3rem auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fff9e6, #f4c430);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(244, 196, 48, 0.3);
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .breathe-text {
+            font-size: 1.5rem;
+            color: #d4a017;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+        }
+
+        .instruction {
+            font-size: 1.2rem;
+            color: #8b7355;
+            margin: 2rem 0;
+            line-height: 1.8;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #f4c430, #ffa500);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.1em;
+            box-shadow: 0 5px 15px rgba(244, 196, 48, 0.4);
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(244, 196, 48, 0.5);
+        }
+
+        .button:active {
+            transform: translateY(-1px);
+        }
+
+        /* 結果顯示階段 */
+        .result-stage {
+            display: none;
+        }
+
+        .kin-card {
+            background: linear-gradient(135deg, #fef5e7 0%, #fef9f0 100%);
+            border: 3px solid #f4c430;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .kin-number {
+            font-size: 3rem;
+            color: #d4a017;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .kin-description {
+            font-size: 1.3rem;
+            color: #5d4e37;
+            margin-bottom: 0.5rem;
+        }
+
+        .seal-image {
+            width: 120px;
+            height: 120px;
+            margin: 1.5rem auto;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.15));
+        }
+
+        .guidance-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: linear-gradient(135deg, #fffbf0, #fff9e6);
+            border-radius: 15px;
+            border-left: 5px solid #f4c430;
+        }
+
+        .guidance-title {
+            font-size: 1.3rem;
+            color: #d4a017;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .guidance-content {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: #5d4e37;
+        }
+
+        /* 強調顯示調頻與落地 */
+        .highlight {
+            background: linear-gradient(135deg, #f4c430, #ffa500);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.8;
+            box-shadow: 0 5px 15px rgba(244, 196, 48, 0.3);
+        }
+
+        .wisdom-quote {
+            font-style: italic;
+            color: #a0826d;
+            padding: 1.5rem;
+            border-left: 4px solid #f4c430;
+            margin: 2rem 0;
+            background: rgba(244, 196, 48, 0.05);
+            border-radius: 8px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .back-button {
+            background: white;
+            color: #d4a017;
+            border: 2px solid #f4c430;
+        }
+
+        .back-button:hover {
+            background: #fffbf0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            .kin-number {
+                font-size: 2.5rem;
+            }
+
+            .guidance-content {
+                font-size: 1rem;
+            }
+
+            .highlight {
+                font-size: 1.05rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 深呼吸階段 -->
+        <div class="breathe-stage" id="breatheStage">
+            <div class="header">
+                <div class="theme-badge" id="themeBadge"></div>
+                <h2 style="color: #d4a017; font-size: 1.5rem; font-weight: 300; letter-spacing: 0.2em;">準備接收指引</h2>
+            </div>
+
+            <div class="breathe-circle">
+                <div class="breathe-text">深呼吸</div>
+            </div>
+
+            <div class="instruction">
+                請深呼吸，讓心沉靜下來。<br>
+                當你準備好了，點擊下方按鈕獲取指引。
+            </div>
+
+            <button class="button" onclick="drawCard()">獲取指引</button>
+        </div>
+
+        <!-- 結果顯示階段 -->
+        <div class="result-stage" id="resultStage">
+            <div class="header">
+                <div class="theme-badge" id="themeBadge2"></div>
+            </div>
+
+            <div class="kin-card">
+                <div class="kin-number" id="kinNumber"></div>
+                <div class="kin-description" id="kinDesc"></div>
+                <img class="seal-image" id="sealImage" src="" alt="圖騰">
+            </div>
+
+            <div class="guidance-section">
+                <div class="guidance-title">📜 共時訊息</div>
+                <div class="guidance-content" id="syncMessage"></div>
+            </div>
+
+            <div class="highlight" id="alignmentText"></div>
+            <div class="highlight" id="groundingText"></div>
+
+            <div class="wisdom-quote" id="wisdomQuote"></div>
+
+            <div class="action-buttons">
+                <button class="button back-button" onclick="location.href='index.html'">返回選擇</button>
+                <button class="button" onclick="location.reload()">再抽一次</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../kinData.js"></script>
+    <script>
+        // 智慧金句庫
+        const wisdomQuotes = {
+            financial: [
+                "豐盛從允許開始，當你允許自己接收，財富才會流向你。",
+                "價值流動即是財富，你的付出終將回報。",
+                "金錢是能量的具象化，調整頻率，豐盛自然顯化。",
+                "真正的富足來自內在的安全感，而非外在的數字。"
+            ],
+            career: [
+                "使命即是你的天賦與世界需求的交集。",
+                "工作不只是謀生，更是自我實現的途徑。",
+                "當你做著對的事，宇宙會為你開路。",
+                "每一步努力都在雕刻你的未來。"
+            ],
+            relationship: [
+                "真正的連結始於自我完整。",
+                "愛是選擇，而非執著。",
+                "關係是鏡子,映照你與自己的關係。",
+                "界線是愛的保護,而非距離。"
+            ],
+            health: [
+                "身體是靈魂在地球上的居所，善待它。",
+                "健康不是沒有症狀，而是身心靈的和諧。",
+                "聆聽身體的訊息，它比你想像的更有智慧。",
+                "休息不是浪費時間，是為了走更遠的路。"
+            ],
+            growth: [
+                "每一次蛻變都是靈魂的擴展。",
+                "成長不是變成別人，而是成為更完整的自己。",
+                "挑戰是宇宙送給你的禮物，雖然包裝粗糙。",
+                "你已經擁有所需的一切，只是還沒想起來。"
+            ]
+        };
+
+        // 圖騰中文名稱
+        const sealNames = {
+            1: "紅龍", 2: "白風", 3: "藍夜", 4: "黃種子", 5: "紅蛇",
+            6: "白世界橋", 7: "藍手", 8: "黃星星", 9: "紅月", 10: "白狗",
+            11: "藍猴", 12: "黃人", 13: "紅天行者", 14: "白巫師", 15: "藍鷹",
+            16: "黃戰士", 17: "紅地球", 18: "白鏡", 19: "藍風暴", 20: "黃太陽"
+        };
+
+        // 調性中文名稱
+        const toneNames = {
+            1: "磁性", 2: "月亮", 3: "電力", 4: "自我存在",
+            5: "超頻", 6: "韻律", 7: "共振", 8: "銀河",
+            9: "太陽", 10: "行星", 11: "光譜", 12: "水晶", 13: "宇宙"
+        };
+
+        // 主題中文對照
+        const themeNames = {
+            'financial': '財務',
+            'career': '事業',
+            'relationship': '感情',
+            'health': '健康',
+            'growth': '成長'
+        };
+
+        // 獲取選擇的主題
+        const selectedTheme = localStorage.getItem('selectedTheme') || 'growth';
+        document.getElementById('themeBadge').textContent = themeNames[selectedTheme];
+        document.getElementById('themeBadge2').textContent = themeNames[selectedTheme];
+
+        // 抽牌函式
+        function drawCard() {
+            // 純亂數抽取 1-260
+            const randomKin = Math.floor(Math.random() * 260) + 1;
+            const kinInfo = kinData[randomKin.toString()];
+
+            if (!kinInfo) {
+                alert('資料載入錯誤，請重新整理頁面。');
+                return;
+            }
+
+            // 計算圖騰與調性
+            const sealNumber = ((randomKin - 1) % 20) + 1;
+            const toneNumber = Math.floor((randomKin - 1) / 20) + 1;
+
+            // 顯示結果
+            document.getElementById('breatheStage').style.display = 'none';
+            document.getElementById('resultStage').style.display = 'block';
+
+            document.getElementById('kinNumber').textContent = `KIN ${randomKin}`;
+            document.getElementById('kinDesc').textContent = 
+                `${toneNames[toneNumber]}的${sealNames[sealNumber]}`;
+            
+            document.getElementById('sealImage').src = `../images/${sealNumber.toString().padStart(2, '0')}.png`;
+            
+            document.getElementById('syncMessage').textContent = kinInfo.synchronicMessage;
+            document.getElementById('alignmentText').innerHTML = 
+                `<strong>🎯 調頻建議：</strong><br>${kinInfo.alignment}`;
+            document.getElementById('groundingText').innerHTML = 
+                `<strong>🌱 落地行動：</strong><br>${kinInfo.grounding}`;
+
+            // 隨機選擇智慧金句
+            const quotes = wisdomQuotes[selectedTheme];
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('wisdomQuote').textContent = `"${randomQuote}"`;
+
+            // 儲存歷史紀錄
+            saveHistory(randomKin, `${toneNames[toneNumber]}的${sealNames[sealNumber]}`);
+        }
+
+        // 儲存歷史紀錄
+        function saveHistory(kin, description) {
+            const history = JSON.parse(localStorage.getItem('yellowRoomHistory') || '[]');
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
+
+            history.push({
+                date: dateStr,
+                theme: selectedTheme,
+                kin: kin,
+                description: description
+            });
+
+            // 只保留最近 5 筆
+            if (history.length > 5) {
+                history.shift();
+            }
+
+            localStorage.setItem('yellowRoomHistory', JSON.stringify(history));
+        }
+    </script>
+</body>
+</html>

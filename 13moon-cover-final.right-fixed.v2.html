@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 月亮曆 - 神聖時間之門</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red-room: 165, 65, 63;
+            --white-room: 240, 240, 245;
+            --blue-room: 61, 90, 115;
+            --yellow-room: 179, 155, 89;
+            --gold-1: #D4AF37;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background: 
+                radial-gradient(
+                    ellipse at center,
+                    rgba(255, 250, 235, 1) 0%,
+                    rgba(245, 235, 220, 0.95) 30%,
+                    rgba(230, 220, 210, 0.9) 60%,
+                    rgba(215, 205, 195, 0.85) 100%
+                );
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 20px 100px 20px; /* 底部留空給神廟基石 */
+        }
+
+        /* ================================
+           今日印記區 - 遵循紅屋規定
+        ================================ */
+        .today-kin-area {
+            width: min(500px, 90vw);
+            margin: 20px auto;
+            padding: 30px 20px;
+            
+            background: 
+                linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.95),
+                    rgba(255, 250, 245, 0.90)
+                );
+            
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                0 0 40px rgba(255, 215, 0, 0.15);
+            
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .today-kin-area:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 12px 48px rgba(0, 0, 0, 0.12),
+                0 0 60px rgba(255, 215, 0, 0.25);
+        }
+
+        /* 1. 調性區域 */
+        .tone-area {
+            height: 72px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tone-dots {
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        
+        .tone-bars {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tone-dot {
+            width: 22px;
+            height: 22px;
+            background: #000;
+            border-radius: 50%;
+        }
+        
+        .tone-bar {
+            width: 190px;
+            height: 16px;
+            background: #000;
+            border-radius: 8px;
+        }
+
+        /* 2. 圖騰區域 */
+        .glyph-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            flex: 0 0 200px;
+            align-items: center;
+        }
+        
+        .glyph-frame {
+            display: inline-flex;
+            padding: 10px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.14);
+            box-shadow:
+                inset 0 4px 20px rgba(0, 0, 0, 0.30),
+                inset 0 -6px 16px rgba(255, 255, 255, 0.24),
+                0 14px 28px rgba(0, 0, 0, 0.18);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .glyph-frame:hover {
+            transform: translateY(-2px);
+        }
+        
+        .glyph-img {
+            height: 180px;
+            border-radius: 16px;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.24));
+        }
+
+        /* 3. KIN 編號 */
+        .kin-number {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.8rem, 4.8vh, 3.8rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-top: 2px;
+            text-align: center;
+            color: #0E0E0E;
+        }
+
+        /* 4. 完整名稱 */
+        .kin-name {
+            font-size: clamp(1.8rem, 3.5vh, 2.6rem);
+            font-weight: 900;
+            letter-spacing: clamp(3px, 0.9vw, 7px);
+            margin-top: 4px;
+            text-align: center;
+            color: #111;
+        }
+
+        /* 5. 波符標籤 */
+        .wavespell-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #333;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        
+        .wavespell-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            opacity: 0.9;
+        }
+
+        /* 6. 裝飾線 */
+        .name-etch {
+            width: 64%;
+            height: 12px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold-1) 50%, transparent 100%);
+            opacity: 0.64;
+            margin: 10px auto 12px;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.14));
+        }
+
+        /* 7. 日期資訊 */
+        .date-info {
+            font-size: 0.95rem;
+            color: #5a4a3a;
+            opacity: 0.75;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        /* ================================
+           曼陀羅導航區
+        ================================ */
+        .mandala-area {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1;
+            margin: 40px auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Hunab Ku 中心 - 圓形 */
+        .hunab-ku {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            z-index: 10;
+            border-radius: 50%;
+            overflow: hidden;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hunab-ku::before,
+        .hunab-ku::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .hunab-ku::before {
+            inset: -35px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.35) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .hunab-ku::after {
+            inset: -55px;
+            background: radial-gradient(circle, rgba(255, 250, 220, 0.25) 0%, transparent 60%);
+            animation: pulse 3s ease-in-out infinite 0.5s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hunab-ku img {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+        }
+
+        /* 神廟石門 */
+        .temple-gate {
+            position: absolute;
+            width: 140px;
+            height: 160px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gate-structure {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: all 0.4s ease;
+        }
+
+        .gate-frame {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(200, 190, 180, 0.95), rgba(160, 150, 140, 0.85));
+            box-shadow:
+                0 8px 24px rgba(0, 0, 0, 0.25),
+                inset -2px -2px 8px rgba(0,0,0,0.2),
+                inset 2px 2px 8px rgba(255,255,255,0.3);
+            border: 2px solid rgba(150, 140, 130, 0.6);
+        }
+
+        .gate-door {
+            position: absolute;
+            inset: 12px;
+            border-radius: 8px;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        /* 門戶圖片 */
+        .gate-portal-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.9;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+            transition: all 0.4s ease;
+            animation: portalPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes portalPulse {
+            0%, 100% { 
+                opacity: 0.9;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.03);
+            }
+        }
+
+        .temple-gate:hover .gate-structure {
+            transform: translateY(-10px) scale(1.08);
+        }
+
+        .temple-gate:hover .gate-portal-img {
+            opacity: 1;
+            transform: scale(1.05);
+            filter: drop-shadow(0 6px 16px rgba(0,0,0,0.5));
+        }
+
+        .gate-aura {
+            position: absolute;
+            inset: -20px;
+            border-radius: 16px;
+            opacity: 0.5;
+            transition: all 0.5s ease;
+            pointer-events: none;
+            animation: auraPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes auraPulse {
+            0%, 100% { 
+                transform: scale(1); 
+                opacity: 0.5; 
+            }
+            50% { 
+                transform: scale(1.12); 
+                opacity: 0.8; 
+            }
+        }
+
+        .temple-gate:hover .gate-aura {
+            opacity: 0.9;
+        }
+
+        /* 四個方位 */
+        .gate-north { top: 0; left: 50%; transform: translateX(-50%); }
+        .gate-east { right: 0; top: 50%; transform: translateY(-50%); }
+        .gate-south { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .gate-west { left: 0; top: 50%; transform: translateY(-50%); }
+
+        /* 各門配色 - 加強版 */
+        .white-gate .gate-aura { 
+            background: radial-gradient(
+                ellipse, 
+                rgba(240, 240, 245, 0.9) 0%, 
+                rgba(240, 240, 245, 0.6) 40%,
+                transparent 100%
+            ); 
+        }
+
+        .red-gate .gate-aura { 
+            background: radial-gradient(
+                ellipse, 
+                rgba(220, 90, 88, 0.9) 0%, 
+                rgba(220, 90, 88, 0.6) 40%,
+                transparent 100%
+            ); 
+        }
+
+        .yellow-gate .gate-aura { 
+            background: radial-gradient(
+                ellipse, 
+                rgba(200, 170, 100, 0.9) 0%, 
+                rgba(200, 170, 100, 0.6) 40%,
+                transparent 100%
+            ); 
+        }
+
+        .blue-gate .gate-aura { 
+            background: radial-gradient(
+                ellipse, 
+                rgba(80, 120, 150, 0.9) 0%, 
+                rgba(80, 120, 150, 0.6) 40%,
+                transparent 100%
+            ); 
+        }
+
+        /* 連接線 */
+        .energy-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.4) 50%, transparent 100%);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .line-north, .line-south { width: 130px; }
+        .line-east, .line-west { width: 130px; }
+
+        .line-north { top: 50%; left: 50%; transform: translate(-50%, -65px) rotate(-90deg); }
+        .line-east { top: 50%; left: 50%; transform: translate(0, -50%); }
+        .line-south { top: 50%; left: 50%; transform: translate(-50%, 65px) rotate(90deg); }
+        .line-west { top: 50%; left: 50%; transform: translate(-130px, -50%); }
+
+        .energy-line::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: flow 2s linear infinite;
+        }
+
+        @keyframes flow {
+            0% { left: -30px; }
+            100% { left: 100%; }
+        }
+
+        /* ================================
+           流動指引系統
+        ================================ */
+        .flow-guide {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* 順序數字 */
+        .flow-number {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(212, 175, 55, 0.8);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: #8B7355;
+            
+            animation: numberPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 
+                    0 4px 12px rgba(0, 0, 0, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 1);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 
+                    0 6px 16px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 1),
+                    0 0 20px rgba(212, 175, 55, 0.6);
+            }
+        }
+
+        /* 流動箭頭 */
+        .flow-arrow {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            opacity: 0.7;
+        }
+
+        .flow-arrow svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .flow-arrow path {
+            fill: none;
+            stroke: #D4AF37;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.8;
+            animation: arrowFlow 2s ease-in-out infinite;
+        }
+
+        @keyframes arrowFlow {
+            0%, 100% { 
+                opacity: 0.5;
+                stroke-width: 2.5;
+            }
+            50% { 
+                opacity: 1;
+                stroke-width: 3;
+            }
+        }
+
+        /* 四個位置的數字 */
+        .number-1 { top: -20px; right: -15px; animation-delay: 0s; }
+        .number-2 { top: -15px; left: -20px; animation-delay: 0.5s; }
+        .number-3 { bottom: -20px; left: -15px; animation-delay: 1s; }
+        .number-4 { bottom: -15px; right: -20px; animation-delay: 1.5s; }
+
+        /* 四個箭頭的位置 */
+        .arrow-1-2 { top: -5%; left: 50%; transform: translateX(-50%) rotate(-45deg); }
+        .arrow-2-3 { left: -5%; top: 50%; transform: translateY(-50%) rotate(-135deg); }
+        .arrow-3-4 { bottom: -5%; left: 50%; transform: translateX(-50%) rotate(135deg); }
+        .arrow-4-1 { right: -5%; top: 50%; transform: translateY(-50%) rotate(45deg); }
+
+        /* 響應式 */
+        @media (max-width: 520px) {
+            .tone-bar { width: 140px; }
+            .glyph-img { height: 150px; }
+            .hunab-ku { width: 70px; height: 70px; }
+            .temple-gate { width: 120px; height: 140px; }
+            .gate-portal-img { opacity: 0.95; }
+            .line-north, .line-south, .line-east, .line-west { width: 100px; opacity: 0.5; }
+            .line-north { transform: translate(-50%, -55px) rotate(-90deg); }
+            .line-south { transform: translate(-50%, 55px) rotate(90deg); }
+            .line-west { transform: translate(-100px, -50%); }
+            
+            .flow-number { width: 26px; height: 26px; font-size: 0.75rem; }
+            .flow-arrow { width: 60px; height: 60px; opacity: 0.6; }
+            
+            .temple-foundation {
+                padding: 12px 15px;
+                font-size: 0.7rem;
+            }
+            
+            .foundation-creator {
+                font-size: 0.7rem;
+            }
+            
+            .foundation-links {
+                gap: 12px;
+            }
+            
+            .foundation-link {
+                font-size: 0.65rem;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .container {
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 60px;
+                padding: 5vh 5vw;
+            }
+            .today-kin-area { width: 480px; margin: 0; }
+            .mandala-area { width: 550px; height: 550px; margin: 0; }
+            .hunab-ku { width: 100px; height: 100px; }
+            .temple-gate { width: 160px; height: 180px; }
+            .gate-portal-img { opacity: 0.95; }
+            .line-north, .line-south, .line-east, .line-west { width: 160px; }
+            .line-north { transform: translate(-50%, -90px) rotate(-90deg); }
+            .line-south { transform: translate(-50%, 90px) rotate(90deg); }
+            .line-west { transform: translate(-160px, -50%); }
+            
+            .flow-number { width: 36px; height: 36px; font-size: 1rem; }
+            .flow-arrow { width: 90px; height: 90px; }
+        }
+
+        /* ================================
+           神廟基石 - 設計者資訊
+        ================================ */
+        .temple-foundation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            
+            padding: 15px 20px;
+            background: 
+                linear-gradient(
+                    180deg,
+                    rgba(200, 190, 180, 0.85) 0%,
+                    rgba(180, 170, 160, 0.9) 100%
+                );
+            backdrop-filter: blur(8px);
+            
+            border-top: 1px solid rgba(150, 140, 130, 0.4);
+            box-shadow:
+                0 -4px 20px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            
+            font-family: 'Noto Serif TC', serif;
+            color: #5a4a3a;
+        }
+
+        .foundation-creator {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .foundation-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .foundation-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #6a5a4a;
+            text-decoration: none;
+            
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .foundation-link:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #4a3a2a;
+        }
+
+        .foundation-icon {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
+        }
+
+        .foundation-copyright {
+            font-size: 0.65rem;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+        }
+    /* ================================
+   右側四大戶・圓形徽章（使用 images/1314.png 四象切片）
+   方位：上白・右紅・左藍・下黃
+   順序箭頭環：紅 → 白 → 藍 → 黃（沿外圈）
+================================ */
+
+.mandala-area{
+    position: relative;
+    width: min(560px, 92vw);
+    aspect-ratio: 1;
+    margin: 40px auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 1314 單張切片（2x2 sprite） */
+.portal-sprite{
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    background-image: url("images/1314.png");
+    background-size: 200% 200%;
+    background-repeat: no-repeat;
+    box-shadow:
+        0 16px 40px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.45);
+    transition: transform .35s ease, filter .35s ease, opacity .35s ease;
+}
+.portal-sprite.white{ background-position: 0% 0%; }     /* 左上 白 */
+.portal-sprite.red{   background-position: 100% 0%; }   /* 右上 紅 */
+.portal-sprite.yellow{background-position: 0% 100%; }   /* 左下 黃 */
+.portal-sprite.blue{  background-position: 100% 100%; } /* 右下 藍 */
+
+/* 徽章按鈕（可點擊進屋） */
+.emblem-btn{
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    z-index: 8;
+}
+.emblem-btn:focus{ outline: none; }
+.emblem-btn:hover .portal-sprite{
+    transform: translateY(-6px) scale(1.04);
+    filter: drop-shadow(0 14px 26px rgba(0,0,0,0.22));
+}
+
+/* 四方位（右紅・上白・左藍・下黃） */
+.emblem-top{ top: 0; left: 50%; transform: translateX(-50%); }
+.emblem-right{ right: 0; top: 50%; transform: translateY(-50%); }
+.emblem-left{ left: 0; top: 50%; transform: translateY(-50%); }
+.emblem-bottom{ bottom: 0; left: 50%; transform: translateX(-50%); }
+
+/* 中央保留位（未來門） */
+.center-reserved{
+    position: absolute;
+    width: 86px;
+    height: 86px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+    z-index: 6;
+}
+
+/* 順序箭頭環（SVG） */
+.order-ring{
+    position: absolute;
+    inset: 9%;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.55;
+    filter: drop-shadow(0 12px 22px rgba(0,0,0,0.10));
+}
+.order-ring path{
+    stroke: rgba(212,175,55,0.72);
+    stroke-width: 2.4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 7 10;
+    animation: ringFlow 8s linear infinite;
+}
+.order-ring marker path{ fill: rgba(212,175,55,0.90); }
+@keyframes ringFlow{
+    from{ stroke-dashoffset: 0; }
+    to{ stroke-dashoffset: -260; }
+}
+
+/* 右側標籤（桌機微提示） */
+.emblem-label{
+    position: absolute;
+    font-size: 0.92rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: rgba(50,40,30,0.80);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.55);
+    z-index: 9;
+    pointer-events: none;
+}
+.label-top{ top: 156px; left: 50%; transform: translateX(-50%); }
+.label-right{ right: 160px; top: 50%; transform: translateY(-50%); }
+.label-left{ left: 160px; top: 50%; transform: translateY(-50%); }
+.label-bottom{ bottom: 156px; left: 50%; transform: translateX(-50%); }
+
+/* 關閉舊的門/線/流動導引（右側改用新的徽章系統） */
+.energy-line, .flow-guide, .hunab-ku, .temple-gate{ display: none !important; }
+
+@media (max-width: 520px){
+    .mandala-area{ width: min(420px, 92vw); margin: 26px auto 14px; }
+    .emblem-btn{ width: 112px; height: 112px; }
+    .order-ring{ inset: 12%; opacity: 0.45; }
+    .center-reserved{ width: 64px; height: 64px; }
+    .emblem-label{ display:none; }
+}
+
+@media (min-width: 1025px){
+    .mandala-area{ width: 540px; }
+    .emblem-btn{ width: 160px; height: 160px; }
+    .order-ring{ inset: 8%; }
+    .center-reserved{ width: 92px; height: 92px; }
+}
+    /* ================================
+   全頁底紋：羊皮紙微噪點（不髒、只提質感）
+================================ */
+body{ position: relative; }
+body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+    background-size: 420px 420px;
+    background-repeat: repeat;
+}
+.container{ position: relative; z-index: 1; }
+    /* 連接線：四向光脈＋外圈微弧（更乾淨、不俗） */
+.connect-lines{
+    position: absolute;
+    inset: 12%;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0.55;
+}
+.connect-lines .line{
+    stroke: rgba(212,175,55,0.55);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgba(212,175,55,0.20));
+}
+.connect-lines .arc{
+    stroke: rgba(212,175,55,0.26);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-dasharray: 2 10;
+    animation: arcBreath 5.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(212,175,55,0.16));
+}
+@keyframes arcBreath{
+    0%,100%{ opacity: 0.20; stroke-dashoffset: 0; }
+    50%{ opacity: 0.42; stroke-dashoffset: -60; }
+}
+@media (max-width: 520px){
+    .connect-lines{ inset: 14%; opacity: 0.42; }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 今日印記區 -->
+        <div class="today-kin-area" onclick="goToRedHouse()">
+            <!-- 1. 調性區域 -->
+            <div class="tone-area">
+                <div class="tone-dots" id="toneDots"></div>
+                <div class="tone-bars" id="toneBars"></div>
+            </div>
+            
+            <!-- 2. 圖騰區域 -->
+            <div class="glyph-area">
+                <div class="glyph-frame">
+                    <img class="glyph-img" id="glyphImg" src="images/02.png" alt="今日圖騰">
+                </div>
+            </div>
+            
+            <!-- 3. KIN 編號 -->
+            <div class="kin-number" id="kinNumber">KIN 62</div>
+            
+            <!-- 4. 完整名稱 -->
+            <div class="kin-name" id="kinName">行星的白風</div>
+            
+            <!-- 5. 波符標籤 -->
+            <div class="wavespell-badge">
+                <img class="wavespell-icon" id="waveIcon" src="images/02.png" alt="波符">
+                <span id="waveName">白風波</span>
+            </div>
+            
+            <!-- 6. 裝飾線 -->
+            <div class="name-etch"></div>
+            
+            <!-- 7. 日期資訊 -->
+            <div class="date-info">
+                <div id="gregorianDate">2026.01.24</div>
+                <div id="mayanDate">NS.1.38.7.15</div>
+            </div>
+        </div>
+
+        <!-- 曼陀羅導航區 -->
+        <!-- 曼陀羅導航區（右側） -->
+<div class="mandala-area" aria-label="四大戶入口（紅白藍黃）">
+
+    <!-- 順序箭頭環：紅→白→藍→黃（外圈） -->
+    <svg class="order-ring" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+            <marker id="arrowHead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z"></path>
+            </marker>
+        </defs>
+        <!-- 右(紅)→上(白)→左(藍)→下(黃)→右(紅)：逆時針 -->
+        <path marker-end="url(#arrowHead)" d="M82 50 A32 32 0 0 0 50 18"></path>
+        <path marker-end="url(#arrowHead)" d="M50 18 A32 32 0 0 0 18 50"></path>
+        <path marker-end="url(#arrowHead)" d="M18 50 A32 32 0 0 0 50 82"></path>
+        <path marker-end="url(#arrowHead)" d="M50 82 A32 32 0 0 0 82 50"></path>
+    </svg>
+
+    <!-- 中央保留位（未來可加「第五門」） -->
+    <div class="center-reserved" aria-hidden="true"></div>
+
+    <!-- 上：白（淨序） -->
+    <button class="emblem-btn emblem-top" onclick="goToWhiteHouse()" aria-label="白・淨序">
+        <div class="portal-sprite white"></div>
+    </button>
+
+    <!-- 右：紅（火種） -->
+    <button class="emblem-btn emblem-right" onclick="goToRedHouse()" aria-label="紅・火種">
+        <div class="portal-sprite red"></div>
+    </button>
+
+    <!-- 左：藍（轉煉） -->
+    <button class="emblem-btn emblem-left" onclick="goToBlueHouse()" aria-label="藍・轉煉">
+        <div class="portal-sprite blue"></div>
+    </button>
+
+    <!-- 下：黃（金穗） -->
+    <button class="emblem-btn emblem-bottom" onclick="goToYellowHouse()" aria-label="黃・金穗">
+        <div class="portal-sprite yellow"></div>
+    </button>
+
+    <!-- 桌機微提示（不搶戲） -->
+    <div class="emblem-label label-top">淨序</div>
+    <div class="emblem-label label-right">火種</div>
+    <div class="emblem-label label-left">轉煉</div>
+    <div class="emblem-label label-bottom">金穗</div>
+</div>
+    </div>
+
+    <!-- 神廟基石 - 設計者資訊 -->
+    <div class="temple-foundation">
+        <div class="foundation-creator">
+            構築者: Hiper Wu
+        </div>
+        <div class="foundation-links">
+            <a href="https://www.facebook.com/hiper.wu/" target="_blank" rel="noopener" class="foundation-link">
+                <svg class="foundation-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                創作者
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=100074630472925" target="_blank" rel="noopener" class="foundation-link">
+                <svg class="foundation-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                13月亮曆
+            </a>
+        </div>
+        <div class="foundation-copyright">
+            © 2026 Hiper Wu・持續優化中
+        </div>
+    </div>
+
+    <script>
+        // KIN 計算系統
+        const monthConstants = {
+            1: 0, 2: 31, 3: 59, 4: 90, 5: 120, 6: 151,
+            7: 181, 8: 212, 9: 243, 10: 13, 11: 44, 12: 74
+        };
+
+        const yearConstants = {
+            2024: 72, 2025: 177, 2026: 22, 2027: 127, 2028: 232, 2029: 77, 2030: 182
+        };
+
+        const sealNames = [
+            "紅龍", "白風", "藍夜", "黃種子", "紅蛇", "白世界橋", "藍手", "黃星星", "紅月", "白狗",
+            "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹", "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"
+        ];
+
+        const toneNames = [
+            "磁性的", "月亮的", "電力的", "自我存在的", "超頻的", "韻律的",
+            "共振的", "銀河的", "太陽的", "行星的", "光譜的", "水晶的", "宇宙的"
+        ];
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function calculateKin(year, month, day) {
+            if (month === 2 && day === 29) return { isHunabKu: true };
+            if (!yearConstants[year]) return null;
+
+            let kin = yearConstants[year] + monthConstants[month] + day;
+            if (isLeapYear(year) && (month > 2 || (month === 2 && day > 28))) kin += 1;
+
+            while (kin > 260) kin -= 260;
+            while (kin < 1) kin += 260;
+
+            const sealIndex = (kin - 1) % 20;
+            const toneIndex = (kin - 1) % 13;
+
+            return {
+                kin, seal: sealNames[sealIndex], tone: toneNames[toneIndex],
+                sealNumber: sealIndex + 1, toneNumber: toneIndex + 1, isHunabKu: false
+            };
+        }
+
+        function getWavespell(kin) {
+            const waveStart = Math.floor((kin - 1) / 13) * 13 + 1;
+            const waveSealIndex = (waveStart - 1) % 20;
+            return {
+                start: waveStart, end: waveStart + 12,
+                seal: sealNames[waveSealIndex], sealNumber: waveSealIndex + 1
+            };
+        }
+
+        function renderToneSymbol(toneNumber) {
+            const dotsContainer = document.getElementById('toneDots');
+            const barsContainer = document.getElementById('toneBars');
+            dotsContainer.innerHTML = '';
+            barsContainer.innerHTML = '';
+            
+            const dots = toneNumber % 5 || 5;
+            const bars = Math.floor((toneNumber - 1) / 5);
+            
+            for (let i = 0; i < dots; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'tone-dot';
+                dotsContainer.appendChild(dot);
+            }
+            
+            for (let i = 0; i < bars; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'tone-bar';
+                barsContainer.appendChild(bar);
+            }
+        }
+
+        function getMayanDate() {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const newYear = new Date(currentYear, 6, 26);
+            
+            let nsYear, dayInYear;
+            if (today >= newYear) {
+                nsYear = currentYear - 1987;
+                dayInYear = Math.floor((today - newYear) / 86400000) + 1;
+            } else {
+                const lastNewYear = new Date(currentYear - 1, 6, 26);
+                nsYear = currentYear - 1988;
+                dayInYear = Math.floor((today - lastNewYear) / 86400000) + 1;
+            }
+            
+            const month = Math.ceil(dayInYear / 28);
+            const day = ((dayInYear - 1) % 28) + 1;
+            return `NS.1.${nsYear}.${month}.${day}`;
+        }
+
+        function getGregorianDate() {
+            const today = new Date();
+            return `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        window.addEventListener('load', () => {
+            const today = new Date();
+            const result = calculateKin(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            
+            if (result && !result.isHunabKu) {
+                document.getElementById('kinNumber').textContent = `KIN ${result.kin}`;
+                document.getElementById('kinName').textContent = `${result.tone}${result.seal}`;
+                document.getElementById('glyphImg').src = `images/${String(result.sealNumber).padStart(2, '0')}.png`;
+                
+                renderToneSymbol(result.toneNumber);
+                
+                const wave = getWavespell(result.kin);
+                document.getElementById('waveName').textContent = `${wave.seal}波`;
+                document.getElementById('waveIcon').src = `images/${String(wave.sealNumber).padStart(2, '0')}.png`;
+                
+                document.getElementById('gregorianDate').textContent = getGregorianDate();
+                document.getElementById('mayanDate').textContent = getMayanDate();
+            }
+        });
+    </script>
+</body>
+</html>

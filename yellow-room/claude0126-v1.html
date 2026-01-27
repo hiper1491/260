@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黃屋之門・南方金穗</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Noto Serif TC", "Times New Roman", serif;
+            background: linear-gradient(180deg, #1a1510 0%, #2d2416 50%, #1a1510 100%);
+            color: #d4af37;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .gate-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            opacity: 1;
+            transition: opacity 1.2s ease;
+        }
+
+        .gate-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .gate-seal {
+            width: 280px;
+            height: 280px;
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .gate-seal svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.3));
+        }
+
+        .gate-text {
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            margin-bottom: 3rem;
+            text-align: center;
+            opacity: 0.85;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .gate-enter {
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.6s ease;
+            font-family: inherit;
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .gate-enter:hover {
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), inset 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .temple-screen {
+            display: none;
+            opacity: 0;
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            transition: opacity 1.2s ease;
+        }
+
+        .temple-screen.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .temple-header {
+            text-align: center;
+            margin-bottom: 5rem;
+            font-size: 1.8rem;
+            letter-spacing: 0.3em;
+            opacity: 0.8;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .seals-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .seal-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.7;
+        }
+
+        .seal-item:hover {
+            opacity: 1;
+            transform: translateY(-8px);
+        }
+
+        .seal-item.selected {
+            opacity: 1;
+            transform: scale(1.1) translateY(-12px);
+            filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.6));
+        }
+
+        .seal-item.dimmed {
+            opacity: 0.3;
+        }
+
+        .seal-icon {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 1.5rem;
+        }
+
+        .seal-icon svg {
+            width: 100%;
+            height: 100%;
+            transition: all 0.8s ease;
+        }
+
+        .seal-label {
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 0.2em;
+            opacity: 0.9;
+        }
+
+        .guidance-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .guidance-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .guidance-content {
+            text-align: center;
+            padding: 3rem;
+            max-width: 600px;
+        }
+
+        .guidance-breath {
+            font-size: 1.4rem;
+            letter-spacing: 0.3em;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .guidance-cta {
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.6s ease;
+            font-family: inherit;
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .guidance-cta:hover {
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5), inset 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .gate-seal {
+                width: 220px;
+                height: 220px;
+            }
+
+            .gate-text {
+                font-size: 1.2rem;
+            }
+
+            .temple-header {
+                font-size: 1.4rem;
+                margin-bottom: 3rem;
+            }
+
+            .seals-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 3rem;
+            }
+
+            .seal-icon {
+                width: 160px;
+                height: 160px;
+            }
+
+            .seal-item.selected {
+                transform: scale(1.05) translateY(-8px);
+            }
+
+            .guidance-content {
+                padding: 2rem;
+            }
+
+            .guidance-breath {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gate-screen" id="gateScreen">
+        <div class="gate-seal">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="95" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+                <circle cx="100" cy="100" r="85" stroke="#d4af37" stroke-width="1" opacity="0.4"/>
+                <circle cx="100" cy="100" r="75" stroke="#d4af37" stroke-width="2" opacity="0.8"/>
+                <path d="M100 30 L115 60 L145 65 L120 90 L125 120 L100 105 L75 120 L80 90 L55 65 L85 60 Z" 
+                      fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.7"/>
+                <circle cx="100" cy="100" r="20" fill="#d4af37" opacity="0.3"/>
+                <circle cx="100" cy="100" r="15" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.8"/>
+            </svg>
+        </div>
+        <div class="gate-text">南方・金穗之殿</div>
+        <button class="gate-enter" onclick="enterTemple()">進入黃屋</button>
+    </div>
+
+    <div class="temple-screen" id="templeScreen">
+        <div class="temple-header">擇一門，入其境</div>
+        <div class="seals-container">
+            <div class="seal-item" data-theme="wealth" onclick="selectSeal(this, '財務')">
+                <div class="seal-icon">
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="90" stroke="#d4af37" stroke-width="1.5" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="70" stroke="#d4af37" stroke-width="1" opacity="0.3"/>
+                        <rect x="70" y="70" width="60" height="60" stroke="#d4af37" stroke-width="2" fill="none" opacity="0.7"/>
+                        <line x1="85" y1="100" x2="115" y2="100" stroke="#d4af37" stroke-width="2" opacity="0.8"/>
+                        <line x1="100" y1="85" x2="100" y2="115" stroke="#d4af37" stroke-width="2" opacity="0.8"/>
+                    </svg>
+                </div>
+                <div class="seal-label">財務</div>
+            </div>
+
+            <div class="seal-item" data-theme="career" onclick="selectSeal(this, '事業')">
+                <div class="seal-icon">
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="90" stroke="#d4af37" stroke-width="1.5" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="70" stroke="#d4af37" stroke-width="1" opacity="0.3"/>
+                        <path d="M60 120 L100 60 L140 120 Z" stroke="#d4af37" stroke-width="2" fill="none" opacity="0.7"/>
+                        <line x1="100" y1="80" x2="100" y2="140" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="seal-label">事業</div>
+            </div>
+
+            <div class="seal-item" data-theme="love" onclick="selectSeal(this, '感情')">
+                <div class="seal-icon">
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="90" stroke="#d4af37" stroke-width="1.5" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="70" stroke="#d4af37" stroke-width="1" opacity="0.3"/>
+                        <circle cx="85" cy="90" r="20" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.7"/>
+                        <circle cx="115" cy="90" r="20" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.7"/>
+                        <path d="M65 95 Q100 130 135 95" stroke="#d4af37" stroke-width="2" fill="none" opacity="0.7"/>
+                    </svg>
+                </div>
+                <div class="seal-label">感情</div>
+            </div>
+
+            <div class="seal-item" data-theme="health" onclick="selectSeal(this, '健康')">
+                <div class="seal-icon">
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="90" stroke="#d4af37" stroke-width="1.5" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="70" stroke="#d4af37" stroke-width="1" opacity="0.3"/>
+                        <circle cx="100" cy="100" r="40" stroke="#d4af37" stroke-width="2" fill="none" opacity="0.7"/>
+                        <circle cx="100" cy="100" r="25" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="10" fill="#d4af37" opacity="0.4"/>
+                    </svg>
+                </div>
+                <div class="seal-label">健康</div>
+            </div>
+
+            <div class="seal-item" data-theme="growth" onclick="selectSeal(this, '成長')">
+                <div class="seal-icon">
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="100" cy="100" r="90" stroke="#d4af37" stroke-width="1.5" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="70" stroke="#d4af37" stroke-width="1" opacity="0.3"/>
+                        <path d="M100 140 Q80 110 80 80 Q80 60 100 50 Q120 60 120 80 Q120 110 100 140" 
+                              stroke="#d4af37" stroke-width="2" fill="none" opacity="0.7"/>
+                        <line x1="90" y1="90" x2="110" y2="70" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+                        <line x1="110" y1="90" x2="90" y2="70" stroke="#d4af37" stroke-width="1.5" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="seal-label">成長</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="guidance-overlay" id="guidanceOverlay">
+        <div class="guidance-content">
+            <div class="guidance-breath">請深呼吸，穩定心念</div>
+            <button class="guidance-cta" onclick="receiveGuidance()">獲取豐盛指引</button>
+        </div>
+    </div>
+
+    <script>
+        function enterTemple() {
+            document.getElementById('gateScreen').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('gateScreen').style.display = 'none';
+                document.getElementById('templeScreen').classList.add('active');
+            }, 1200);
+        }
+
+        let selectedTheme = null;
+
+        function selectSeal(element, themeName) {
+            const allSeals = document.querySelectorAll('.seal-item');
+            
+            if (selectedTheme === element) {
+                return;
+            }
+
+            selectedTheme = element;
+
+            allSeals.forEach(seal => {
+                if (seal === element) {
+                    seal.classList.add('selected');
+                    seal.classList.remove('dimmed');
+                } else {
+                    seal.classList.remove('selected');
+                    seal.classList.add('dimmed');
+                }
+            });
+
+            setTimeout(() => {
+                document.getElementById('guidanceOverlay').classList.add('active');
+            }, 800);
+        }
+
+        function receiveGuidance() {
+            alert('此為示範版本\n實際版本將連結至對應的指引內容');
+            document.getElementById('guidanceOverlay').classList.remove('active');
+            
+            const allSeals = document.querySelectorAll('.seal-item');
+            allSeals.forEach(seal => {
+                seal.classList.remove('selected', 'dimmed');
+            });
+            selectedTheme = null;
+        }
+    </script>
+</body>
+</html>

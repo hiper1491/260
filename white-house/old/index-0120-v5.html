@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北方・淨序</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', 'Microsoft JhengHei', serif;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, #fdfcfb 0%, #f7f5f2 40%, #ebe8e3 100%);
+            height: 100vh;
+            position: relative;
+        }
+
+        /* 神聖幾何背景紋理 */
+        .sacred-geometry-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px),
+                repeating-linear-gradient(120deg, transparent, transparent 40px, rgba(180, 150, 80, 0.1) 40px, rgba(180, 150, 80, 0.1) 41px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 能量場氛圍光 */
+        .energy-field {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            margin-left: -400px;
+            margin-top: -400px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .energy-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            animation: energyPulse 20s infinite ease-in-out;
+        }
+
+        .energy-ring:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            animation-delay: 0s;
+        }
+
+        .energy-ring:nth-child(2) {
+            width: 550px;
+            height: 550px;
+            animation-delay: -5s;
+        }
+
+        .energy-ring:nth-child(3) {
+            width: 700px;
+            height: 700px;
+            animation-delay: -10s;
+        }
+
+        @keyframes energyPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(0.95);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+                opacity: 0.5;
+            }
+        }
+
+        /* 封面頁 */
+        .cover-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 1;
+            transition: opacity 2.5s ease-out;
+            overflow: hidden;
+        }
+
+        .cover-page.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 封面內容自動縮放容器 */
+        .cover-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-height: 95vh;
+            transform-origin: center center;
+        }
+
+        /* 生命之花 - 加強版 */
+        .flower-of-life {
+            width: 320px;
+            height: 320px;
+            position: relative;
+            margin-top: 40px;
+            margin-bottom: 50px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 35px rgba(218, 165, 32, 0.4));
+            animation: flowerPresence 12s infinite ease-in-out;
+        }
+
+        @keyframes flowerPresence {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 30px rgba(218, 165, 32, 0.35));
+            }
+            50% {
+                transform: scale(1.03) rotate(0.5deg);
+                filter: drop-shadow(0 0 50px rgba(240, 216, 115, 0.6));
+            }
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .petal {
+            fill: none;
+            stroke: url(#goldGradient);
+            stroke-width: 2.5;
+            animation: petalEnergy 10s infinite ease-in-out;
+            filter: drop-shadow(0 0 3px rgba(218, 165, 32, 0.4));
+        }
+
+        @keyframes petalEnergy {
+            0%, 100% {
+                stroke-opacity: 0.8;
+                stroke-width: 2.5;
+            }
+            50% {
+                stroke-opacity: 1;
+                stroke-width: 3;
+            }
+        }
+
+        .petal:nth-child(2n) { animation-delay: -2s; }
+        .petal:nth-child(3n) { animation-delay: -4s; }
+        .petal:nth-child(4n) { animation-delay: -6s; }
+        .petal:nth-child(5n) { animation-delay: -8s; }
+
+        /* 封面文字 */
+        .cover-title {
+            color: #5a5a5a;
+            font-size: 48px;
+            font-weight: 300;
+            letter-spacing: 28px;
+            margin-bottom: 40px;
+            flex-shrink: 0;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            animation: titleAura 15s ease-in-out infinite;
+        }
+
+        @keyframes titleAura {
+            0%, 100% { 
+                opacity: 0.88;
+                letter-spacing: 28px;
+            }
+            50% { 
+                opacity: 1;
+                letter-spacing: 30px;
+            }
+        }
+
+        .cover-subtitle {
+            color: #7a7a7a;
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 10px;
+            margin-bottom: 30px;
+            flex-shrink: 0;
+            opacity: 0.9;
+        }
+
+        .cover-description {
+            color: #8a8a8a;
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 5px;
+            line-height: 2.4;
+            max-width: 600px;
+            text-align: center;
+            padding: 0 30px;
+            opacity: 0.85;
+            margin-bottom: 50px;
+            flex-shrink: 0;
+        }
+
+        .enter-hint {
+            color: rgba(90, 90, 90, 0.7);
+            font-size: 15px;
+            letter-spacing: 8px;
+            font-weight: 300;
+            animation: invitePulse 6s infinite ease-in-out;
+            cursor: pointer;
+            transition: all 0.8s ease;
+            padding: 16px 40px;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+            flex-shrink: 0;
+        }
+
+        /* 移除 guidance-text，改為轉場提示 */
+
+        .enter-hint:hover {
+            color: rgba(70, 70, 70, 0.95);
+            letter-spacing: 10px;
+            border-color: rgba(212, 175, 55, 0.7);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        @keyframes invitePulse {
+            0%, 100% { 
+                opacity: 0.7;
+                transform: scale(1);
+                box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.02);
+                box-shadow: 0 0 35px rgba(212, 175, 55, 0.35);
+            }
+        }
+
+        /* 呼吸引導頁 */
+        .breathing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2.5s ease-in;
+        }
+
+        .breathing-page.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .breathing-container {
+            text-align: center;
+            position: relative;
+        }
+
+        .breathing-circle {
+            width: 350px;
+            height: 350px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 多層次能量光環 */
+        .aura-layer {
+            position: absolute;
+            border-radius: 50%;
+            animation: auraFlow 18s infinite ease-in-out;
+        }
+
+        .aura-layer-1 {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, 
+                rgba(255, 252, 245, 0.9) 0%, 
+                rgba(252, 248, 235, 0.6) 25%,
+                rgba(248, 240, 220, 0.4) 50%,
+                rgba(240, 230, 200, 0.2) 75%,
+                transparent 100%);
+            animation-delay: 0s;
+        }
+
+        .aura-layer-2 {
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, 
+                rgba(255, 250, 240, 0.95) 0%, 
+                rgba(250, 243, 225, 0.7) 30%,
+                rgba(245, 235, 210, 0.5) 60%,
+                transparent 100%);
+            animation-delay: -4s;
+        }
+
+        .aura-layer-3 {
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, 
+                rgba(255, 248, 235, 1) 0%, 
+                rgba(248, 238, 215, 0.8) 40%,
+                rgba(240, 230, 200, 0.6) 70%,
+                transparent 100%);
+            animation-delay: -8s;
+        }
+
+        @keyframes auraFlow {
+            0% {
+                transform: scale(0.75);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.4);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.75);
+                opacity: 0.6;
+            }
+        }
+
+        /* 核心光球 */
+        .sacred-light {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 250, 1) 0%, 
+                rgba(255, 250, 235, 0.98) 20%,
+                rgba(250, 240, 210, 0.92) 40%,
+                rgba(240, 225, 180, 0.82) 60%,
+                rgba(220, 200, 140, 0.6) 80%,
+                rgba(200, 180, 120, 0.3) 100%
+            );
+            box-shadow: 
+                0 0 50px rgba(255, 248, 220, 0.9),
+                0 0 100px rgba(240, 220, 160, 0.7),
+                0 0 150px rgba(220, 190, 120, 0.5),
+                0 0 200px rgba(200, 170, 100, 0.3),
+                inset 0 0 40px rgba(255, 255, 240, 0.7);
+            animation: sacredBreath 18s infinite ease-in-out;
+        }
+
+        @keyframes sacredBreath {
+            0% {
+                transform: scale(0.5);
+                box-shadow: 
+                    0 0 30px rgba(255, 248, 220, 0.6),
+                    0 0 60px rgba(240, 220, 160, 0.4),
+                    0 0 90px rgba(220, 190, 120, 0.3),
+                    0 0 120px rgba(200, 170, 100, 0.2),
+                    inset 0 0 25px rgba(255, 255, 240, 0.5);
+            }
+            50% {
+                transform: scale(2.2);
+                box-shadow: 
+                    0 0 80px rgba(255, 248, 220, 1),
+                    0 0 160px rgba(240, 220, 160, 0.9),
+                    0 0 240px rgba(220, 190, 120, 0.7),
+                    0 0 320px rgba(200, 170, 100, 0.5),
+                    inset 0 0 70px rgba(255, 255, 240, 0.9);
+            }
+            100% {
+                transform: scale(0.5);
+                box-shadow: 
+                    0 0 30px rgba(255, 248, 220, 0.6),
+                    0 0 60px rgba(240, 220, 160, 0.4),
+                    0 0 90px rgba(220, 190, 120, 0.3),
+                    0 0 120px rgba(200, 170, 100, 0.2),
+                    inset 0 0 25px rgba(255, 255, 240, 0.5);
+            }
+        }
+
+        /* 能量粒子 - 19個 */
+        .light-essence {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .essence-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(240, 216, 115, 0.9) 0%, transparent 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(218, 165, 32, 0.6);
+            animation: essenceFlow 18s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes essenceFlow {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0.2);
+            }
+            40% {
+                opacity: 0.9;
+            }
+            60% {
+                opacity: 0.9;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(1.8);
+            }
+        }
+
+        /* 進度指示器 */
+        .progress-indicators {
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            background: transparent;
+            transition: all 0.5s ease;
+        }
+
+        .progress-dot.completed {
+            background: rgba(212, 175, 55, 0.8);
+            border-color: rgba(212, 175, 55, 0.9);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .progress-dot.active {
+            background: rgba(240, 216, 115, 0.9);
+            border-color: rgba(240, 216, 115, 1);
+            box-shadow: 0 0 15px rgba(240, 216, 115, 0.7);
+            animation: dotPulse 1s infinite ease-in-out;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+
+
+        .instruction {
+            margin-top: 130px;
+            color: rgba(70, 70, 70, 0.95);
+            font-size: 42px;
+            font-weight: 300;
+            letter-spacing: 20px;
+            min-height: 80px;
+            transition: all 2s ease;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+        }
+
+        .subtitle {
+            margin-top: 50px;
+            color: rgba(110, 110, 110, 0.75);
+            font-size: 17px;
+            letter-spacing: 6px;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        /* 返回 */
+        .back-button {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            color: rgba(100, 100, 100, 0.5);
+            font-size: 15px;
+            letter-spacing: 4px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.8s ease;
+            z-index: 20;
+            padding: 16px 32px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 35px;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .back-button:hover {
+            color: rgba(70, 70, 70, 0.9);
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+        }
+
+        .skip-button {
+            position: absolute;
+            top: 60px;
+            right: 60px;
+            color: rgba(100, 100, 100, 0.5);
+            font-size: 15px;
+            letter-spacing: 4px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.8s ease;
+            z-index: 20;
+            padding: 16px 32px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 35px;
+            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .skip-button:hover {
+            color: rgba(70, 70, 70, 0.9);
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 生命之花綻放動畫（白屋風格） - 強制覆蓋 */
+        body.blooming .flower-of-life {
+            animation: flowerBloom 1.5s ease-out forwards !important;
+            animation-delay: 0s !important;
+            filter: drop-shadow(0 0 60px rgba(218, 165, 32, 0.9)) !important;
+        }
+
+        body.blooming .petal {
+            animation: petalBloom 1.5s ease-out forwards !important;
+            animation-delay: 0s !important;
+        }
+
+        /* 禁用封面所有元素的過渡動畫 */
+        body.blooming .cover-content * {
+            transition: none !important;
+        }
+
+        @keyframes flowerBloom {
+            0% { 
+                transform: scale(1); 
+                opacity: 1;
+            }
+            30% {
+                transform: scale(1.12) rotate(8deg);
+                filter: drop-shadow(0 0 80px rgba(240, 216, 115, 0.95));
+            }
+            60% {
+                transform: scale(1.25) rotate(20deg);
+                filter: drop-shadow(0 0 120px rgba(240, 216, 115, 1));
+            }
+            100% { 
+                transform: scale(15) rotate(45deg); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes petalBloom {
+            0% { 
+                stroke-opacity: 1;
+                stroke-width: 3;
+            }
+            50% {
+                stroke-opacity: 1;
+                stroke-width: 4.5;
+            }
+            100% { 
+                stroke-opacity: 0;
+                stroke-width: 5;
+            }
+        }
+
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .cover-page {
+                padding: 40px 20px 40px 20px;
+            }
+
+            .flower-of-life {
+                width: 240px;
+                height: 240px;
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }
+
+            .cover-title {
+                font-size: 36px;
+                letter-spacing: 20px;
+                margin-bottom: 30px;
+            }
+
+            .cover-subtitle {
+                font-size: 15px;
+                letter-spacing: 6px;
+                margin-bottom: 25px;
+            }
+
+            .cover-description {
+                font-size: 14px;
+                letter-spacing: 3px;
+                line-height: 2.2;
+                margin-bottom: 40px;
+                padding: 0 20px;
+            }
+
+            .enter-hint {
+                font-size: 13px;
+                letter-spacing: 6px;
+                padding: 14px 32px;
+            }
+
+            .guidance-text {
+                font-size: 11px;
+                letter-spacing: 2px;
+                padding: 0 20px;
+            }
+
+            .breathing-circle {
+                width: 280px;
+                height: 280px;
+            }
+
+            .instruction {
+                font-size: 32px;
+                letter-spacing: 12px;
+                margin-top: 100px;
+            }
+
+            .back-button {
+                top: 30px;
+                left: 30px;
+                font-size: 13px;
+                padding: 12px 24px;
+            }
+
+            .skip-button {
+                top: 30px;
+                right: 30px;
+                font-size: 13px;
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sacred-geometry-bg"></div>
+    <div class="energy-field">
+        <div class="energy-ring"></div>
+        <div class="energy-ring"></div>
+        <div class="energy-ring"></div>
+    </div>
+    
+    <!-- 封面頁 -->
+    <div class="cover-page" id="coverPage">
+        <div class="cover-content" id="coverContent">
+            <div class="flower-of-life">
+            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#F0D873;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#D4AF37;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#B8941F;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <circle class="petal" cx="200" cy="200" r="60"/>
+                <circle class="petal" cx="200" cy="140" r="60"/>
+                <circle class="petal" cx="252" cy="170" r="60"/>
+                <circle class="petal" cx="252" cy="230" r="60"/>
+                <circle class="petal" cx="200" cy="260" r="60"/>
+                <circle class="petal" cx="148" cy="230" r="60"/>
+                <circle class="petal" cx="148" cy="170" r="60"/>
+                <circle class="petal" cx="200" cy="80" r="60"/>
+                <circle class="petal" cx="252" cy="110" r="60"/>
+                <circle class="petal" cx="304" cy="140" r="60"/>
+                <circle class="petal" cx="304" cy="200" r="60"/>
+                <circle class="petal" cx="304" cy="260" r="60"/>
+                <circle class="petal" cx="252" cy="290" r="60"/>
+                <circle class="petal" cx="200" cy="320" r="60"/>
+                <circle class="petal" cx="148" cy="290" r="60"/>
+                <circle class="petal" cx="96" cy="260" r="60"/>
+                <circle class="petal" cx="96" cy="200" r="60"/>
+                <circle class="petal" cx="96" cy="140" r="60"/>
+                <circle class="petal" cx="148" cy="110" r="60"/>
+                <circle class="petal" cx="200" cy="200" r="180" stroke-width="2"/>
+            </svg>
+        </div>
+        <h1 class="cover-title">北方・淨序</h1>
+        <p class="cover-subtitle">洗滌雜訊　回到內在秩序</p>
+        <p class="cover-description">清理混亂與干擾<br>讓心回到安靜而清晰的位置</p>
+        <div class="enter-hint" onclick="enterBreathing()">進入神聖空間</div>
+        </div>
+    </div>
+
+    <!-- 呼吸引導頁 -->
+    <div class="breathing-page" id="breathingPage">
+        <div class="back-button" onclick="backToCover()">← 返回</div>
+        <div class="skip-button" onclick="skipToTzolkin()">跳過 →</div>
+        <div class="breathing-container">
+            <div class="breathing-circle">
+                <div class="aura-layer aura-layer-1"></div>
+                <div class="aura-layer aura-layer-2"></div>
+                <div class="aura-layer aura-layer-3"></div>
+                <div class="sacred-light"></div>
+                <div class="light-essence" id="particles"></div>
+            </div>
+            
+            <div class="instruction" id="instruction">靜心準備</div>
+            <div class="subtitle">跟隨聖光的韻律　吸進純淨</div>
+
+            <!-- 三輪進度指示 -->
+            <div class="progress-indicators">
+                <div class="progress-dot" id="dot1"></div>
+                <div class="progress-dot" id="dot2"></div>
+                <div class="progress-dot" id="dot3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // 封面自動縮放
+        // ============================================
+        function scaleCoverContent() {
+            const coverContent = document.getElementById('coverContent');
+            const viewportHeight = window.innerHeight;
+            const contentHeight = coverContent.scrollHeight;
+            
+            if (contentHeight > viewportHeight * 0.95) {
+                const scale = (viewportHeight * 0.95) / contentHeight;
+                coverContent.style.transform = `scale(${scale})`;
+            } else {
+                coverContent.style.transform = 'scale(1)';
+            }
+        }
+
+        window.addEventListener('resize', scaleCoverContent);
+        window.addEventListener('load', scaleCoverContent);
+        scaleCoverContent();
+
+        // 創建 19 個能量粒子
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 19; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'essence-particle';
+            const angle = (i / 19) * Math.PI * 2;
+            const distance = 155;
+            const tx = Math.cos(angle) * distance + 'px';
+            const ty = Math.sin(angle) * distance + 'px';
+            particle.style.setProperty('--tx', tx);
+            particle.style.setProperty('--ty', ty);
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            particle.style.animationDelay = (i * 0.95) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // 頁面切換
+        function enterBreathing() {
+            document.getElementById('coverPage').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('breathingPage').classList.add('active');
+                startBreathing();
+            }, 2500);
+        }
+
+        function backToCover() {
+            document.getElementById('breathingPage').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('coverPage').classList.remove('fade-out');
+                stopBreathing();
+            }, 2500);
+        }
+
+        function skipToTzolkin() {
+            stopBreathing();
+            transitionToTzolkin();
+        }
+
+        // 神聖呼吸引導
+        const instruction = document.getElementById('instruction');
+        
+        let breathingTimer;
+        let isBreathing = false;
+        let currentRound = 0;
+
+        function updateProgressDots(round) {
+            const dots = [
+                document.getElementById('dot1'),
+                document.getElementById('dot2'),
+                document.getElementById('dot3')
+            ];
+
+            dots.forEach((dot, index) => {
+                dot.classList.remove('completed', 'active');
+                if (index < round) {
+                    dot.classList.add('completed');
+                } else if (index === round) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        function startBreathing() {
+            if (isBreathing) return;
+            isBreathing = true;
+            currentRound = 0;
+            
+            updateProgressDots(0);
+
+            const phases = [
+                { text: '深深吸入白光', duration: 7000 },
+                { text: '光在體內流動', duration: 4000 },
+                { text: '緩緩釋放濁氣', duration: 8000 },
+                { text: '安住於寧靜', duration: 3000 }
+            ];
+            
+            let currentPhase = 0;
+            let phaseCount = 0;
+            
+            function updatePhase() {
+                if (!isBreathing) return;
+                
+                instruction.style.opacity = '0';
+                instruction.style.transform = 'translateY(-20px) scale(0.98)';
+                
+                setTimeout(() => {
+                    instruction.textContent = phases[currentPhase].text;
+                    instruction.style.opacity = '1';
+                    instruction.style.transform = 'translateY(0) scale(1)';
+                }, 1000);
+                
+                breathingTimer = setTimeout(() => {
+                    currentPhase = (currentPhase + 1) % phases.length;
+                    phaseCount++;
+                    
+                    // 每完成一輪（4個階段）
+                    if (phaseCount % 4 === 0) {
+                        currentRound++;
+                        if (currentRound <= 3) {
+                            updateProgressDots(currentRound);
+                        }
+                        
+                        // 完成三輪後跳轉
+                        if (currentRound >= 3) {
+                            setTimeout(() => {
+                                transitionToTzolkin();
+                            }, 2000);
+                            return;
+                        }
+                    }
+                    
+                    updatePhase();
+                }, phases[currentPhase].duration);
+            }
+            
+            setTimeout(() => {
+                updateProgressDots(0);
+                updatePhase();
+            }, 1000);
+        }
+
+        function stopBreathing() {
+            isBreathing = false;
+            currentRound = 0;
+            if (breathingTimer) {
+                clearTimeout(breathingTimer);
+            }
+            instruction.textContent = '靜心準備';
+            instruction.style.opacity = '1';
+            instruction.style.transform = 'translateY(0) scale(1)';
+            updateProgressDots(-1);
+        }
+
+        function transitionToTzolkin() {
+            // 1. 觸發生命之花綻放動畫
+            document.body.classList.add('blooming');
+            
+            // 2. 1.5 秒後跳轉到卓爾金曆
+            setTimeout(() => {
+                window.location.href = 'tzolkin-0120-v5.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>13 月亮曆 - 神聖時間之門</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red-room: 220, 90, 88;
+            --white-room: 220, 230, 240;
+            --blue-room: 80, 120, 150;
+            --yellow-room: 200, 170, 100;
+            --gold-1: #D4AF37;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            
+            /* 古老牆面背景 - 參考 1315.png */
+            background: 
+                radial-gradient(
+                    ellipse at 50% 40%,
+                    rgba(240, 230, 215, 1) 0%,
+                    rgba(210, 195, 170, 0.95) 30%,
+                    rgba(185, 170, 145, 0.9) 60%,
+                    rgba(165, 150, 130, 0.88) 100%
+                );
+            position: relative;
+        }
+
+        /* 牆面紋理 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.02) 2px,
+                    rgba(0, 0, 0, 0.02) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.02) 2px,
+                    rgba(0, 0, 0, 0.02) 4px
+                );
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* 暗角效果 */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(
+                    ellipse at center,
+                    transparent 0%,
+                    rgba(0, 0, 0, 0.15) 80%
+                );
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 20px 100px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================================
+           今日印記區
+        ================================ */
+        .today-kin-area {
+            width: min(500px, 90vw);
+            margin: 20px auto;
+            padding: 30px 20px;
+            
+            background: 
+                linear-gradient(135deg,
+                    rgba(245, 240, 230, 0.95),
+                    rgba(230, 220, 205, 0.92)
+                );
+            
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                inset 0 0 60px rgba(255, 245, 220, 0.3);
+            
+            border: 1px solid rgba(200, 180, 150, 0.6);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .today-kin-area:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 12px 48px rgba(0, 0, 0, 0.3),
+                0 0 60px rgba(212, 175, 55, 0.4);
+        }
+
+        /* 調性區域 */
+        .tone-area {
+            height: 72px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tone-dots {
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        
+        .tone-bars {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .tone-dot {
+            width: 22px;
+            height: 22px;
+            background: #3a2a1a;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tone-bar {
+            width: 190px;
+            height: 16px;
+            background: #3a2a1a;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        /* 圖騰區域 */
+        .glyph-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            flex: 0 0 200px;
+            align-items: center;
+        }
+        
+        .glyph-frame {
+            display: inline-flex;
+            padding: 10px;
+            border-radius: 24px;
+            background: rgba(220, 200, 170, 0.3);
+            border: 1px solid rgba(150, 130, 100, 0.4);
+            box-shadow:
+                inset 0 4px 20px rgba(0, 0, 0, 0.25),
+                inset 0 -6px 16px rgba(255, 245, 220, 0.3),
+                0 14px 28px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .glyph-frame:hover {
+            transform: translateY(-2px);
+        }
+        
+        .glyph-img {
+            height: 180px;
+            border-radius: 16px;
+            filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.3));
+        }
+
+        .kin-number {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.8rem, 4.8vh, 3.8rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-top: 2px;
+            text-align: center;
+            color: #2a1a0a;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .kin-name {
+            font-size: clamp(1.8rem, 3.5vh, 2.6rem);
+            font-weight: 900;
+            letter-spacing: clamp(3px, 0.9vw, 7px);
+            margin-top: 4px;
+            text-align: center;
+            color: #3a2a1a;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .wavespell-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: rgba(150, 130, 100, 0.2);
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #4a3a2a;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            border: 1px solid rgba(120, 100, 80, 0.3);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .wavespell-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            opacity: 0.9;
+        }
+
+        .name-etch {
+            width: 64%;
+            height: 12px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold-1) 50%, transparent 100%);
+            opacity: 0.5;
+            margin: 10px auto 12px;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.2));
+        }
+
+        .date-info {
+            font-size: 0.95rem;
+            color: #5a4a3a;
+            opacity: 0.8;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        /* ================================
+           曼陀羅導航區
+        ================================ */
+        .mandala-area {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1;
+            margin: 40px auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Hunab Ku 中心 */
+        .hunab-ku {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            z-index: 10;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hunab-ku::before {
+            content: '';
+            position: absolute;
+            inset: -40px;
+            background: radial-gradient(circle, rgba(255, 235, 200, 0.4) 0%, transparent 60%);
+            animation: pulse 3s ease-in-out infinite;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .hunab-ku img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ================================
+           四個神廟門戶 - 使用真實圖片
+        ================================ */
+        .temple-gate {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gate-portal {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: visible;
+            transition: all 0.4s ease;
+        }
+
+        .gate-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+            transition: all 0.4s ease;
+        }
+
+        /* 火光粒子環繞效果 */
+        .fire-particles {
+            position: absolute;
+            inset: -30px;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* 門戶光暈 */
+        .gate-glow {
+            position: absolute;
+            inset: -25px;
+            border-radius: 50%;
+            opacity: 0.6;
+            filter: blur(20px);
+            animation: glowPulse 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.9;
+            }
+        }
+
+        /* 順序數字 */
+        .gate-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F4E5C3, #D4AF37);
+            border: 2px solid rgba(150, 120, 80, 0.8);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            font-weight: 900;
+            color: #3a2a1a;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+            
+            animation: numberPulse 2s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 
+                    0 4px 12px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 
+                    0 6px 16px rgba(0, 0, 0, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 1),
+                    0 0 20px rgba(212, 175, 55, 0.8);
+            }
+        }
+
+        /* Hover 效果 */
+        .temple-gate:hover .gate-portal {
+            transform: scale(1.08);
+        }
+
+        .temple-gate:hover .gate-image {
+            filter: 
+                drop-shadow(0 12px 32px rgba(0,0,0,0.5))
+                brightness(1.1);
+        }
+
+        .temple-gate:hover .gate-glow {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        /* 四個方位 */
+        .gate-north { top: 0; left: 50%; transform: translateX(-50%); }
+        .gate-east { right: 0; top: 50%; transform: translateY(-50%); }
+        .gate-south { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .gate-west { left: 0; top: 50%; transform: translateY(-50%); }
+
+        /* 各門配色 - 火光粒子和光暈 */
+        .white-gate .gate-glow {
+            background: radial-gradient(circle, rgba(var(--white-room), 0.9), transparent);
+        }
+        .white-gate .particle {
+            background: radial-gradient(circle, rgba(220, 230, 240, 1), rgba(180, 200, 220, 0.5));
+            box-shadow: 0 0 8px rgba(220, 230, 240, 0.8);
+        }
+
+        .red-gate .gate-glow {
+            background: radial-gradient(circle, rgba(var(--red-room), 0.9), transparent);
+        }
+        .red-gate .particle {
+            background: radial-gradient(circle, rgba(255, 180, 100, 1), rgba(255, 120, 60, 0.5));
+            box-shadow: 0 0 10px rgba(255, 150, 80, 1);
+        }
+
+        .yellow-gate .gate-glow {
+            background: radial-gradient(circle, rgba(var(--yellow-room), 0.9), transparent);
+        }
+        .yellow-gate .particle {
+            background: radial-gradient(circle, rgba(255, 220, 120, 1), rgba(240, 190, 80, 0.5));
+            box-shadow: 0 0 10px rgba(255, 210, 100, 1);
+        }
+
+        .blue-gate .gate-glow {
+            background: radial-gradient(circle, rgba(var(--blue-room), 0.9), transparent);
+        }
+        .blue-gate .particle {
+            background: radial-gradient(circle, rgba(150, 180, 220, 1), rgba(100, 140, 190, 0.5));
+            box-shadow: 0 0 8px rgba(130, 170, 220, 0.8);
+        }
+
+        /* 流動箭頭 */
+        .flow-arrow {
+            position: absolute;
+            opacity: 0.7;
+            z-index: 3;
+            animation: arrowFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes arrowFloat {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .arrow-1 { top: 15%; left: 72%; width: 60px; transform: rotate(45deg); }
+        .arrow-2 { top: 72%; left: 15%; width: 60px; transform: rotate(135deg); }
+        .arrow-3 { top: 72%; right: 15%; width: 60px; transform: rotate(-135deg); }
+        .arrow-4 { top: 15%; right: 72%; width: 60px; transform: rotate(-45deg); }
+
+        /* 響應式 */
+        @media (max-width: 520px) {
+            .tone-bar { width: 140px; }
+            .glyph-img { height: 150px; }
+            .hunab-ku { width: 70px; height: 70px; }
+            .temple-gate { width: 110px; height: 110px; }
+            .gate-number { width: 30px; height: 30px; font-size: 0.85rem; top: -12px; right: -12px; }
+            .particle { width: 3px; height: 3px; }
+            .gate-glow { inset: -20px; }
+            .fire-particles { inset: -20px; }
+            .arrow-1, .arrow-2, .arrow-3, .arrow-4 { width: 40px; opacity: 0.5; }
+        }
+
+        @media (min-width: 1025px) {
+            .container {
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 60px;
+                padding: 5vh 5vw 100px;
+            }
+            .today-kin-area { width: 480px; margin: 0; }
+            .mandala-area { width: 550px; height: 550px; margin: 0; }
+            .hunab-ku { width: 100px; height: 100px; }
+            .temple-gate { width: 160px; height: 160px; }
+            .gate-number { width: 40px; height: 40px; font-size: 1.1rem; }
+            .particle { width: 5px; height: 5px; }
+            .arrow-1, .arrow-2, .arrow-3, .arrow-4 { width: 70px; }
+        }
+
+        /* ================================
+           神廟基石
+        ================================ */
+        .temple-foundation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            
+            padding: 15px 20px;
+            background: 
+                linear-gradient(
+                    180deg,
+                    rgba(180, 160, 140, 0.92) 0%,
+                    rgba(160, 140, 120, 0.95) 100%
+                );
+            backdrop-filter: blur(8px);
+            
+            border-top: 1px solid rgba(130, 110, 90, 0.5);
+            box-shadow:
+                0 -4px 20px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(200, 180, 160, 0.4);
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            
+            font-family: 'Noto Serif TC', serif;
+            color: #4a3a2a;
+        }
+
+        .foundation-creator {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            opacity: 0.85;
+        }
+
+        .foundation-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .foundation-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #5a4a3a;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(220, 200, 170, 0.4);
+            border: 1px solid rgba(150, 130, 100, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .foundation-link:hover {
+            background: rgba(230, 210, 180, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            color: #3a2a1a;
+        }
+
+        .foundation-icon {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
+        }
+
+        .foundation-copyright {
+            font-size: 0.65rem;
+            opacity: 0.65;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 今日印記區 -->
+        <div class="today-kin-area" onclick="goToRedHouse()">
+            <div class="tone-area">
+                <div class="tone-dots" id="toneDots"></div>
+                <div class="tone-bars" id="toneBars"></div>
+            </div>
+            
+            <div class="glyph-area">
+                <div class="glyph-frame">
+                    <img class="glyph-img" id="glyphImg" src="images/02.png" alt="今日圖騰">
+                </div>
+            </div>
+            
+            <div class="kin-number" id="kinNumber">KIN 62</div>
+            <div class="kin-name" id="kinName">行星的白風</div>
+            
+            <div class="wavespell-badge">
+                <img class="wavespell-icon" id="waveIcon" src="images/02.png" alt="波符">
+                <span id="waveName">白風波</span>
+            </div>
+            
+            <div class="name-etch"></div>
+            
+            <div class="date-info">
+                <div id="gregorianDate">2026.01.24</div>
+                <div id="mayanDate">NS.1.38.7.15</div>
+            </div>
+        </div>
+
+        <!-- 曼陀羅導航區 -->
+        <div class="mandala-area">
+            <!-- 流動箭頭 -->
+            <svg class="flow-arrow arrow-1" viewBox="0 0 50 50">
+                <path d="M10 25 Q25 15 40 25" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.6"/>
+                <polygon points="40,25 35,22 35,28" fill="#D4AF37" opacity="0.7"/>
+            </svg>
+            <svg class="flow-arrow arrow-2" viewBox="0 0 50 50">
+                <path d="M10 25 Q25 15 40 25" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.6"/>
+                <polygon points="40,25 35,22 35,28" fill="#D4AF37" opacity="0.7"/>
+            </svg>
+            <svg class="flow-arrow arrow-3" viewBox="0 0 50 50">
+                <path d="M10 25 Q25 15 40 25" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.6"/>
+                <polygon points="40,25 35,22 35,28" fill="#D4AF37" opacity="0.7"/>
+            </svg>
+            <svg class="flow-arrow arrow-4" viewBox="0 0 50 50">
+                <path d="M10 25 Q25 15 40 25" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.6"/>
+                <polygon points="40,25 35,22 35,28" fill="#D4AF37" opacity="0.7"/>
+            </svg>
+
+            <!-- Hunab Ku 中心 -->
+            <div class="hunab-ku">
+                <img src="images/hunab-ku-1.png" alt="Hunab Ku">
+            </div>
+
+            <!-- 白門(北) - 2 -->
+            <div class="temple-gate white-gate gate-north" onclick="goToWhiteHouse()">
+                <div class="gate-number">2</div>
+                <div class="gate-portal">
+                    <div class="gate-glow"></div>
+                    <div class="fire-particles" id="whiteParticles"></div>
+                    <img class="gate-image" src="images/white_gate.png" alt="白門">
+                </div>
+            </div>
+
+            <!-- 紅門(東) - 1 -->
+            <div class="temple-gate red-gate gate-east" onclick="goToRedHouse()">
+                <div class="gate-number">1</div>
+                <div class="gate-portal">
+                    <div class="gate-glow"></div>
+                    <div class="fire-particles" id="redParticles"></div>
+                    <img class="gate-image" src="images/red_gate.png" alt="紅門">
+                </div>
+            </div>
+
+            <!-- 黃門(南) - 4 -->
+            <div class="temple-gate yellow-gate gate-south" onclick="goToYellowHouse()">
+                <div class="gate-number">4</div>
+                <div class="gate-portal">
+                    <div class="gate-glow"></div>
+                    <div class="fire-particles" id="yellowParticles"></div>
+                    <img class="gate-image" src="images/yellow_gate.png" alt="黃門">
+                </div>
+            </div>
+
+            <!-- 藍門(西) - 3 -->
+            <div class="temple-gate blue-gate gate-west" onclick="goToBlueHouse()">
+                <div class="gate-number">3</div>
+                <div class="gate-portal">
+                    <div class="gate-glow"></div>
+                    <div class="fire-particles" id="blueParticles"></div>
+                    <img class="gate-image" src="images/blue_gate.png" alt="藍門">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 神廟基石 -->
+    <div class="temple-foundation">
+        <div class="foundation-creator">構築者: Hiper Wu</div>
+        <div class="foundation-links">
+            <a href="https://www.facebook.com/hiper.wu/" target="_blank" rel="noopener" class="foundation-link">
+                <svg class="foundation-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                創作者
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=100074630472925" target="_blank" rel="noopener" class="foundation-link">
+                <svg class="foundation-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                13月亮曆
+            </a>
+        </div>
+        <div class="foundation-copyright">© 2026 Hiper Wu・持續優化中</div>
+    </div>
+
+    <script>
+        // KIN 計算系統
+        const monthConstants = {
+            1: 0, 2: 31, 3: 59, 4: 90, 5: 120, 6: 151,
+            7: 181, 8: 212, 9: 243, 10: 13, 11: 44, 12: 74
+        };
+
+        const yearConstants = {
+            2024: 72, 2025: 177, 2026: 22, 2027: 127, 2028: 232, 2029: 77, 2030: 182
+        };
+
+        const sealNames = [
+            "紅龍", "白風", "藍夜", "黃種子", "紅蛇", "白世界橋", "藍手", "黃星星", "紅月", "白狗",
+            "藍猴", "黃人", "紅天行者", "白巫師", "藍鷹", "黃戰士", "紅地球", "白鏡", "藍風暴", "黃太陽"
+        ];
+
+        const toneNames = [
+            "磁性的", "月亮的", "電力的", "自我存在的", "超頻的", "韻律的",
+            "共振的", "銀河的", "太陽的", "行星的", "光譜的", "水晶的", "宇宙的"
+        ];
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function calculateKin(year, month, day) {
+            if (month === 2 && day === 29) return { isHunabKu: true };
+            if (!yearConstants[year]) return null;
+
+            let kin = yearConstants[year] + monthConstants[month] + day;
+            if (isLeapYear(year) && (month > 2 || (month === 2 && day > 28))) kin += 1;
+
+            while (kin > 260) kin -= 260;
+            while (kin < 1) kin += 260;
+
+            const sealIndex = (kin - 1) % 20;
+            const toneIndex = (kin - 1) % 13;
+
+            return {
+                kin, seal: sealNames[sealIndex], tone: toneNames[toneIndex],
+                sealNumber: sealIndex + 1, toneNumber: toneIndex + 1, isHunabKu: false
+            };
+        }
+
+        function getWavespell(kin) {
+            const waveStart = Math.floor((kin - 1) / 13) * 13 + 1;
+            const waveSealIndex = (waveStart - 1) % 20;
+            return {
+                start: waveStart, end: waveStart + 12,
+                seal: sealNames[waveSealIndex], sealNumber: waveSealIndex + 1
+            };
+        }
+
+        function renderToneSymbol(toneNumber) {
+            const dotsContainer = document.getElementById('toneDots');
+            const barsContainer = document.getElementById('toneBars');
+            dotsContainer.innerHTML = '';
+            barsContainer.innerHTML = '';
+            
+            const dots = toneNumber % 5 || 5;
+            const bars = Math.floor((toneNumber - 1) / 5);
+            
+            for (let i = 0; i < dots; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'tone-dot';
+                dotsContainer.appendChild(dot);
+            }
+            
+            for (let i = 0; i < bars; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'tone-bar';
+                barsContainer.appendChild(bar);
+            }
+        }
+
+        // 生成火光粒子
+        function createFireParticles(containerId, count = 12) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const angle = (360 / count) * i;
+                const radius = 60 + Math.random() * 20;
+                const x = 50 + radius * Math.cos(angle * Math.PI / 180);
+                const y = 50 + radius * Math.sin(angle * Math.PI / 180);
+                
+                particle.style.left = `${x}%`;
+                particle.style.top = `${y}%`;
+                particle.style.animationDelay = `${i * 0.1}s`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        function getMayanDate() {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const newYear = new Date(currentYear, 6, 26);
+            
+            let nsYear, dayInYear;
+            if (today >= newYear) {
+                nsYear = currentYear - 1987;
+                dayInYear = Math.floor((today - newYear) / 86400000) + 1;
+            } else {
+                const lastNewYear = new Date(currentYear - 1, 6, 26);
+                nsYear = currentYear - 1988;
+                dayInYear = Math.floor((today - lastNewYear) / 86400000) + 1;
+            }
+            
+            const month = Math.ceil(dayInYear / 28);
+            const day = ((dayInYear - 1) % 28) + 1;
+            return `NS.1.${nsYear}.${month}.${day}`;
+        }
+
+        function getGregorianDate() {
+            const today = new Date();
+            return `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        function goToWhiteHouse() { console.log('進入白屋'); }
+        function goToRedHouse() { console.log('進入紅屋'); }
+        function goToYellowHouse() { console.log('進入黃屋'); }
+        function goToBlueHouse() { console.log('進入藍屋'); }
+
+        window.addEventListener('load', () => {
+            // 生成火光粒子
+            createFireParticles('whiteParticles', 16);
+            createFireParticles('redParticles', 18);
+            createFireParticles('yellowParticles', 16);
+            createFireParticles('blueParticles', 16);
+            
+            // 計算今日 KIN
+            const today = new Date();
+            const result = calculateKin(today.getFullYear(), today.getMonth() + 1, today.getDate());
+            
+            if (result && !result.isHunabKu) {
+                document.getElementById('kinNumber').textContent = `KIN ${result.kin}`;
+                document.getElementById('kinName').textContent = `${result.tone}${result.seal}`;
+                document.getElementById('glyphImg').src = `images/${String(result.sealNumber).padStart(2, '0')}.png`;
+                
+                renderToneSymbol(result.toneNumber);
+                
+                const wave = getWavespell(result.kin);
+                document.getElementById('waveName').textContent = `${wave.seal}波`;
+                document.getElementById('waveIcon').src = `images/${String(wave.sealNumber).padStart(2, '0')}.png`;
+                
+                document.getElementById('gregorianDate').textContent = getGregorianDate();
+                document.getElementById('mayanDate').textContent = getMayanDate();
+            }
+        });
+    </script>
+</body>
+</html>
