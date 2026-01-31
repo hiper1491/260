@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>南方 · 金穗聖域 v17</title>
+    <title>南方 · 金穗聖域 v18</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Cinzel:wght@600;900&display=swap"
         rel="stylesheet">
@@ -34,7 +34,7 @@
             align-items: center;
         }
 
-        /* 神廟石牆背景 */
+        /* 神廟石牆 background */
         .bg-layer {
             position: fixed;
             inset: 0;
@@ -53,9 +53,9 @@
             width: 100%;
             height: 60%;
             background: radial-gradient(ellipse 60% 40% at 50% 0%,
-                rgba(255, 180, 80, 0.12) 0%,
-                rgba(255, 150, 50, 0.05) 40%,
-                transparent 70%);
+                    rgba(255, 180, 80, 0.12) 0%,
+                    rgba(255, 150, 50, 0.05) 40%,
+                    transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -162,8 +162,7 @@
         }
 
         /* =============================================
-           Scene 2: 五大金鑰 - 神廟古銅浮雕徽章
-           使用 SVG Filter 實現真實光源計算
+           Scene 2: 五大金鑰
            ============================================= */
 
         .sel-container {
@@ -219,7 +218,7 @@
             transform: translateY(-8px);
         }
 
-        /* 神聖背光 - 強烈暖光光暈 */
+        /* 神聖背光 */
         .medallion-aura {
             position: absolute;
             top: 50%;
@@ -228,10 +227,10 @@
             height: 200px;
             transform: translate(-50%, -55%);
             background: radial-gradient(circle,
-                rgba(255, 160, 60, 0.5) 0%,
-                rgba(255, 130, 40, 0.3) 25%,
-                rgba(255, 100, 20, 0.15) 45%,
-                transparent 65%);
+                    rgba(255, 160, 60, 0.5) 0%,
+                    rgba(255, 130, 40, 0.3) 25%,
+                    rgba(255, 100, 20, 0.15) 45%,
+                    transparent 65%);
             border-radius: 50%;
             pointer-events: none;
             z-index: 0;
@@ -243,10 +242,10 @@
             width: 240px;
             height: 240px;
             background: radial-gradient(circle,
-                rgba(255, 170, 70, 0.65) 0%,
-                rgba(255, 140, 50, 0.4) 25%,
-                rgba(255, 110, 30, 0.2) 45%,
-                transparent 65%);
+                    rgba(255, 170, 70, 0.65) 0%,
+                    rgba(255, 140, 50, 0.4) 25%,
+                    rgba(255, 110, 30, 0.2) 45%,
+                    transparent 65%);
         }
 
         /* 徽章主容器 */
@@ -261,6 +260,8 @@
             width: 100%;
             height: 100%;
             display: block;
+            /* 讓 SVG 內部元素可以吃到些許陰影 */
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
         }
 
         /* 標籤 */
@@ -345,7 +346,6 @@
             transform: scale(1.02);
         }
 
-        /* 牌卡 */
         .card-final {
             --glyph: 100px;
             background: linear-gradient(180deg, #FAF3E6 0%, #F0E6D2 100%);
@@ -363,6 +363,7 @@
             display: block;
         }
 
+        /* 比例語法 */
         .card-final .tone-dots {
             display: flex;
             justify-content: center;
@@ -402,7 +403,7 @@
             width: var(--tone-bar-w, 106px);
             height: var(--tone-bar-h, 9px);
             background: #3E2723;
-            border-radius: calc(var(--tone-bar-h, 9px) / 2);
+            border-radius: calc(var(--tone-bar-h, 9px)/2);
             box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.5);
         }
 
@@ -463,13 +464,29 @@
         }
 
         @keyframes pulseGlow {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
         }
 
         @keyframes popUp {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -478,95 +495,82 @@
     <div class="bg-layer"></div>
     <div class="divine-light"></div>
 
-    <!-- SVG 定義區：濾鏡 + 符號 -->
     <svg style="position:absolute;width:0;height:0;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
         <defs>
-            <!-- 金色漸層 -->
             <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#FFECB3"/>
-                <stop offset="50%" stop-color="#FFC107"/>
-                <stop offset="100%" stop-color="#FF8F00"/>
+                <stop offset="0%" stop-color="#FFECB3" />
+                <stop offset="50%" stop-color="#FFC107" />
+                <stop offset="100%" stop-color="#FF8F00" />
             </linearGradient>
 
-            <!-- 古銅材質漸層 -->
             <radialGradient id="bronzeBase" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#C4A060"/>
-                <stop offset="30%" stop-color="#8B6914"/>
-                <stop offset="60%" stop-color="#5C4510"/>
-                <stop offset="100%" stop-color="#2A1E0A"/>
+                <stop offset="0%" stop-color="#CA9C65" />
+                <stop offset="30%" stop-color="#8B6914" />
+                <stop offset="60%" stop-color="#5C4510" />
+                <stop offset="100%" stop-color="#2A1E0A" />
             </radialGradient>
 
-            <!-- 符號金色漸層 -->
             <linearGradient id="symbolGold" x1="20%" y1="10%" x2="80%" y2="90%">
-                <stop offset="0%" stop-color="#E8D5A0"/>
-                <stop offset="40%" stop-color="#C9A227"/>
-                <stop offset="100%" stop-color="#8B6914"/>
+                <stop offset="0%" stop-color="#FFD700" />
+                <stop offset="50%" stop-color="#FDB931" />
+                <stop offset="100%" stop-color="#9E7C0C" />
             </linearGradient>
 
-            <!-- ========== 3D 浮雕濾鏡 ========== -->
+            <!-- 3D Bronze Filter -->
             <filter id="embossedBronze" x="-20%" y="-20%" width="140%" height="140%">
-                <!-- 表面雜訊紋理 -->
-                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise"/>
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" result="displaced"/>
-
-                <!-- 漫射光（主光源從左上） -->
-                <feDiffuseLighting in="displaced" lighting-color="#FFF8E8" surfaceScale="6" diffuseConstant="0.8" result="diffuse">
-                    <feDistantLight azimuth="225" elevation="50"/>
+                <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" result="displaced" />
+                <feDiffuseLighting in="displaced" lighting-color="#FFF8E8" surfaceScale="5" diffuseConstant="1"
+                    result="diffuse">
+                    <feDistantLight azimuth="225" elevation="45" />
                 </feDiffuseLighting>
-
-                <!-- 鏡面高光 -->
-                <feSpecularLighting in="displaced" lighting-color="#FFFAF0" surfaceScale="4" specularConstant="1.2" specularExponent="25" result="specular">
-                    <feDistantLight azimuth="225" elevation="60"/>
-                </feSpecularLighting>
-
-                <!-- 合成 -->
-                <feComposite in="diffuse" in2="SourceGraphic" operator="in" result="diffuseIn"/>
-                <feComposite in="specular" in2="SourceGraphic" operator="in" result="specularIn"/>
-                <feBlend in="diffuseIn" in2="SourceGraphic" mode="multiply" result="base"/>
-                <feBlend in="specularIn" in2="base" mode="screen"/>
+                <feComposite in="diffuse" in2="SourceGraphic" operator="in" result="diffuseIn" />
+                <feComposite in="diffuseIn" in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"
+                    result="lit" />
             </filter>
 
-            <!-- 符號浮雕濾鏡 -->
-            <filter id="symbolEmboss" x="-10%" y="-10%" width="120%" height="120%">
-                <feDiffuseLighting in="SourceAlpha" lighting-color="#FFF5D6" surfaceScale="5" diffuseConstant="1" result="light">
-                    <feDistantLight azimuth="225" elevation="45"/>
-                </feDiffuseLighting>
-                <feComposite in="light" in2="SourceAlpha" operator="in" result="lightShape"/>
-                <feComposite in="SourceGraphic" in2="lightShape" operator="arithmetic" k1="1" k2="0.5" k3="0.5" k4="0"/>
+            <!-- Inner Shadow for Recess -->
+            <filter id="innerShadow">
+                <feOffset dx="2" dy="2" />
+                <feGaussianBlur stdDeviation="3" result="offset-blur" />
+                <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+                <feFlood flood-color="black" flood-opacity="0.8" result="color" />
+                <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+                <feComposite operator="over" in="shadow" in2="SourceGraphic" />
             </filter>
 
             <!-- 封面麥穗 -->
             <symbol id="icon-wheat" viewBox="0 0 100 100">
-                <path d="M50,90 L50,20" stroke="url(#goldGradient)" stroke-width="4" stroke-linecap="round" fill="none"/>
-                <path d="M50,70 C30,60 30,40 50,30" fill="url(#goldGradient)"/>
-                <path d="M50,55 C35,45 35,35 50,25" fill="url(#goldGradient)"/>
-                <path d="M50,40 C40,35 40,30 50,22" fill="url(#goldGradient)"/>
-                <path d="M50,70 C70,60 70,40 50,30" fill="url(#goldGradient)"/>
-                <path d="M50,55 C65,45 65,35 50,25" fill="url(#goldGradient)"/>
-                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
+                <path d="M50,90 L50,20" stroke="url(#goldGradient)" stroke-width="4" stroke-linecap="round"
+                    fill="none" />
+                <path d="M50,70 C30,60 30,40 50,30" fill="url(#goldGradient)" />
+                <path d="M50,55 C35,45 35,35 50,25" fill="url(#goldGradient)" />
+                <path d="M50,40 C40,35 40,30 50,22" fill="url(#goldGradient)" />
+                <path d="M50,70 C70,60 70,40 50,30" fill="url(#goldGradient)" />
+                <path d="M50,55 C65,45 65,35 50,25" fill="url(#goldGradient)" />
+                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" stroke-width="2" />
             </symbol>
         </defs>
     </svg>
 
-    <!-- Scene 1: Cover -->
     <section id="s_gate" class="scene active" onclick="goSelection()">
         <div class="cover-content">
             <div class="title-area">
                 <div class="t-main">南方 · 金穗</div>
                 <div class="t-sub">成熟、覺醒與鞏固的果實</div>
             </div>
-
             <div class="harvest-emblem-wrap">
                 <div class="emblem-glow"></div>
-                <svg class="wheat-svg"><use href="#icon-wheat"></use></svg>
+                <svg class="wheat-svg">
+                    <use href="#icon-wheat"></use>
+                </svg>
             </div>
-
             <div class="t-desc">整合走過的旅程，<br>收穫屬於你的智慧與成果</div>
             <div class="start-btn-frame">開啟豐盛之門</div>
         </div>
     </section>
 
-    <!-- Scene 2: 五大金鑰 -->
+    <!-- Scene 2: The 5 Medallions -->
     <section id="s_selection" class="scene">
         <div class="sel-container">
             <div class="sel-header">
@@ -575,124 +579,153 @@
             </div>
 
             <div class="medallion-row">
-                <!-- 財務 -->
+
+                <!-- Financial: 4-Loop Coin Knot -->
                 <div class="medallion-item" onclick="start('financial','財務')">
                     <div class="medallion-aura"></div>
                     <div class="medallion-wrap">
                         <svg class="medallion-svg" viewBox="0 0 150 150">
-                            <!-- 徽章底盤 -->
-                            <circle cx="75" cy="75" r="72" fill="url(#bronzeBase)" filter="url(#embossedBronze)"/>
-                            <!-- 外圈厚邊 -->
-                            <circle cx="75" cy="75" r="68" fill="none" stroke="#6B4C20" stroke-width="6"/>
-                            <circle cx="75" cy="75" r="62" fill="none" stroke="#4A3510" stroke-width="3"/>
-                            <!-- 內凹區域 -->
-                            <circle cx="75" cy="75" r="52" fill="#3D2A12" opacity="0.4"/>
-                            <!-- 符號：無限結 -->
-                            <g filter="url(#symbolEmboss)" fill="url(#symbolGold)">
-                                <ellipse cx="55" cy="75" rx="22" ry="18" fill="none" stroke="url(#symbolGold)" stroke-width="7"/>
-                                <ellipse cx="95" cy="75" rx="22" ry="18" fill="none" stroke="url(#symbolGold)" stroke-width="7"/>
-                                <circle cx="75" cy="75" r="5" fill="url(#symbolGold)"/>
+                            <!-- Base -->
+                            <circle cx="75" cy="75" r="70" fill="url(#bronzeBase)" filter="url(#embossedBronze)" />
+                            <circle cx="75" cy="75" r="66" fill="none" stroke="#6B4C20" stroke-width="6" />
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="#3A2810" stroke-width="2" />
+                            <!-- Recess -->
+                            <circle cx="75" cy="75" r="54" fill="#2A1E0A" opacity="0.6" filter="url(#innerShadow)" />
+
+                            <!-- Symbol: 4-Loop Knot with Coins -->
+                            <g fill="none" stroke="url(#symbolGold)" stroke-width="6" stroke-linecap="round">
+                                <!-- Top Loop -->
+                                <path
+                                    d="M75,75 C75,50 55,50 55,35 C55,25 65,20 75,20 C85,20 95,25 95,35 C95,50 75,50 75,75" />
+                                <!-- Bottom Loop -->
+                                <path
+                                    d="M75,75 C75,100 95,100 95,115 C95,125 85,130 75,130 C65,130 55,125 55,115 C55,100 75,100 75,75" />
+                                <!-- Left Loop -->
+                                <path
+                                    d="M75,75 C50,75 50,95 35,95 C25,95 20,85 20,75 C20,65 25,55 35,55 C50,55 50,75 75,75" />
+                                <!-- Right Loop -->
+                                <path
+                                    d="M75,75 C100,75 100,55 115,55 C125,55 130,65 130,75 C130,85 125,95 115,95 C100,95 100,75 75,75" />
+                            </g>
+                            <!-- Currency Symbols inside loops -->
+                            <g fill="url(#symbolGold)" font-family="Cinzel" font-weight="900" font-size="14"
+                                text-anchor="middle">
+                                <text x="75" y="38">$</text>
+                                <text x="75" y="120">$</text>
+                                <text x="34" y="80" transform="rotate(-90 34 80)">$</text>
+                                <text x="116" y="80" transform="rotate(90 116 80)">$</text>
                             </g>
                         </svg>
                     </div>
                     <div class="medallion-label">財務</div>
                 </div>
 
-                <!-- 事業 -->
+                <!-- Career: Obelisk with Sun -->
                 <div class="medallion-item" onclick="start('career','事業')">
                     <div class="medallion-aura"></div>
                     <div class="medallion-wrap">
                         <svg class="medallion-svg" viewBox="0 0 150 150">
-                            <circle cx="75" cy="75" r="72" fill="url(#bronzeBase)" filter="url(#embossedBronze)"/>
-                            <circle cx="75" cy="75" r="68" fill="none" stroke="#6B4C20" stroke-width="6"/>
-                            <circle cx="75" cy="75" r="62" fill="none" stroke="#4A3510" stroke-width="3"/>
-                            <circle cx="75" cy="75" r="52" fill="#3D2A12" opacity="0.4"/>
-                            <!-- 符號：方尖碑 -->
-                            <g filter="url(#symbolEmboss)" fill="url(#symbolGold)">
-                                <path d="M75,28 L62,50 L58,115 L92,115 L88,50 Z"/>
-                                <rect x="52" y="115" width="46" height="10" rx="2"/>
-                            </g>
+                            <circle cx="75" cy="75" r="70" fill="url(#bronzeBase)" filter="url(#embossedBronze)" />
+                            <circle cx="75" cy="75" r="66" fill="none" stroke="#6B4C20" stroke-width="6" />
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="#3A2810" stroke-width="2" />
+                            <circle cx="75" cy="75" r="54" fill="#2A1E0A" opacity="0.6" filter="url(#innerShadow)" />
+
+                            <!-- Symbol: Obelisk & Sun -->
+                            <!-- Sun Halo -->
+                            <circle cx="75" cy="45" r="16" fill="none" stroke="url(#symbolGold)" stroke-width="4" />
+                            <!-- Obelisk -->
+                            <path d="M75,25 L65,50 L60,110 L90,110 L85,50 Z" fill="url(#symbolGold)" />
+                            <!-- Base -->
+                            <rect x="55" y="110" width="40" height="8" rx="2" fill="url(#symbolGold)" />
                         </svg>
                     </div>
                     <div class="medallion-label">事業</div>
                 </div>
 
-                <!-- 感情 -->
+                <!-- Relationship: Thick Interlocking Rings -->
                 <div class="medallion-item" onclick="start('relationship','感情')">
                     <div class="medallion-aura"></div>
                     <div class="medallion-wrap">
                         <svg class="medallion-svg" viewBox="0 0 150 150">
-                            <circle cx="75" cy="75" r="72" fill="url(#bronzeBase)" filter="url(#embossedBronze)"/>
-                            <circle cx="75" cy="75" r="68" fill="none" stroke="#6B4C20" stroke-width="6"/>
-                            <circle cx="75" cy="75" r="62" fill="none" stroke="#4A3510" stroke-width="3"/>
-                            <circle cx="75" cy="75" r="52" fill="#3D2A12" opacity="0.4"/>
-                            <!-- 符號：雙環 -->
-                            <g filter="url(#symbolEmboss)">
-                                <circle cx="60" cy="75" r="22" fill="none" stroke="url(#symbolGold)" stroke-width="8"/>
-                                <circle cx="90" cy="75" r="22" fill="none" stroke="url(#symbolGold)" stroke-width="8"/>
+                            <circle cx="75" cy="75" r="70" fill="url(#bronzeBase)" filter="url(#embossedBronze)" />
+                            <circle cx="75" cy="75" r="66" fill="none" stroke="#6B4C20" stroke-width="6" />
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="#3A2810" stroke-width="2" />
+                            <circle cx="75" cy="75" r="54" fill="#2A1E0A" opacity="0.6" filter="url(#innerShadow)" />
+
+                            <!-- Symbol: Thick Rings -->
+                            <g stroke="url(#symbolGold)" stroke-width="10" fill="none">
+                                <circle cx="58" cy="75" r="24" />
+                                <circle cx="92" cy="75" r="24" />
                             </g>
                         </svg>
                     </div>
                     <div class="medallion-label">感情</div>
                 </div>
 
-                <!-- 健康 -->
+                <!-- Health: Dense Tree -->
                 <div class="medallion-item" onclick="start('health','健康')">
                     <div class="medallion-aura"></div>
                     <div class="medallion-wrap">
                         <svg class="medallion-svg" viewBox="0 0 150 150">
-                            <circle cx="75" cy="75" r="72" fill="url(#bronzeBase)" filter="url(#embossedBronze)"/>
-                            <circle cx="75" cy="75" r="68" fill="none" stroke="#6B4C20" stroke-width="6"/>
-                            <circle cx="75" cy="75" r="62" fill="none" stroke="#4A3510" stroke-width="3"/>
-                            <circle cx="75" cy="75" r="52" fill="#3D2A12" opacity="0.4"/>
-                            <!-- 符號：生命樹 -->
-                            <g filter="url(#symbolEmboss)" stroke="url(#symbolGold)" fill="none" stroke-linecap="round">
-                                <!-- 樹幹 -->
-                                <path d="M75,125 L75,70" stroke-width="8"/>
-                                <!-- 根 -->
-                                <path d="M75,125 Q58,118 48,128" stroke-width="5"/>
-                                <path d="M75,125 Q92,118 102,128" stroke-width="5"/>
-                                <!-- 枝 -->
-                                <path d="M75,70 L75,40" stroke-width="6"/>
-                                <path d="M75,65 Q50,55 35,38" stroke-width="5"/>
-                                <path d="M75,65 Q100,55 115,38" stroke-width="5"/>
-                                <path d="M75,55 Q55,48 45,35" stroke-width="4"/>
-                                <path d="M75,55 Q95,48 105,35" stroke-width="4"/>
-                                <!-- 葉端點 -->
-                                <circle cx="75" cy="35" r="5" fill="url(#symbolGold)"/>
-                                <circle cx="35" cy="35" r="4" fill="url(#symbolGold)"/>
-                                <circle cx="115" cy="35" r="4" fill="url(#symbolGold)"/>
-                                <circle cx="45" cy="32" r="3" fill="url(#symbolGold)"/>
-                                <circle cx="105" cy="32" r="3" fill="url(#symbolGold)"/>
+                            <circle cx="75" cy="75" r="70" fill="url(#bronzeBase)" filter="url(#embossedBronze)" />
+                            <circle cx="75" cy="75" r="66" fill="none" stroke="#6B4C20" stroke-width="6" />
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="#3A2810" stroke-width="2" />
+                            <circle cx="75" cy="75" r="54" fill="#2A1E0A" opacity="0.6" filter="url(#innerShadow)" />
+
+                            <!-- Symbol: Tree of Life -->
+                            <g stroke="url(#symbolGold)" stroke-width="5" fill="none" stroke-linecap="round">
+                                <!-- Trunk -->
+                                <path d="M75,120 L75,70" stroke-width="8" />
+                                <!-- Roots -->
+                                <path d="M75,120 Q60,125 50,115" />
+                                <path d="M75,120 Q90,125 100,115" />
+                                <!-- Branches -->
+                                <path d="M75,70 Q50,60 40,40 M40,40 Q35,30 45,25" />
+                                <path d="M75,70 Q100,60 110,40 M110,40 Q115,30 105,25" />
+                                <path d="M75,70 L75,30" />
+                                <path d="M75,55 L55,45" />
+                                <path d="M75,55 L95,45" />
+                                <!-- Leaves -->
+                                <circle cx="75" cy="25" r="4" fill="url(#symbolGold)" stroke="none" />
+                                <circle cx="45" cy="25" r="3" fill="url(#symbolGold)" stroke="none" />
+                                <circle cx="105" cy="25" r="3" fill="url(#symbolGold)" stroke="none" />
+                                <circle cx="55" cy="45" r="3" fill="url(#symbolGold)" stroke="none" />
+                                <circle cx="95" cy="45" r="3" fill="url(#symbolGold)" stroke="none" />
                             </g>
                         </svg>
                     </div>
                     <div class="medallion-label">健康</div>
                 </div>
 
-                <!-- 成長 -->
+                <!-- Growth: Fibonacci Grid -->
                 <div class="medallion-item" onclick="start('growth','成長')">
                     <div class="medallion-aura"></div>
                     <div class="medallion-wrap">
                         <svg class="medallion-svg" viewBox="0 0 150 150">
-                            <circle cx="75" cy="75" r="72" fill="url(#bronzeBase)" filter="url(#embossedBronze)"/>
-                            <circle cx="75" cy="75" r="68" fill="none" stroke="#6B4C20" stroke-width="6"/>
-                            <circle cx="75" cy="75" r="62" fill="none" stroke="#4A3510" stroke-width="3"/>
-                            <circle cx="75" cy="75" r="52" fill="#3D2A12" opacity="0.4"/>
-                            <!-- 符號：黃金螺旋 -->
-                            <g filter="url(#symbolEmboss)">
-                                <!-- 輔助方格 -->
-                                <rect x="30" y="30" width="90" height="90" fill="none" stroke="url(#symbolGold)" stroke-width="1.5" opacity="0.25"/>
-                                <line x1="30" y1="75" x2="120" y2="75" stroke="url(#symbolGold)" stroke-width="1.5" opacity="0.25"/>
-                                <line x1="75" y1="30" x2="75" y2="120" stroke="url(#symbolGold)" stroke-width="1.5" opacity="0.25"/>
-                                <!-- 螺旋 -->
-                                <path d="M75,30 A45,45 0 0,1 120,75 A45,45 0 0,1 75,120 A45,45 0 0,1 30,75 A22.5,22.5 0 0,0 75,75 A11.25,11.25 0 0,0 75,97.5 A5.625,5.625 0 0,0 80.625,91.875"
-                                      fill="none" stroke="url(#symbolGold)" stroke-width="7" stroke-linecap="round"/>
+                            <circle cx="75" cy="75" r="70" fill="url(#bronzeBase)" filter="url(#embossedBronze)" />
+                            <circle cx="75" cy="75" r="66" fill="none" stroke="#6B4C20" stroke-width="6" />
+                            <circle cx="75" cy="75" r="60" fill="none" stroke="#3A2810" stroke-width="2" />
+                            <circle cx="75" cy="75" r="54" fill="#2A1E0A" opacity="0.6" filter="url(#innerShadow)" />
+
+                            <!-- Symbol: Fibonacci Grid & Spiral -->
+                            <g stroke="url(#symbolGold)" fill="none">
+                                <!-- Grid -->
+                                <rect x="35" y="45" width="80" height="50" stroke-width="2" opacity="0.5" />
+                                <line x1="85" y1="45" x2="85" y2="95" stroke-width="2" opacity="0.5" />
+                                <line x1="85" y1="75" x2="115" y2="75" stroke-width="2" opacity="0.5" />
+                                <line x1="95" y1="75" x2="95" y2="95" stroke-width="2" opacity="0.5" />
+
+                                <!-- Spiral -->
+                                <path d="M115,45 
+                                         A50,50 0 0,0 85,95
+                                         A30,30 0 0,0 35,45
+                                         A20,20 0 0,1 65,45" stroke-width="6" stroke-linecap="round" />
                             </g>
                         </svg>
                     </div>
                     <div class="medallion-label">成長</div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -704,9 +737,7 @@
                 <div id="spinNum" class="spin-count">1</div>
                 <button class="connect-btn" onclick="reveal()">接引指引...</button>
             </div>
-
             <div id="card" class="card-final"></div>
-
             <div id="nav" class="nav-row">
                 <button class="nav-btn" onclick="goHome()">回首頁</button>
                 <button class="nav-btn" onclick="goSel()">再選一次</button>
@@ -715,6 +746,7 @@
     </section>
 
     <script>
+        // Same logic as v17
         let interval = null;
         let theme = '';
 
@@ -752,8 +784,8 @@
             const toneId = (kin - 1) % 13 + 1;
             const glyphId = (kin - 1) % 20 + 1;
             const sealPad = String(glyphId).padStart(2, '0');
-            const toneNames = ['磁性','月亮','電力','自我存在','超頻','韻律','共鳴','銀河','太陽','行星','光譜','水晶','宇宙'];
-            const glyphNames = ['紅龍','白風','藍夜','黃種子','紅蛇','白世界橋','藍手','黃星星','紅月','白狗','藍猴','黃人','紅天行者','白巫師','藍鷹','黃戰士','紅地球','白鏡','藍風暴','黃太陽'];
+            const toneNames = ['磁性', '月亮', '電力', '自我存在', '超頻', '韻律', '共鳴', '銀河', '太陽', '行星', '光譜', '水晶', '宇宙'];
+            const glyphNames = ['紅龍', '白風', '藍夜', '黃種子', '紅蛇', '白世界橋', '藍手', '黃星星', '紅月', '白狗', '藍猴', '黃人', '紅天行者', '白巫師', '藍鷹', '黃戰士', '紅地球', '白鏡', '藍風暴', '黃太陽'];
 
             const dots = toneId % 5;
             const bars = Math.floor(toneId / 5);
@@ -772,20 +804,20 @@
             const c = document.getElementById('card');
             c.innerHTML = `
                 <div class="tone-area${noDots}">${tHtml}</div>
-                <img class="glyph-img" src="../images/${sealPad}.png" alt="${glyphNames[glyphId-1]}" onerror="this.style.display='none'">
+                <img class="glyph-img" src="../images/${sealPad}.png" alt="${glyphNames[glyphId - 1]}">
                 <div style="font-family:'Cinzel';color:#8D6E63;font-weight:700;margin-top:10px;">KIN ${kin}</div>
-                <div style="font-size:1.4rem;font-weight:900;color:#3E2723;margin-bottom:16px;">${toneNames[toneId-1]}的${glyphNames[glyphId-1]}</div>
+                <div style="font-size:1.4rem;font-weight:900;color:#3E2723;margin-bottom:16px;">${toneNames[toneId - 1]}的${glyphNames[glyphId - 1]}</div>
                 <div class="card-block">
                     <div class="card-block-label">⚡ 能量感應</div>
-                    <div class="card-block-text">${data.synchronicMessage||''}</div>
+                    <div class="card-block-text">${data.synchronicMessage || ''}</div>
                 </div>
                 <div class="card-block">
                     <div class="card-block-label">🌱 調頻指引</div>
-                    <div class="card-block-text">${data.alignment||''}</div>
+                    <div class="card-block-text">${data.alignment || ''}</div>
                 </div>
                 <div class="card-block-border">
                     <div class="card-block-label">🪨 落地行動</div>
-                    <div class="card-block-text">${data.grounding||''}</div>
+                    <div class="card-block-text">${data.grounding || ''}</div>
                 </div>
                 <div style="margin-top:16px;font-size:0.8rem;color:#aaa;letter-spacing:0.2em;">✦ ${theme}指引 ✦</div>
             `;

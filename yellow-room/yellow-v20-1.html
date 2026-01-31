@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>南方 · 金穗聖域 v16</title>
+    <title>南方 · 金穗聖域 v20</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Cinzel:wght@600;900&display=swap"
         rel="stylesheet">
@@ -44,7 +44,6 @@
             align-items: center;
         }
 
-        /* Background Layers */
         .bg-layer {
             position: fixed;
             inset: 0;
@@ -65,7 +64,6 @@
             animation: dustFloat 20s linear infinite;
         }
 
-        /* Scenes */
         .scene {
             position: absolute;
             inset: 0;
@@ -97,9 +95,7 @@
             padding: 20px;
         }
 
-        .title-area {
-            margin-bottom: 20px;
-        }
+        .title-area { margin-bottom: 20px; }
 
         .t-main {
             font-size: clamp(2.5rem, 6vw, 4rem);
@@ -127,7 +123,6 @@
             line-height: 1.6;
         }
 
-        /* Emblem */
         .harvest-emblem-wrap {
             position: relative;
             width: clamp(220px, 45vw, 320px);
@@ -188,13 +183,9 @@
             border-color: #FFD700;
         }
 
-        /* ============================================
-           Scene 2: 五大生命金鑰 - 神廟古銅浮雕徽章
-           參考圖規格：
-           - 雙層同心圓厚邊框
-           - 深古銅漸層 + 強烈背光光暈
-           - 中央符號凸起浮雕感
-           ============================================ */
+        /* ==============================================
+           Scene 2: 五大金鑰 - 3D 青銅浮雕銅幣
+           ============================================== */
 
         .sel-container {
             display: flex;
@@ -241,220 +232,228 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 18px;
+            gap: 16px;
             cursor: pointer;
             position: relative;
+            transition: transform 0.4s var(--ease-out);
         }
 
-        /* === 神廟背光光暈 === */
-        .medallion-glow {
+        .medallion-item:hover {
+            transform: translateY(-8px);
+        }
+
+        /* ===== 神廟背光光暈 ===== */
+        .medallion-halo {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 180px;
-            height: 180px;
-            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            transform: translate(-50%, -55%);
             background: radial-gradient(circle,
-                rgba(255, 170, 50, 0.35) 0%,
-                rgba(255, 140, 0, 0.15) 40%,
+                rgba(255, 170, 80, 0.5) 0%,
+                rgba(255, 140, 50, 0.3) 30%,
+                rgba(255, 100, 20, 0.1) 50%,
                 transparent 70%);
             border-radius: 50%;
+            filter: blur(15px);
             pointer-events: none;
-            transition: all 0.5s ease;
             z-index: 0;
+            transition: all 0.4s ease;
         }
 
-        .medallion-item:hover .medallion-glow {
-            width: 220px;
-            height: 220px;
+        .medallion-item:hover .medallion-halo {
+            width: 240px;
+            height: 240px;
             background: radial-gradient(circle,
-                rgba(255, 180, 50, 0.5) 0%,
-                rgba(255, 150, 0, 0.25) 40%,
+                rgba(255, 180, 90, 0.6) 0%,
+                rgba(255, 150, 60, 0.4) 30%,
+                rgba(255, 120, 40, 0.15) 50%,
                 transparent 70%);
         }
 
-        /* === 古銅徽章主體 === */
+        /* ===== 青銅銅幣主體 ===== */
         .medallion {
-            width: 140px;
-            height: 140px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             position: relative;
             z-index: 1;
 
-            /* 深古銅材質漸層 */
+            /* 青銅材質底：中心亮、邊緣暗 */
             background:
-                radial-gradient(circle at 35% 25%,
-                    #A08060 0%,
-                    #7D5A3C 15%,
-                    #5C3D28 35%,
-                    #3E2518 60%,
-                    #2A1810 100%);
+                radial-gradient(circle at 40% 35%,
+                    #C9A86C 0%,
+                    #A07840 15%,
+                    #7D5A30 35%,
+                    #5C4020 55%,
+                    #3D2A15 75%,
+                    #2A1A0A 100%);
 
-            /* 浮雕陰影結構 */
+            /* 銅幣投影：外陰影 + 多層深度 */
             box-shadow:
-                /* 背光暈染（底層） */
-                0 0 40px rgba(255, 160, 40, 0.25),
+                /* 背光映射 */
+                0 0 50px rgba(255, 160, 60, 0.25),
                 /* 主投影 */
                 0 12px 30px rgba(0, 0, 0, 0.7),
-                0 4px 8px rgba(0, 0, 0, 0.5),
-                /* 外圈高光（左上） */
-                inset 3px 3px 6px rgba(180, 140, 100, 0.5),
-                /* 外圈陰影（右下） */
-                inset -3px -3px 8px rgba(0, 0, 0, 0.7);
+                0 4px 10px rgba(0, 0, 0, 0.5),
+                /* 邊緣立體：上亮下暗 */
+                inset 0 3px 6px rgba(210, 180, 130, 0.4),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.6),
+                /* 左右立體 */
+                inset 3px 0 6px rgba(180, 150, 100, 0.25),
+                inset -3px 0 6px rgba(0, 0, 0, 0.4);
 
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* === 外圈厚邊框（第一層） === */
-        .medallion::before {
-            content: '';
-            position: absolute;
-            inset: 8px;
-            border-radius: 50%;
-            border: 5px solid;
-            border-color: #6B4830;
-            box-shadow:
-                /* 邊框內凹 */
-                inset 2px 2px 3px rgba(0, 0, 0, 0.6),
-                inset -1px -1px 2px rgba(160, 130, 100, 0.3),
-                /* 邊框外凸 */
-                1px 1px 2px rgba(0, 0, 0, 0.4),
-                -1px -1px 1px rgba(140, 110, 80, 0.2);
-            pointer-events: none;
-        }
-
-        /* === 內圈凹槽（第二層） === */
-        .medallion::after {
-            content: '';
-            position: absolute;
-            inset: 18px;
-            border-radius: 50%;
-            border: 3px solid;
-            border-color: #4A3020;
-            box-shadow:
-                inset 1px 1px 3px rgba(0, 0, 0, 0.7),
-                inset -1px -1px 2px rgba(120, 90, 60, 0.2);
-            pointer-events: none;
-        }
-
-        /* === 符號容器 === */
-        .medallion-inner {
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            position: relative;
-        }
-
-        /* === 浮雕符號樣式 === */
-        .medallion-svg {
-            width: 100%;
-            height: 100%;
-            /* 古銅金色 */
-            fill: #C9A227;
-            /* 浮雕效果：左上高光 + 右下陰影 */
-            filter:
-                drop-shadow(1.5px 1.5px 1px rgba(20, 10, 5, 0.9))
-                drop-shadow(-1px -1px 0.5px rgba(220, 180, 100, 0.4))
-                drop-shadow(0 0 3px rgba(180, 140, 60, 0.3));
             transition: all 0.4s ease;
         }
 
-        /* === Hover 效果 === */
-        .medallion-item:hover .medallion {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow:
-                0 0 60px rgba(255, 170, 50, 0.4),
-                0 20px 45px rgba(0, 0, 0, 0.75),
-                0 8px 15px rgba(0, 0, 0, 0.5),
-                inset 4px 4px 8px rgba(200, 160, 120, 0.5),
-                inset -3px -3px 8px rgba(0, 0, 0, 0.6);
+        /* ===== 外圈厚邊框 (rim) ===== */
+        .medallion::before {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            border: 8px solid transparent;
             background:
-                radial-gradient(circle at 35% 25%,
-                    #B89060 0%,
-                    #8D6A4C 15%,
-                    #6C4D38 35%,
-                    #4E3528 60%,
-                    #3A2820 100%);
+                linear-gradient(145deg, #8B7355 0%, #5D4037 50%, #3E2723 100%) padding-box,
+                linear-gradient(145deg, #A08060 0%, #6D5040 50%, #4A3020 100%) border-box;
+            box-shadow:
+                inset 2px 2px 4px rgba(180, 150, 100, 0.4),
+                inset -2px -2px 5px rgba(0, 0, 0, 0.7),
+                2px 2px 4px rgba(0, 0, 0, 0.5),
+                -1px -1px 3px rgba(140, 110, 70, 0.2);
+            pointer-events: none;
+        }
+
+        /* ===== 內圈凹陷 ===== */
+        .medallion::after {
+            content: '';
+            position: absolute;
+            inset: 22px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%,
+                #6D5035 0%,
+                #5A4028 40%,
+                #48321C 100%);
+            box-shadow:
+                inset 3px 3px 8px rgba(0, 0, 0, 0.7),
+                inset -2px -2px 5px rgba(160, 130, 80, 0.2),
+                inset 0 0 15px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+        }
+
+        /* ===== 符號容器 ===== */
+        .medallion-inner {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== 青銅浮雕符號 ===== */
+        .medallion-svg {
+            width: 100%;
+            height: 100%;
+            /* 青銅浮雕色：用亮銅色 */
+            fill: #C9A050;
+            /* 浮雕效果：左上亮邊 + 右下暗邊 */
+            filter:
+                drop-shadow(1.5px 1.5px 1px rgba(20, 12, 5, 0.9))
+                drop-shadow(-1px -1px 0.5px rgba(220, 190, 130, 0.6))
+                drop-shadow(0 0 3px rgba(160, 120, 60, 0.4));
+            transition: all 0.4s ease;
         }
 
         .medallion-item:hover .medallion-svg {
-            fill: #DEBB40;
+            fill: #DDB860;
             filter:
-                drop-shadow(2px 2px 1px rgba(20, 10, 5, 0.85))
-                drop-shadow(-1px -1px 1px rgba(255, 220, 140, 0.5))
-                drop-shadow(0 0 8px rgba(220, 180, 80, 0.5));
-            transform: scale(1.05);
+                drop-shadow(2px 2px 1px rgba(20, 12, 5, 0.85))
+                drop-shadow(-1px -1px 1px rgba(240, 210, 150, 0.7))
+                drop-shadow(0 0 8px rgba(200, 160, 80, 0.5));
         }
 
-        /* === 標籤文字 === */
+        .medallion-item:hover .medallion {
+            box-shadow:
+                0 0 70px rgba(255, 170, 70, 0.35),
+                0 18px 40px rgba(0, 0, 0, 0.75),
+                0 6px 15px rgba(0, 0, 0, 0.5),
+                inset 0 4px 8px rgba(220, 190, 140, 0.45),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.55),
+                inset 3px 0 6px rgba(190, 160, 110, 0.3),
+                inset -3px 0 6px rgba(0, 0, 0, 0.35);
+            background:
+                radial-gradient(circle at 40% 35%,
+                    #DDBA7A 0%,
+                    #B8904A 15%,
+                    #956A38 35%,
+                    #6D4A28 55%,
+                    #4D3218 75%,
+                    #352210 100%);
+        }
+
+        /* ===== 標籤 ===== */
         .medallion-label {
             font-size: 1.3rem;
             color: #A08060;
             letter-spacing: 0.25em;
             font-weight: 700;
-            text-shadow:
-                0 2px 4px rgba(0, 0, 0, 0.9),
-                0 0 20px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
 
         .medallion-item:hover .medallion-label {
             color: #E0C080;
-            text-shadow:
-                0 2px 4px rgba(0, 0, 0, 0.9),
-                0 0 15px rgba(255, 200, 100, 0.4);
-            transform: translateY(2px);
+            text-shadow: 0 0 15px rgba(255, 200, 100, 0.5), 0 2px 6px rgba(0, 0, 0, 0.9);
         }
 
-        /* === 手機版適配 === */
+        /* ===== 手機版 ===== */
         @media (max-width: 600px) {
-            .medallion-row {
-                gap: 24px;
+            .medallion-row { gap: 24px; }
+
+            .medallion-halo {
+                width: 140px;
+                height: 140px;
             }
 
-            .medallion-glow {
-                width: 130px;
-                height: 130px;
+            .medallion-item:hover .medallion-halo {
+                width: 160px;
+                height: 160px;
             }
 
             .medallion {
-                width: 100px;
-                height: 100px;
+                width: 105px;
+                height: 105px;
             }
 
             .medallion::before {
-                inset: 6px;
-                border-width: 4px;
+                inset: 4px;
+                border-width: 6px;
             }
 
             .medallion::after {
-                inset: 14px;
-                border-width: 2px;
+                inset: 16px;
             }
 
             .medallion-inner {
-                width: 48px;
-                height: 48px;
+                width: 55px;
+                height: 55px;
             }
 
             .medallion-label {
                 font-size: 1rem;
                 letter-spacing: 0.15em;
             }
-
-            .medallion-item:hover .medallion-glow {
-                width: 150px;
-                height: 150px;
-            }
         }
 
-        /* === Scene 3: Oracle === */
+        /* Scene 3: Oracle */
         .oracle-layout {
             display: flex;
             flex-direction: column;
@@ -489,7 +488,6 @@
             box-shadow: 0 0 40px rgba(255, 179, 0, 0.6);
         }
 
-        /* ===== 牌卡容器 ===== */
         .card-final {
             --glyph: 100px;
             background: #F4EBD9;
@@ -503,11 +501,8 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
         }
 
-        .card-final.show {
-            display: block;
-        }
+        .card-final.show { display: block; }
 
-        /* ===== 神廟調性比例語法覆寫 ===== */
         .card-final .tone-dots {
             display: flex;
             justify-content: center;
@@ -531,9 +526,7 @@
             margin-bottom: 12px;
         }
 
-        .card-final .tone-area.no-dots .tone-dots {
-            display: none;
-        }
+        .card-final .tone-area.no-dots .tone-dots { display: none; }
 
         .card-final .t-dot {
             width: var(--tone-dot-size, 12px);
@@ -557,7 +550,6 @@
             object-fit: contain;
         }
 
-        /* 牌卡內容區塊 */
         .card-block {
             text-align: left;
             background: rgba(0, 0, 0, 0.05);
@@ -608,45 +600,22 @@
         }
 
         @keyframes pulseGlow {
-
-            0%,
-            100% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.6;
-                transform: scale(1.1);
-            }
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
         }
 
         @keyframes dustFloat {
-            0% {
-                background-position: 0 0;
-            }
-
-            100% {
-                background-position: 200px 200px;
-            }
+            0% { background-position: 0 0; }
+            100% { background-position: 200px 200px; }
         }
 
         @keyframes popUp {
-            0% {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         @keyframes rotateRing {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -655,223 +624,168 @@
     <div class="bg-layer"></div>
     <div class="gold-dust"></div>
 
-    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1"
-        xmlns="http://www.w3.org/2000/svg">
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#FFECB3;stop-opacity:1" />
-                <stop offset="50%" style="stop-color:#FFC107;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#FF8F00;stop-opacity:1" />
+                <stop offset="0%" stop-color="#FFECB3"/>
+                <stop offset="50%" stop-color="#FFC107"/>
+                <stop offset="100%" stop-color="#FF8F00"/>
             </linearGradient>
 
             <symbol id="icon-wheat" viewBox="0 0 100 100">
-                <path d="M50,90 C50,90 50,20 50,20" stroke="url(#goldGradient)" stroke-width="4" stroke-linecap="round"
-                    fill="none" />
-                <path d="M50,70 C30,60 30,40 50,30" fill="url(#goldGradient)" />
-                <path d="M50,55 C35,45 35,35 50,25" fill="url(#goldGradient)" />
-                <path d="M50,40 C40,35 40,30 50,22" fill="url(#goldGradient)" />
-                <path d="M50,70 C70,60 70,40 50,30" fill="url(#goldGradient)" />
-                <path d="M50,55 C65,45 65,35 50,25" fill="url(#goldGradient)" />
-                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" stroke-width="2" />
+                <path d="M50,90 L50,20" stroke="url(#goldGradient)" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <path d="M50,70 C30,60 30,40 50,30" fill="url(#goldGradient)"/>
+                <path d="M50,55 C35,45 35,35 50,25" fill="url(#goldGradient)"/>
+                <path d="M50,40 C40,35 40,30 50,22" fill="url(#goldGradient)"/>
+                <path d="M50,70 C70,60 70,40 50,30" fill="url(#goldGradient)"/>
+                <path d="M50,55 C65,45 65,35 50,25" fill="url(#goldGradient)"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" stroke-width="2"/>
             </symbol>
 
-            <!-- ============================================
-                 五大生命金鑰符號 - 神廟浮雕風格
-                 參考圖規格：厚實、對稱、鑄模感
-                 ============================================ -->
+            <!-- v20: 結構描摹 SVG 符號 -->
 
-            <!-- 1. 財務：無限結 (Eternal Knot / Endless Loop) -->
+            <!-- 1. 財務：無盡結 -->
             <symbol id="icon-financial" viewBox="0 0 100 100">
-                <!-- 三重循環無限結 -->
-                <path d="M25,50
-                         C25,35 35,30 50,30
-                         C65,30 75,35 75,50
-                         C75,65 65,70 50,70
-                         C35,70 25,65 25,50 Z"
-                      fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
-                <!-- 內部交叉 -->
-                <path d="M35,40 Q50,55 65,40" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
-                <path d="M35,60 Q50,45 65,60" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
-                <!-- 中央承載點 -->
-                <circle cx="50" cy="50" r="6" fill="currentColor"/>
+                <path d="M18,50 C18,32 32,22 50,35 C68,22 82,32 82,50" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <path d="M82,50 C82,68 68,78 50,65 C32,78 18,68 18,50" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <circle cx="18" cy="32" r="5" fill="currentColor"/>
+                <circle cx="82" cy="32" r="5" fill="currentColor"/>
+                <circle cx="18" cy="68" r="5" fill="currentColor"/>
+                <circle cx="82" cy="68" r="5" fill="currentColor"/>
             </symbol>
 
-            <!-- 2. 事業：方尖碑 (Obelisk / Monument) -->
+            <!-- 2. 事業：方尖碑 -->
             <symbol id="icon-career" viewBox="0 0 100 100">
-                <!-- 穩固底座 -->
-                <rect x="28" y="82" width="44" height="8" rx="2" fill="currentColor"/>
-                <!-- 碑身 -->
-                <path d="M35,82 L38,30 L50,12 L62,30 L65,82 Z" fill="currentColor"/>
-                <!-- 碑身高光線 -->
-                <path d="M50,18 L50,75" stroke="rgba(255,255,255,0.15)" stroke-width="4" stroke-linecap="round"/>
+                <path d="M50,8 L40,25 L38,85 L62,85 L60,25 Z" fill="currentColor"/>
+                <rect x="30" y="85" width="40" height="8" rx="1" fill="currentColor"/>
             </symbol>
 
-            <!-- 3. 感情：雙環 (Interlocking Rings) -->
+            <!-- 3. 感情：雙環 -->
             <symbol id="icon-relationship" viewBox="0 0 100 100">
-                <!-- 左環 -->
                 <circle cx="38" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="8"/>
-                <!-- 右環 -->
                 <circle cx="62" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="8"/>
             </symbol>
 
-            <!-- 4. 健康：生命樹 (Tree of Life) -->
+            <!-- 4. 健康：生命樹 -->
             <symbol id="icon-health" viewBox="0 0 100 100">
-                <!-- 樹幹 -->
-                <path d="M50,88 L50,55" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
-                <!-- 根部 -->
-                <path d="M50,88 Q35,82 28,90" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <path d="M50,88 Q65,82 72,90" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <!-- 樹冠主幹 -->
-                <path d="M50,55 L50,25" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
-                <!-- 左枝 -->
-                <path d="M50,50 Q32,42 22,28" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <path d="M50,40 Q38,35 30,25" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                <!-- 右枝 -->
-                <path d="M50,50 Q68,42 78,28" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <path d="M50,40 Q62,35 70,25" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                <!-- 頂端 -->
-                <circle cx="50" cy="20" r="5" fill="currentColor"/>
-                <!-- 左右葉端 -->
-                <circle cx="22" cy="26" r="4" fill="currentColor"/>
-                <circle cx="30" cy="22" r="3" fill="currentColor"/>
-                <circle cx="78" cy="26" r="4" fill="currentColor"/>
-                <circle cx="70" cy="22" r="3" fill="currentColor"/>
+                <path d="M50,90 L50,50" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+                <path d="M50,90 Q35,85 25,95" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <path d="M50,90 Q65,85 75,95" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <path d="M50,50 L50,18" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <path d="M50,52 Q30,42 18,28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                <path d="M50,52 Q70,42 82,28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                <path d="M50,42 Q38,35 28,22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <path d="M50,42 Q62,35 72,22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="50" cy="15" r="5" fill="currentColor"/>
+                <circle cx="18" cy="25" r="5" fill="currentColor"/>
+                <circle cx="82" cy="25" r="5" fill="currentColor"/>
+                <circle cx="28" cy="19" r="4" fill="currentColor"/>
+                <circle cx="72" cy="19" r="4" fill="currentColor"/>
             </symbol>
 
-            <!-- 5. 成長：黃金螺旋 (Golden Spiral / Fibonacci) -->
+            <!-- 5. 成長：黃金螺旋 -->
             <symbol id="icon-growth" viewBox="0 0 100 100">
-                <!-- 外框方格暗示 -->
-                <rect x="15" y="15" width="70" height="70" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
-                <line x1="15" y1="50" x2="85" y2="50" stroke="currentColor" stroke-width="2" opacity="0.3"/>
-                <line x1="50" y1="15" x2="50" y2="85" stroke="currentColor" stroke-width="2" opacity="0.3"/>
-                <!-- 黃金螺旋主體 -->
-                <path d="M50,15
-                         A35,35 0 0,1 85,50
-                         A35,35 0 0,1 50,85
-                         A35,35 0 0,1 15,50
-                         A17.5,17.5 0 0,0 50,50
-                         A8.75,8.75 0 0,0 50,67.5
-                         A4.375,4.375 0 0,0 54.375,63.125"
-                      fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                <rect x="18" y="18" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+                <line x1="18" y1="50" x2="82" y2="50" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+                <line x1="50" y1="18" x2="50" y2="82" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+                <path d="M50,18 A32,32 0 0,1 82,50 A32,32 0 0,1 50,82 A32,32 0 0,1 18,50 A16,16 0 0,0 50,50 A8,8 0 0,0 50,66 A4,4 0 0,0 54,62" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
             </symbol>
-
         </defs>
     </svg>
 
-    <!-- Scene 1: Harvest Cover -->
+    <!-- Scene 1 -->
     <section id="s_gate" class="scene active" onclick="goSelection()">
         <div class="cover-content">
             <div class="title-area">
                 <div class="t-main">南方 · 金穗</div>
                 <div class="t-sub">成熟、覺醒與鞏固的果實</div>
             </div>
-
             <div class="harvest-emblem-wrap">
                 <div class="emblem-glow"></div>
                 <div class="emblem-ring"></div>
-                <svg class="wheat-svg">
-                    <use href="#icon-wheat"></use>
-                </svg>
+                <svg class="wheat-svg"><use href="#icon-wheat"></use></svg>
             </div>
-
-            <div class="t-desc">
-                整合走過的旅程，<br>收穫屬於你的智慧與成果
-            </div>
-            <div class="start-btn-frame">
-                開啟豐盛之門
-            </div>
+            <div class="t-desc">整合走過的旅程，<br>收穫屬於你的智慧與成果</div>
+            <div class="start-btn-frame">開啟豐盛之門</div>
         </div>
     </section>
 
-    <!-- Scene 2: 五大生命金鑰（神廟古銅浮雕徽章） -->
+    <!-- Scene 2: 五大金鑰（3D青銅銅幣） -->
     <section id="s_selection" class="scene">
         <div class="sel-container">
             <div class="sel-header">
                 <div class="sel-main">五大生命金鑰</div>
                 <div class="sel-sub">點擊門章 · 領取指引</div>
             </div>
-
             <div class="medallion-row">
+
                 <!-- 財務 -->
-                <div class="medallion-item" onclick="start('financial', '財務')">
-                    <div class="medallion-glow"></div>
+                <div class="medallion-item" onclick="start('financial','財務')">
+                    <div class="medallion-halo"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
-                            <svg class="medallion-svg" viewBox="0 0 100 100">
-                                <use href="#icon-financial"></use>
-                            </svg>
+                            <svg class="medallion-svg" viewBox="0 0 100 100"><use href="#icon-financial"></use></svg>
                         </div>
                     </div>
                     <div class="medallion-label">財務</div>
                 </div>
 
                 <!-- 事業 -->
-                <div class="medallion-item" onclick="start('career', '事業')">
-                    <div class="medallion-glow"></div>
+                <div class="medallion-item" onclick="start('career','事業')">
+                    <div class="medallion-halo"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
-                            <svg class="medallion-svg" viewBox="0 0 100 100">
-                                <use href="#icon-career"></use>
-                            </svg>
+                            <svg class="medallion-svg" viewBox="0 0 100 100"><use href="#icon-career"></use></svg>
                         </div>
                     </div>
                     <div class="medallion-label">事業</div>
                 </div>
 
                 <!-- 感情 -->
-                <div class="medallion-item" onclick="start('relationship', '感情')">
-                    <div class="medallion-glow"></div>
+                <div class="medallion-item" onclick="start('relationship','感情')">
+                    <div class="medallion-halo"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
-                            <svg class="medallion-svg" viewBox="0 0 100 100">
-                                <use href="#icon-relationship"></use>
-                            </svg>
+                            <svg class="medallion-svg" viewBox="0 0 100 100"><use href="#icon-relationship"></use></svg>
                         </div>
                     </div>
                     <div class="medallion-label">感情</div>
                 </div>
 
                 <!-- 健康 -->
-                <div class="medallion-item" onclick="start('health', '健康')">
-                    <div class="medallion-glow"></div>
+                <div class="medallion-item" onclick="start('health','健康')">
+                    <div class="medallion-halo"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
-                            <svg class="medallion-svg" viewBox="0 0 100 100">
-                                <use href="#icon-health"></use>
-                            </svg>
+                            <svg class="medallion-svg" viewBox="0 0 100 100"><use href="#icon-health"></use></svg>
                         </div>
                     </div>
                     <div class="medallion-label">健康</div>
                 </div>
 
                 <!-- 成長 -->
-                <div class="medallion-item" onclick="start('growth', '成長')">
-                    <div class="medallion-glow"></div>
+                <div class="medallion-item" onclick="start('growth','成長')">
+                    <div class="medallion-halo"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
-                            <svg class="medallion-svg" viewBox="0 0 100 100">
-                                <use href="#icon-growth"></use>
-                            </svg>
+                            <svg class="medallion-svg" viewBox="0 0 100 100"><use href="#icon-growth"></use></svg>
                         </div>
                     </div>
                     <div class="medallion-label">成長</div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Scene 3: Oracle -->
+    <!-- Scene 3 -->
     <section id="s_oracle" class="scene">
         <div class="oracle-layout">
             <div id="minigame" style="text-align:center;">
                 <div id="spinNum" class="spin-count">1</div>
                 <button class="connect-btn" onclick="reveal()">接引指引...</button>
             </div>
-
-            <div id="card" class="card-final">
-                <!-- Content injected by reveal() -->
-            </div>
-
+            <div id="card" class="card-final"></div>
             <div id="nav" class="nav-row">
                 <button class="nav-btn" onclick="goHome()">回首頁</button>
                 <button class="nav-btn" onclick="goSel()">再選一次</button>
@@ -880,8 +794,7 @@
     </section>
 
     <script>
-        let interval = null;
-        let theme = '';
+        let interval = null, theme = '';
 
         function switchS(id) {
             document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
@@ -914,14 +827,12 @@
         function reveal() {
             clearInterval(interval);
             const kin = Math.floor(Math.random() * 260) + 1;
-
             const toneId = (kin - 1) % 13 + 1;
             const glyphId = (kin - 1) % 20 + 1;
             const sealPad = String(glyphId).padStart(2, '0');
-            const toneNames = ['磁性', '月亮', '電力', '自我存在', '超頻', '韻律', '共鳴', '銀河', '太陽', '行星', '光譜', '水晶', '宇宙'];
-            const glyphNames = ['紅龍', '白風', '藍夜', '黃種子', '紅蛇', '白世界橋', '藍手', '黃星星', '紅月', '白狗', '藍猴', '黃人', '紅天行者', '白巫師', '藍鷹', '黃戰士', '紅地球', '白鏡', '藍風暴', '黃太陽'];
+            const toneNames = ['磁性','月亮','電力','自我存在','超頻','韻律','共鳴','銀河','太陽','行星','光譜','水晶','宇宙'];
+            const glyphNames = ['紅龍','白風','藍夜','黃種子','紅蛇','白世界橋','藍手','黃星星','紅月','白狗','藍猴','黃人','紅天行者','白巫師','藍鷹','黃戰士','紅地球','白鏡','藍風暴','黃太陽'];
 
-            /* 調性渲染 — 神廟調性比例語法 */
             const dots = toneId % 5;
             const bars = Math.floor(toneId / 5);
             const noDots = dots === 0 ? ' no-dots' : '';
@@ -932,38 +843,21 @@
             for (let i = 0; i < bars; i++) tHtml += '<div class="t-bar"></div>';
             tHtml += '</div>';
 
-            const data = (typeof kinData !== 'undefined' && kinData[kin])
-                ? kinData[kin]
-                : { synchronicMessage: '', alignment: '', grounding: '' };
+            const data = (typeof kinData !== 'undefined' && kinData[kin]) ? kinData[kin] : { synchronicMessage: '', alignment: '', grounding: '' };
 
             const c = document.getElementById('card');
             c.innerHTML = `
-                <div class="tone-area${noDots}">
-                    ${tHtml}
-                </div>
-                <img class="glyph-img" src="../images/${sealPad}.png" alt="${glyphNames[glyphId - 1]}" onerror="this.style.display='none'">
-                <div style="font-family:'Cinzel'; color:#8D6E63; font-weight:700; margin-top:10px;">KIN ${kin}</div>
-                <div style="font-size:1.4rem; font-weight:900; color:#3E2723; margin-bottom:16px;">${toneNames[toneId - 1]}的${glyphNames[glyphId - 1]}</div>
-
-                <div class="card-block">
-                    <div class="card-block-label">⚡ 能量感應</div>
-                    <div class="card-block-text">${data.synchronicMessage || ''}</div>
-                </div>
-                <div class="card-block">
-                    <div class="card-block-label">🌱 調頻指引</div>
-                    <div class="card-block-text">${data.alignment || ''}</div>
-                </div>
-                <div class="card-block-border">
-                    <div class="card-block-label">🪨 落地行動</div>
-                    <div class="card-block-text">${data.grounding || ''}</div>
-                </div>
-                <div style="margin-top:16px; font-size:0.8rem; color:#aaa; letter-spacing:0.2em;">✦ ${theme}指引 ✦</div>
+                <div class="tone-area${noDots}">${tHtml}</div>
+                <img class="glyph-img" src="../images/${sealPad}.png" alt="${glyphNames[glyphId-1]}" onerror="this.style.display='none'">
+                <div style="font-family:'Cinzel';color:#8D6E63;font-weight:700;margin-top:10px;">KIN ${kin}</div>
+                <div style="font-size:1.4rem;font-weight:900;color:#3E2723;margin-bottom:16px;">${toneNames[toneId-1]}的${glyphNames[glyphId-1]}</div>
+                <div class="card-block"><div class="card-block-label">⚡ 能量感應</div><div class="card-block-text">${data.synchronicMessage||''}</div></div>
+                <div class="card-block"><div class="card-block-label">🌱 調頻指引</div><div class="card-block-text">${data.alignment||''}</div></div>
+                <div class="card-block-border"><div class="card-block-label">🪨 落地行動</div><div class="card-block-text">${data.grounding||''}</div></div>
+                <div style="margin-top:16px;font-size:0.8rem;color:#aaa;letter-spacing:0.2em;">✦ ${theme}指引 ✦</div>
             `;
 
-            // 注入神廟調性比例語法
-            if (window.TONE_SCALE) {
-                TONE_SCALE.apply(c);
-            }
+            if (window.TONE_SCALE) TONE_SCALE.apply(c);
 
             document.getElementById('minigame').style.display = 'none';
             c.style.display = 'block';

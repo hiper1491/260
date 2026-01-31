@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>南方 · 金穗聖域 v16</title>
+    <title>南方 · 金穗聖域 v19</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Cinzel:wght@600;900&display=swap"
         rel="stylesheet">
@@ -188,13 +188,7 @@
             border-color: #FFD700;
         }
 
-        /* ============================================
-           Scene 2: 五大生命金鑰 - 神廟古銅浮雕徽章
-           參考圖規格：
-           - 雙層同心圓厚邊框
-           - 深古銅漸層 + 強烈背光光暈
-           - 中央符號凸起浮雕感
-           ============================================ */
+        /* === Scene 2: 5 Bronze Medallions === */
 
         .sel-container {
             display: flex;
@@ -232,7 +226,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 36px;
+            gap: 32px;
             width: 100%;
             max-width: 1100px;
         }
@@ -241,66 +235,36 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 18px;
+            gap: 20px;
             cursor: pointer;
             position: relative;
         }
 
-        /* === 神廟背光光暈 === */
-        .medallion-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 180px;
-            height: 180px;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle,
-                rgba(255, 170, 50, 0.35) 0%,
-                rgba(255, 140, 0, 0.15) 40%,
-                transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            transition: all 0.5s ease;
-            z-index: 0;
-        }
-
-        .medallion-item:hover .medallion-glow {
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle,
-                rgba(255, 180, 50, 0.5) 0%,
-                rgba(255, 150, 0, 0.25) 40%,
-                transparent 70%);
-        }
-
-        /* === 古銅徽章主體 === */
+        /* The Bronze Medallion */
         .medallion {
             width: 140px;
             height: 140px;
             border-radius: 50%;
             position: relative;
             z-index: 1;
-
-            /* 深古銅材質漸層 */
-            background:
-                radial-gradient(circle at 35% 25%,
-                    #A08060 0%,
-                    #7D5A3C 15%,
-                    #5C3D28 35%,
-                    #3E2518 60%,
-                    #2A1810 100%);
-
-            /* 浮雕陰影結構 */
+            /* Bronze Metallic Gradient */
+            background: radial-gradient(circle at 30% 30%,
+                    #A1887F 0%,
+                    #6D4C41 30%,
+                    #3E2723 80%,
+                    #1B120F 100%);
+            /* Complex Embossed Shadow Structure */
             box-shadow:
-                /* 背光暈染（底層） */
-                0 0 40px rgba(255, 160, 40, 0.25),
-                /* 主投影 */
-                0 12px 30px rgba(0, 0, 0, 0.7),
-                0 4px 8px rgba(0, 0, 0, 0.5),
-                /* 外圈高光（左上） */
-                inset 3px 3px 6px rgba(180, 140, 100, 0.5),
-                /* 外圈陰影（右下） */
-                inset -3px -3px 8px rgba(0, 0, 0, 0.7);
+                /* Outer Glow (Backlight) */
+                0 0 30px rgba(255, 179, 0, 0.15),
+                /* Deep Drop Shadow */
+                0 20px 40px rgba(0, 0, 0, 0.7),
+                /* Rim Highlight (Top Left) */
+                inset 2px 2px 5px rgba(255, 255, 255, 0.4),
+                /* Rim Shadow (Bottom Right) */
+                inset -2px -2px 5px rgba(0, 0, 0, 0.8);
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
 
             display: flex;
             align-items: center;
@@ -308,119 +272,85 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* === 外圈厚邊框（第一層） === */
+        /* Thick Border Ring (The "Ridge") */
         .medallion::before {
             content: '';
             position: absolute;
-            inset: 8px;
+            inset: 10px;
             border-radius: 50%;
-            border: 5px solid;
-            border-color: #6B4830;
+            border: 4px solid #5D4037;
             box-shadow:
-                /* 邊框內凹 */
-                inset 2px 2px 3px rgba(0, 0, 0, 0.6),
-                inset -1px -1px 2px rgba(160, 130, 100, 0.3),
-                /* 邊框外凸 */
-                1px 1px 2px rgba(0, 0, 0, 0.4),
-                -1px -1px 1px rgba(140, 110, 80, 0.2);
-            pointer-events: none;
+                /* Inner Ridge Highlight */
+                inset 1px 1px 2px rgba(255, 255, 255, 0.2),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.6),
+                /* Outer Ridge Shadow */
+                1px 1px 2px rgba(255, 255, 255, 0.1),
+                -1px -1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        /* === 內圈凹槽（第二層） === */
-        .medallion::after {
-            content: '';
-            position: absolute;
-            inset: 18px;
-            border-radius: 50%;
-            border: 3px solid;
-            border-color: #4A3020;
-            box-shadow:
-                inset 1px 1px 3px rgba(0, 0, 0, 0.7),
-                inset -1px -1px 2px rgba(120, 90, 60, 0.2);
-            pointer-events: none;
-        }
-
-        /* === 符號容器 === */
+        /* Inner Recess (Where the icon sits) */
         .medallion-inner {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
-            position: relative;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.8));
         }
 
-        /* === 浮雕符號樣式 === */
+        /* Icon Styling - Embossed Gold */
         .medallion-svg {
             width: 100%;
             height: 100%;
-            /* 古銅金色 */
-            fill: #C9A227;
-            /* 浮雕效果：左上高光 + 右下陰影 */
+            fill: #FFCA28;
             filter:
-                drop-shadow(1.5px 1.5px 1px rgba(20, 10, 5, 0.9))
-                drop-shadow(-1px -1px 0.5px rgba(220, 180, 100, 0.4))
-                drop-shadow(0 0 3px rgba(180, 140, 60, 0.3));
+                drop-shadow(1px 1px 0px rgba(62, 39, 35, 0.8)) drop-shadow(-1px -1px 0px rgba(255, 255, 255, 0.2));
             transition: all 0.4s ease;
         }
 
-        /* === Hover 效果 === */
+        /* Hover Effects */
         .medallion-item:hover .medallion {
-            transform: translateY(-8px) scale(1.03);
+            transform: translateY(-10px);
             box-shadow:
-                0 0 60px rgba(255, 170, 50, 0.4),
-                0 20px 45px rgba(0, 0, 0, 0.75),
-                0 8px 15px rgba(0, 0, 0, 0.5),
-                inset 4px 4px 8px rgba(200, 160, 120, 0.5),
-                inset -3px -3px 8px rgba(0, 0, 0, 0.6);
-            background:
-                radial-gradient(circle at 35% 25%,
-                    #B89060 0%,
-                    #8D6A4C 15%,
-                    #6C4D38 35%,
-                    #4E3528 60%,
-                    #3A2820 100%);
+                0 0 50px rgba(255, 179, 0, 0.3),
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                inset 2px 2px 8px rgba(255, 255, 255, 0.5),
+                inset -2px -2px 8px rgba(0, 0, 0, 0.9);
+            background: radial-gradient(circle at 30% 30%,
+                    #BCAAA4 0%,
+                    #8D6E63 30%,
+                    #4E342E 80%,
+                    #291E1A 100%);
         }
 
         .medallion-item:hover .medallion-svg {
-            fill: #DEBB40;
-            filter:
-                drop-shadow(2px 2px 1px rgba(20, 10, 5, 0.85))
-                drop-shadow(-1px -1px 1px rgba(255, 220, 140, 0.5))
-                drop-shadow(0 0 8px rgba(220, 180, 80, 0.5));
+            fill: #FFD54F;
             transform: scale(1.05);
+            filter:
+                drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
         }
 
-        /* === 標籤文字 === */
         .medallion-label {
-            font-size: 1.3rem;
-            color: #A08060;
-            letter-spacing: 0.25em;
+            font-size: 1.2rem;
+            color: #BCAAA4;
+            letter-spacing: 0.2em;
             font-weight: 700;
-            text-shadow:
-                0 2px 4px rgba(0, 0, 0, 0.9),
-                0 0 20px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+            transition: 0.3s;
+            margin-top: 5px;
         }
 
         .medallion-item:hover .medallion-label {
-            color: #E0C080;
-            text-shadow:
-                0 2px 4px rgba(0, 0, 0, 0.9),
-                0 0 15px rgba(255, 200, 100, 0.4);
+            color: #FFD54F;
+            text-shadow: 0 0 15px rgba(255, 193, 7, 0.6);
             transform: translateY(2px);
         }
 
-        /* === 手機版適配 === */
-        @media (max-width: 600px) {
+        /* Mobile Adjustment */
+        @media(max-width: 600px) {
             .medallion-row {
-                gap: 24px;
-            }
-
-            .medallion-glow {
-                width: 130px;
-                height: 130px;
+                gap: 20px;
             }
 
             .medallion {
@@ -430,27 +360,16 @@
 
             .medallion::before {
                 inset: 6px;
-                border-width: 4px;
-            }
-
-            .medallion::after {
-                inset: 14px;
-                border-width: 2px;
+                border-width: 3px;
             }
 
             .medallion-inner {
-                width: 48px;
-                height: 48px;
+                width: 55px;
+                height: 55px;
             }
 
             .medallion-label {
                 font-size: 1rem;
-                letter-spacing: 0.15em;
-            }
-
-            .medallion-item:hover .medallion-glow {
-                width: 150px;
-                height: 150px;
             }
         }
 
@@ -675,84 +594,83 @@
                 <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" stroke-width="2" />
             </symbol>
 
-            <!-- ============================================
-                 五大生命金鑰符號 - 神廟浮雕風格
-                 參考圖規格：厚實、對稱、鑄模感
-                 ============================================ -->
+            <!-- =============================================
+                 v19: 五大生命金鑰 - 結構描摹式 SVG
+                 線寬統一 8-9，viewBox 0 0 100 100
+                 ============================================= -->
 
-            <!-- 1. 財務：無限結 (Eternal Knot / Endless Loop) -->
+            <!-- 1. 財務：無盡結 (Endless Knot) -->
             <symbol id="icon-financial" viewBox="0 0 100 100">
-                <!-- 三重循環無限結 -->
-                <path d="M25,50
-                         C25,35 35,30 50,30
-                         C65,30 75,35 75,50
-                         C75,65 65,70 50,70
-                         C35,70 25,65 25,50 Z"
+                <!-- 主循環：橫向8字交織 -->
+                <!-- 上半弧（左迴圈上段 → 穿越 → 右迴圈上段） -->
+                <path d="M18,50
+                         C18,32 32,22 50,35
+                         C68,22 82,32 82,50"
                       fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
-                <!-- 內部交叉 -->
-                <path d="M35,40 Q50,55 65,40" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
-                <path d="M35,60 Q50,45 65,60" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
-                <!-- 中央承載點 -->
-                <circle cx="50" cy="50" r="6" fill="currentColor"/>
+                <!-- 下半弧（右迴圈下段 → 穿越 → 左迴圈下段） -->
+                <path d="M82,50
+                         C82,68 68,78 50,65
+                         C32,78 18,68 18,50"
+                      fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <!-- 四角結構節點 -->
+                <circle cx="18" cy="32" r="5" fill="currentColor"/>
+                <circle cx="82" cy="32" r="5" fill="currentColor"/>
+                <circle cx="18" cy="68" r="5" fill="currentColor"/>
+                <circle cx="82" cy="68" r="5" fill="currentColor"/>
             </symbol>
 
-            <!-- 2. 事業：方尖碑 (Obelisk / Monument) -->
+            <!-- 2. 事業：方尖碑 (Obelisk) -->
             <symbol id="icon-career" viewBox="0 0 100 100">
-                <!-- 穩固底座 -->
-                <rect x="28" y="82" width="44" height="8" rx="2" fill="currentColor"/>
                 <!-- 碑身 -->
-                <path d="M35,82 L38,30 L50,12 L62,30 L65,82 Z" fill="currentColor"/>
-                <!-- 碑身高光線 -->
-                <path d="M50,18 L50,75" stroke="rgba(255,255,255,0.15)" stroke-width="4" stroke-linecap="round"/>
+                <path d="M50,8 L40,25 L38,85 L62,85 L60,25 Z" fill="currentColor"/>
+                <!-- 底座 -->
+                <rect x="30" y="85" width="40" height="8" rx="1" fill="currentColor"/>
             </symbol>
 
             <!-- 3. 感情：雙環 (Interlocking Rings) -->
             <symbol id="icon-relationship" viewBox="0 0 100 100">
-                <!-- 左環 -->
                 <circle cx="38" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="8"/>
-                <!-- 右環 -->
                 <circle cx="62" cy="50" r="22" fill="none" stroke="currentColor" stroke-width="8"/>
             </symbol>
 
             <!-- 4. 健康：生命樹 (Tree of Life) -->
             <symbol id="icon-health" viewBox="0 0 100 100">
-                <!-- 樹幹 -->
-                <path d="M50,88 L50,55" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <!-- 主幹 -->
+                <path d="M50,90 L50,50" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
                 <!-- 根部 -->
-                <path d="M50,88 Q35,82 28,90" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <path d="M50,88 Q65,82 72,90" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <!-- 樹冠主幹 -->
-                <path d="M50,55 L50,25" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
-                <!-- 左枝 -->
-                <path d="M50,50 Q32,42 22,28" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <path d="M50,40 Q38,35 30,25" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                <!-- 右枝 -->
-                <path d="M50,50 Q68,42 78,28" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                <path d="M50,40 Q62,35 70,25" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-                <!-- 頂端 -->
-                <circle cx="50" cy="20" r="5" fill="currentColor"/>
-                <!-- 左右葉端 -->
-                <circle cx="22" cy="26" r="4" fill="currentColor"/>
-                <circle cx="30" cy="22" r="3" fill="currentColor"/>
-                <circle cx="78" cy="26" r="4" fill="currentColor"/>
-                <circle cx="70" cy="22" r="3" fill="currentColor"/>
+                <path d="M50,90 Q35,85 25,95" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <path d="M50,90 Q65,85 75,95" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <!-- 中央主枝 -->
+                <path d="M50,50 L50,18" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+                <!-- 側枝外層 -->
+                <path d="M50,52 Q30,42 18,28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                <path d="M50,52 Q70,42 82,28" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                <!-- 側枝內層 -->
+                <path d="M50,42 Q38,35 28,22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <path d="M50,42 Q62,35 72,22" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+                <!-- 葉端 -->
+                <circle cx="50" cy="15" r="5" fill="currentColor"/>
+                <circle cx="18" cy="25" r="5" fill="currentColor"/>
+                <circle cx="82" cy="25" r="5" fill="currentColor"/>
+                <circle cx="28" cy="19" r="4" fill="currentColor"/>
+                <circle cx="72" cy="19" r="4" fill="currentColor"/>
             </symbol>
 
-            <!-- 5. 成長：黃金螺旋 (Golden Spiral / Fibonacci) -->
+            <!-- 5. 成長：黃金螺旋 (Golden Spiral) -->
             <symbol id="icon-growth" viewBox="0 0 100 100">
-                <!-- 外框方格暗示 -->
-                <rect x="15" y="15" width="70" height="70" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
-                <line x1="15" y1="50" x2="85" y2="50" stroke="currentColor" stroke-width="2" opacity="0.3"/>
-                <line x1="50" y1="15" x2="50" y2="85" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                <!-- 結構輔助線（極度淡化） -->
+                <rect x="18" y="18" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+                <line x1="18" y1="50" x2="82" y2="50" stroke="currentColor" stroke-width="1" opacity="0.08"/>
+                <line x1="50" y1="18" x2="50" y2="82" stroke="currentColor" stroke-width="1" opacity="0.08"/>
                 <!-- 黃金螺旋主體 -->
-                <path d="M50,15
-                         A35,35 0 0,1 85,50
-                         A35,35 0 0,1 50,85
-                         A35,35 0 0,1 15,50
-                         A17.5,17.5 0 0,0 50,50
-                         A8.75,8.75 0 0,0 50,67.5
-                         A4.375,4.375 0 0,0 54.375,63.125"
-                      fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                <path d="M50,18
+                         A32,32 0 0,1 82,50
+                         A32,32 0 0,1 50,82
+                         A32,32 0 0,1 18,50
+                         A16,16 0 0,0 50,50
+                         A8,8 0 0,0 50,66
+                         A4,4 0 0,0 54,62"
+                      fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
             </symbol>
 
         </defs>
@@ -783,7 +701,7 @@
         </div>
     </section>
 
-    <!-- Scene 2: 五大生命金鑰（神廟古銅浮雕徽章） -->
+    <!-- Scene 2: Selection (v19 結構描摹版) -->
     <section id="s_selection" class="scene">
         <div class="sel-container">
             <div class="sel-header">
@@ -794,7 +712,6 @@
             <div class="medallion-row">
                 <!-- 財務 -->
                 <div class="medallion-item" onclick="start('financial', '財務')">
-                    <div class="medallion-glow"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
                             <svg class="medallion-svg" viewBox="0 0 100 100">
@@ -807,7 +724,6 @@
 
                 <!-- 事業 -->
                 <div class="medallion-item" onclick="start('career', '事業')">
-                    <div class="medallion-glow"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
                             <svg class="medallion-svg" viewBox="0 0 100 100">
@@ -820,7 +736,6 @@
 
                 <!-- 感情 -->
                 <div class="medallion-item" onclick="start('relationship', '感情')">
-                    <div class="medallion-glow"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
                             <svg class="medallion-svg" viewBox="0 0 100 100">
@@ -833,7 +748,6 @@
 
                 <!-- 健康 -->
                 <div class="medallion-item" onclick="start('health', '健康')">
-                    <div class="medallion-glow"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
                             <svg class="medallion-svg" viewBox="0 0 100 100">
@@ -846,7 +760,6 @@
 
                 <!-- 成長 -->
                 <div class="medallion-item" onclick="start('growth', '成長')">
-                    <div class="medallion-glow"></div>
                     <div class="medallion">
                         <div class="medallion-inner">
                             <svg class="medallion-svg" viewBox="0 0 100 100">

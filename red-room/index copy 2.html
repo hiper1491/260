@@ -1,11 +1,9 @@
-<!-- 🔴 red-room-0201-v1.html（基於 0123 版 — 手機抽牌效能優化：不改主體架構） -->
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <!-- 114-13版｜母版=114-11｜只加 Level 3 神廟閱讀層（A＋B）｜不滾動｜不改抽卡/內頁結構 -->
-  <title>13月亮曆・神廟石碑（02V1）</title>
+  <title>13月亮曆・神廟石碑（115-優化版）</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,15 +11,15 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <script src="./kin-calculator.js"></script>
+  <script src="../kin-calculator.js"></script>
   <script src="./red-brain.js"></script>
 
   <style>
     :root{
-      --theme:#D4AF37;
-      --bg:#FFFEF9;
+      --theme:#A5413F;
+      --bg:#F8E8E8;
       --ink:#111;
-      --themeRGB:212,175,55;
+      --themeRGB:165,65,63;
     }
 
     html,body{
@@ -37,6 +35,13 @@
       html,body{ height:100svh; }
     }
     #root{ width:100%; height:100%; }
+
+    /* ✅ 效能優化控制：動畫期間關閉濾鏡減輕手機負擔 */
+    body.perf-active .pre-card,
+    body.perf-active .pre-hunab {
+      filter: none !important;
+      backdrop-filter: none !important;
+    }
 
     body::before{
       content:"";
@@ -306,45 +311,19 @@
       overflow:hidden;
     }
 
-    .tone-area{ height:72px; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; flex:0 0 72px; transition:all .6s cubic-bezier(.4,0,.2,1); will-change:auto; }
+    .tone-area{ height:72px; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; flex:0 0 72px; transition:all .6s cubic-bezier(.4,0,.2,1); }
     .tone-dots{ height:28px; display:flex; align-items:center; justify-content:center; gap:14px; transition:all .6s cubic-bezier(.4,0,.2,1); }
     .tone-bars{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; transition:all .6s cubic-bezier(.4,0,.2,1); }
     .tone-dot{ width:22px; height:22px; background:#000; border-radius:50%; transition:all .6s cubic-bezier(.4,0,.2,1); }
     .tone-bar{ width:190px; height:16px; background:#000; border-radius:8px; transition:all .6s cubic-bezier(.4,0,.2,1); }
 
-    .glyph-area{ width:100%; display:flex; justify-content:center; margin-top:8px; margin-bottom:6px; flex:0 0 200px; align-items:center; transition:all .6s cubic-bezier(.4,0,.2,1); will-change:auto; }
+    .glyph-area{ width:100%; display:flex; justify-content:center; margin-top:8px; margin-bottom:6px; flex:0 0 200px; align-items:center; transition:all .6s cubic-bezier(.4,0,.2,1); }
     .glyph-frame{ display:inline-flex; padding:10px; border-radius:24px; background:rgba(255,255,255,.12); border:1px solid rgba(0,0,0,.14); box-shadow:inset 0 4px 20px rgba(0,0,0,.30), inset 0 -6px 16px rgba(255,255,255,.24), 0 14px 28px rgba(0,0,0,.18); cursor:pointer; user-select:none; transition:all .6s cubic-bezier(.4,0,.2,1); }
     .glyph-frame:hover{ transform: translateY(-2px); }
-    .glyph-img{ height:180px; border-radius:16px; filter: drop-shadow(0 12px 18px rgba(0,0,0,.24)); transition:all .6s cubic-bezier(.4,0,.2,1); will-change:auto; }
+    .glyph-img{ height:180px; border-radius:16px; filter: drop-shadow(0 12px 18px rgba(0,0,0,.24)); transition:all .6s cubic-bezier(.4,0,.2,1); }
 
-    .kin-id{ font-family:'Cinzel', serif; font-size:clamp(2.8rem, 4.8vh, 3.8rem); font-weight:900; line-height:1; margin-top:2px; min-width:9ch; text-align:center; font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; user-select:none; cursor:pointer; color:#0E0E0E; flex:0 0 auto; transition:all .6s cubic-bezier(.4,0,.2,1); will-change:auto; }
-    .kin-name{ font-size:clamp(1.8rem, 3.5vh, 2.6rem); font-weight:900; letter-spacing:clamp(3px, .9vw, 7px); margin-top:4px; text-align:center; color:#111; flex:0 0 auto; transition:all .6s cubic-bezier(.4,0,.2,1); will-change:auto; }
-
-    /* ===== 🚀 手機效能優化：旋轉中關閉昂貴動畫 ===== */
-    body.spinning .tone-area,
-    body.spinning .tone-dots,
-    body.spinning .tone-bars,
-    body.spinning .tone-dot,
-    body.spinning .tone-bar,
-    body.spinning .glyph-area,
-    body.spinning .glyph-frame,
-    body.spinning .glyph-img,
-    body.spinning .kin-id,
-    body.spinning .kin-name,
-    body.spinning .wavespell-badge,
-    body.spinning .name-etch {
-      transition: none !important;
-    }
-
-    @media (max-width: 520px) {
-      body.spinning .tone-area,
-      body.spinning .glyph-area,
-      body.spinning .glyph-img,
-      body.spinning .kin-id,
-      body.spinning .kin-name {
-        will-change: contents;
-      }
-    }
+    .kin-id{ font-family:'Cinzel', serif; font-size:clamp(2.8rem, 4.8vh, 3.8rem); font-weight:900; line-height:1; margin-top:2px; min-width:9ch; text-align:center; font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; user-select:none; cursor:pointer; color:#0E0E0E; flex:0 0 auto; transition:all .6s cubic-bezier(.4,0,.2,1); }
+    .kin-name{ font-size:clamp(1.8rem, 3.5vh, 2.6rem); font-weight:900; letter-spacing:clamp(3px, .9vw, 7px); margin-top:4px; text-align:center; color:#111; flex:0 0 auto; transition:all .6s cubic-bezier(.4,0,.2,1); }
 
     .wavespell-badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 18px; background:rgba(0,0,0,.06); border-radius:999px; font-size:.95rem; font-weight:700; color:#333; letter-spacing:1px; margin-top:4px; border:1px solid rgba(0,0,0,.08); box-shadow: inset 0 1px 3px rgba(0,0,0,.08); transition:all .6s cubic-bezier(.4,0,.2,1); flex:0 0 auto; }
     .wavespell-icon{ width:18px; height:18px; border-radius:4px; opacity:.9; }
@@ -400,12 +379,6 @@
     .msg-stack{ width:100%; flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:clamp(16px, 2vh, 22px); animation: slideInUp .7s cubic-bezier(.4,0,.2,1) forwards; opacity:0; }
     @keyframes slideInUp{ from{opacity:0; transform:translateY(40px)} to{opacity:1; transform:translateY(0)} }
     .msg-box{ background:rgba(245,242,236,.66); border-radius:32px; padding:clamp(20px,2.4vh,30px) clamp(22px,2.6vw,34px); border:1px solid rgba(0,0,0,.12); box-shadow: inset 0 3px 16px rgba(0,0,0,.24), 0 12px 20px rgba(0,0,0,.14); backdrop-filter: blur(3px); flex-shrink:0; }
-
-    /* 🚀 手機優化：降低 backdrop-filter 效能負擔 */
-    @media (max-width: 520px) {
-      .msg-box{ backdrop-filter: blur(2px); }
-      .reading-overlay{ backdrop-filter: blur(1px); }
-    }
     .label{ font-weight:900; opacity:.64; margin-bottom:12px; display:block; letter-spacing:2px; text-align:center; color:#111; font-size:1rem; }
     .content-text{ font-size:clamp(1.15rem,2.15vh,1.48rem); line-height:1.9; font-weight:900; text-align:left; color:#0B0B0B; text-shadow:none; word-break:break-word; }
 
@@ -414,8 +387,26 @@
     .ultra-msg .label{ font-size:0.88rem; margin-bottom:8px; letter-spacing:1px; }
     .ultra-msg .content-text{ font-size:1.02rem; line-height:1.65; }
 
+    /* ✅ Portal Scrim（點外收合）
+       ✅ FIX：z-index 必須低於 history-sidebar，否則你點不到石頭，永遠無法收合 */
+    .portal-scrim{
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,.14);
+      backdrop-filter: blur(0.5px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .14s ease;
+      touch-action: manipulation;
+    }
+    .portal-scrim.show{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     /* =========================
-       ✅ Fix-10 封面：保留你說「圖位置OK」的布局
+       ✅ Fix-10 封面：保留布局
        ========================= */
     .pre-card{
       width:min(680px,88%);
@@ -499,6 +490,13 @@
       opacity:.28;
       pointer-events:none;
     }
+
+    /* ✅ 修改：增加旋轉動畫 */
+    @keyframes pre-totem-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     .pre-hunab{
       width:100%;
       height:100%;
@@ -507,6 +505,9 @@
       object-fit:cover;
       opacity:.92;
       filter: drop-shadow(0 14px 26px rgba(0,0,0,.20));
+      /* ✅ 加入旋轉效果 */
+      animation: pre-totem-rotate 25s linear infinite;
+      will-change: transform;
     }
 
     .pre-title{
@@ -595,59 +596,56 @@
       opacity:1;
     }
 
-    /* ✅ 手機：記錄石可收合、不卡住訊息（版面維持你原本） */
+    /* =========================
+       ✅ 手機版歷史記錄石
+       ========================= */
     @media (max-width: 520px){
       .home-button{ top:18px; left:16px; width:56px; height:56px; font-size:1.5rem; }
 
       .history-sidebar{
         left:14px;
-        top:84px;
+        top:110px;
         transform:none;
-        gap:10px;
+        gap:8px;
         z-index:220;
-        max-height: 220px;
-      }
-      .history-sidebar:not(.open) .history-stone:not(:first-child){ display:none; }
-
-      .history-sidebar.open{
-        overflow:auto;
-        -webkit-overflow-scrolling: touch;
+        max-height: 360px;
+        pointer-events:auto;
       }
 
-      .history-stone{ width:58px; height:54px; font-size:1.00rem; }
+      .history-stone{
+        width:56px;
+        height:52px;
+        font-size:0.95rem;
+      }
 
-      .content{ overflow:hidden; }
+      .history-sidebar:not(.open) .history-stone:not(:first-child){
+        display:none !important;
+      }
 
-      .pre-card{ min-height:min(640px, 78svh); padding: 22px 18px 18px; }
-      .cover-bay{ height: 400px; }
-      .pre-symbol{ width:158px; height:158px; }
+      .history-sidebar.open .history-stone{
+        display:flex !important;
+        animation: slideDown 0.3s ease;
+      }
 
-      .bay-center{ gap:14px; }
+      @keyframes slideDown{
+        from{ opacity:0; transform: translateY(-10px); }
+        to  { opacity:1; transform: translateY(0); }
+      }
 
-      .pre-title{ font-size:2.02rem; letter-spacing:10px; }
-      .pre-subtitle{ font-size:1.02rem; letter-spacing:4px; }
-      .pre-hint{ font-size:1.02rem; letter-spacing:3px; }
-
-      .pre-subhint{ font-size:.88rem; }
-
-      .cover-etch-below{ margin-top: 14px; }
-    }
-
-    /* ✅ 最終：Portal Scrim（掛到 body 最上層，避開所有層級/事件吃掉問題） */
-    .portal-scrim{
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      background: rgba(0,0,0,.14);
-      backdrop-filter: blur(0.5px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .14s ease;
-      touch-action: manipulation;
-    }
-    .portal-scrim.show{
-      opacity: 1;
-      pointer-events: auto;
+      .history-sidebar:not(.open) .history-stone.secondary{
+        opacity:1 !important;
+        transform:none !important;
+        pointer-events:auto !important;
+        max-height:none !important;
+        margin-top:0 !important;
+      }
+      .history-sidebar.open .history-stone.secondary{
+        opacity:1 !important;
+        transform:none !important;
+        pointer-events:auto !important;
+        max-height:none !important;
+        margin-top:0 !important;
+      }
     }
   </style>
 </head>
@@ -655,7 +653,6 @@
 <body>
   <div id="root"></div>
 
-  <!-- ✅ Portal 掛載點（只為了手機記錄石收合；不影響任何版面） -->
   <div id="scrim-portal"></div>
 
   <div class="cover-curtain" id="coverCurtain" aria-hidden="true"></div>
@@ -805,10 +802,6 @@
       const contentRef = useRef(null);
       const rafRef = useRef(null);
       const timerRef = useRef(null);
-      const sidebarRef = useRef(null);
-
-      // ✅ portal scrim ref（只為了收合）
-      const scrimRef = useRef(null);
 
       const todayKin = getTodayKinSmart();
       const todayTheme = THEME[COLORS[(todayKin - 1) % 4]];
@@ -823,12 +816,19 @@
 
       const isMobile = ()=> window.innerWidth <= 520;
 
-      /* ✅ 你原本的備援（保留）：點側欄外收合 */
+      useEffect(()=>{
+        const activeTheme = hasDrawn ? theme : todayTheme;
+        document.documentElement.style.setProperty("--bg", activeTheme.bg);
+        document.documentElement.style.setProperty("--theme", activeTheme.main);
+        document.documentElement.style.setProperty("--themeRGB", hexToRgbTuple(activeTheme.main));
+      },[theme.bg, theme.main, todayTheme.bg, todayTheme.main, hasDrawn]);
+
+      /* ✅ 備援（保留）：點側欄外收合 */
       useEffect(()=>{
         if(!historyOpen) return;
 
         const closeIfOutside = (e)=>{
-          const el = sidebarRef.current;
+          const el = document.querySelector(".history-sidebar");
           if(!el) { setHistoryOpen(false); return; }
           if(el.contains(e.target)) return;
           setHistoryOpen(false);
@@ -843,43 +843,7 @@
         };
       }, [historyOpen]);
 
-      const openReading = ()=>{
-        const overlay = document.getElementById('readingOverlay');
-        const a = document.getElementById('readingTextA');
-        const b = document.getElementById('readingTextB');
-        if(!overlay || !a || !b) return;
-        a.textContent = data.synchronicMessage || "";
-        b.textContent = data.alignment || "";
-        overlay.classList.add('show');
-      };
-      const closeReading = ()=>{
-        const overlay = document.getElementById('readingOverlay');
-        if(!overlay) return;
-        overlay.classList.remove('show');
-      };
-
-      useEffect(()=>{
-        const exit = document.getElementById('readingExit');
-        const overlay = document.getElementById('readingOverlay');
-        if(exit) exit.onclick = closeReading;
-        if(overlay){
-          overlay.addEventListener('click', (e)=>{
-            if(e.target === overlay) closeReading();
-          });
-        }
-      },[]);
-
-      useEffect(()=>{
-        const activeTheme = hasDrawn ? theme : todayTheme;
-        document.documentElement.style.setProperty("--bg", activeTheme.bg);
-        document.documentElement.style.setProperty("--theme", activeTheme.main);
-        document.documentElement.style.setProperty("--themeRGB", hexToRgbTuple(activeTheme.main));
-      },[theme.bg, theme.main, todayTheme.bg, todayTheme.main, hasDrawn]);
-
       const measureOverflow = ()=>{
-        // 🚀 效能優化：旋轉中完全跳過測量，避免每 65ms 重新計算
-        if(spinning) return;
-
         if (rafRef.current) cancelAnimationFrame(rafRef.current);
         rafRef.current = requestAnimationFrame(()=>{
           const el = contentRef.current;
@@ -926,8 +890,7 @@
         });
       };
 
-      // 🚀 效能優化：旋轉中不觸發 measureOverflow（kin 快速變化時跳過）
-      useLayoutEffect(()=>{ if(!spinning) measureOverflow(); }, [spinning, showMessage, isCompact]);
+      useLayoutEffect(()=>{ measureOverflow(); }, [spinning, showMessage, isCompact, kin]);
       useEffect(()=>{
         const onResize = ()=> measureOverflow();
         window.addEventListener('resize', onResize);
@@ -944,9 +907,6 @@
         setUltraMsg(false);
         setNeedReading(false);
 
-        // 🚀 效能優化：加上 spinning class 關閉 CSS transitions
-        document.body.classList.add('spinning');
-
         clearInterval(timerRef.current);
         timerRef.current = setInterval(()=>{
           setKin(Math.floor(Math.random()*260) + 1);
@@ -958,9 +918,6 @@
         setSpinning(false);
         setShowMessage(false);
         setIsCompact(false);
-
-        // 🚀 效能優化：移除 spinning class 恢復 CSS transitions
-        document.body.classList.remove('spinning');
 
         setTimeout(() => {
           setIsCompact(true);
@@ -977,17 +934,47 @@
 
       const onHistoryStoneClick = (k, i, e)=>{
         if(e) e.stopPropagation();
+
         if(!isMobile()){
           if(!spinning) setKin(k);
           return;
         }
-        if(!historyOpen){
-          if(i === 0) setHistoryOpen(true);
+
+        if(i === 0){
+          setHistoryOpen(prev => !prev);
           return;
         }
+
+        if(!historyOpen) return;
         if(!spinning) setKin(k);
         setHistoryOpen(false);
       };
+
+      const openReading = ()=>{
+        const overlay = document.getElementById('readingOverlay');
+        const a = document.getElementById('readingTextA');
+        const b = document.getElementById('readingTextB');
+        if(!overlay || !a || !b) return;
+        a.textContent = data.synchronicMessage || "";
+        b.textContent = data.alignment || "";
+        overlay.classList.add('show');
+      };
+      const closeReading = ()=>{
+        const overlay = document.getElementById('readingOverlay');
+        if(!overlay) return;
+        overlay.classList.remove('show');
+      };
+
+      useEffect(()=>{
+        const exit = document.getElementById('readingExit');
+        const overlay = document.getElementById('readingOverlay');
+        if(exit) exit.onclick = closeReading;
+        if(overlay){
+          overlay.addEventListener('click', (e)=>{
+            if(e.target === overlay) closeReading();
+          });
+        }
+      },[]);
 
       const manualInput = ()=>{
         const num = prompt("召喚指定 KIN (1-260):", kin);
@@ -1007,9 +994,13 @@
         }
       };
 
+      /* ✅ 修正：參考 index-114-2 的跳轉動畫 (旋轉、放大、消失) */
       const handleCoverClick = ()=>{
         if(coverAnimating) return;
         setCoverAnimating(true);
+        
+        // 進入效能模式
+        document.body.classList.add('perf-active');
 
         const source = document.querySelector('.pre-hunab');
         const flip = document.getElementById('hunabFlip');
@@ -1022,7 +1013,7 @@
           return;
         }
 
-        const DURATION = 2050;
+        const DURATION = 2050; 
         const r = source.getBoundingClientRect();
 
         document.body.classList.add('cover-transiting');
@@ -1035,6 +1026,7 @@
         flip.style.height = r.height + 'px';
         flip.classList.add('show');
 
+        // 處理顏色淡出
         const tintAnim = tint.animate(
           [
             { opacity: 0.26, offset: 0.00 },
@@ -1057,21 +1049,21 @@
           field.classList.remove('show');
           document.body.classList.remove('flip-activating');
           document.body.classList.remove('cover-transiting');
+          document.body.classList.remove('perf-active'); // 結束效能模式
 
           try{ tintAnim.cancel(); }catch(e){}
-          try{ tint.style.opacity = ""; }catch(e){}
-
           setCoverAnimating(false);
           startSpin();
         };
 
         requestAnimationFrame(()=>{
+          // ✅ 核心動畫：旋轉 + 放大
           const anim = flip.animate(
             [
-              { transform: `translate(0px, 0px) scale(1) rotate(0deg)`, offset: 0.00 },
-              { transform: `translate(0px, 0px) scale(1) rotate(0deg)`, offset: 0.10 },
-              { transform: `translate(0px, 0px) scale(${midScale}) rotate(300deg)`, offset: 0.62 },
-              { transform: `translate(0px, 0px) scale(${endScale}) rotate(640deg)`, offset: 1.00 }
+              { transform: `scale(1) rotate(0deg)`, offset: 0.00 },
+              { transform: `scale(1) rotate(0deg)`, offset: 0.10 },
+              { transform: `scale(${midScale}) rotate(300deg)`, offset: 0.62 },
+              { transform: `scale(${endScale}) rotate(640deg)`, offset: 1.00 }
             ],
             { duration: DURATION, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
           );
@@ -1079,6 +1071,12 @@
           anim.onfinish = finish;
           setTimeout(finish, DURATION + 120);
         });
+      };
+
+      const closeHistoryHard = (e)=>{
+        try{ e.preventDefault(); }catch(_){}
+        try{ e.stopPropagation(); }catch(_){}
+        setHistoryOpen(false);
       };
 
       const contentClass = [
@@ -1089,21 +1087,12 @@
         ultraMsg ? "ultra-msg" : ""
       ].filter(Boolean).join(" ");
 
-      // ✅ 最硬收合（Portal scrim 專用）
-      const closeHistoryHard = (e)=>{
-        try{ e.preventDefault(); }catch(_){}
-        try{ e.stopPropagation(); }catch(_){}
-        setHistoryOpen(false);
-      };
-
       return (
         <>
           {hasDrawn && (<a href="../index.html" className="home-button" title="返回主頁">🏠</a>)}
 
-          {/* ✅ Portal Scrim：掛到 body 最上層，點哪都必收合（只在手機 + open 才 show） */}
           {ReactDOM.createPortal(
             <div
-              ref={scrimRef}
               className={`portal-scrim ${(isMobile() && historyOpen) ? 'show' : ''}`}
               onPointerDownCapture={closeHistoryHard}
               onTouchStartCapture={closeHistoryHard}
@@ -1113,9 +1102,13 @@
             document.getElementById('scrim-portal')
           )}
 
-          <div ref={sidebarRef} className={`history-sidebar ${historyOpen ? 'open' : ''}`}>
+          <div className={`history-sidebar ${historyOpen ? 'open' : ''}`}>
             {history.map((k,i)=>(
-              <div key={i} className="history-stone" onClick={(e)=>onHistoryStoneClick(k,i,e)}>
+              <div
+                key={i}
+                className={`history-stone ${i===0 ? 'primary' : 'secondary'}`}
+                onClick={(e)=>onHistoryStoneClick(k,i,e)}
+              >
                 {k}
               </div>
             ))}
@@ -1124,7 +1117,6 @@
           <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center"}}>
             <div className="tablet">
               <div ref={contentRef} className={contentClass}>
-
                 {!hasDrawn ? (
                   <>
                     <div className="pre-card" onClick={handleCoverClick}>
@@ -1210,7 +1202,6 @@
                     </div>
                   </>
                 )}
-
               </div>
             </div>
           </div>

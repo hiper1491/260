@@ -1,0 +1,161 @@
+.
+├── 13moon-126.v3.html
+├── 13moon-126.v4.2.html
+├── 13moon-126.v4.html
+├── 13moon-126.v5.html
+├── 13moon-cover-V3.html
+├── 13moon-cover-final-V3.html
+├── 13moon-cover-final-V4.html
+├── 13moon-cover-final.html
+├── 13moon-cover-final.right-fixed.v2.html
+├── 13moon-cover-final.right-fixed.v4.html
+├── 13moon-cover-final.right-fixed.v5.html
+├── 13moon-cover-final.right-fixed.v6.html
+├── 13moon-cover-v4.html
+├── Cover.jsx
+├── KIN_CALCULATOR_README.md
+├── RedRoom.jsx
+├── RedRoom_Notes.md
+├── SPEC.md
+├── STRUCTURE.txt
+├── TempleCore-Spec.md
+├── blue-room
+│   ├── blue-v6-cover.html
+│   ├── blue-v6-inner copy.html
+│   ├── blue-v6-inner.html
+│   ├── blue-v6.html
+│   ├── kin-synthesis-data.json
+│   └── old
+│       ├── blue-alchemy-v2.html
+│       ├── blue-temple-galaxy.html
+│       ├── blue-temple.html
+│       ├── blue-v3-cover.html
+│       ├── blue-v3-inner.html
+│       ├── blue-v3.html
+│       ├── blue-v4-cover.html
+│       ├── blue-v4-inner.html
+│       ├── blue-v4.html
+│       ├── blue-v5-cover.html
+│       ├── blue-v5-inner.html
+│       └── blue-v5.html
+├── core
+│   ├──  old
+│   │   ├── audio-core.js
+│   │   ├── glyph-core.js
+│   │   └── temple-core 2.js
+│   ├── kin-card-core.js
+│   ├── render-core.js
+│   ├── temple-core.js
+│   └── temple_brain_final.js
+├── cover.html
+├── images
+│   ├── 01.png
+│   ├── 02.png
+│   ├── 03.png
+│   ├── 04.png
+│   ├── 05.png
+│   ├── 06.png
+│   ├── 07.png
+│   ├── 08.png
+│   ├── 09.png
+│   ├── 10.png
+│   ├── 11.png
+│   ├── 12.png
+│   ├── 13.png
+│   ├── 1313.png
+│   ├── 1314.png
+│   ├── 1315-right.png
+│   ├── 1315.png
+│   ├── 14.png
+│   ├── 15.png
+│   ├── 16.png
+│   ├── 17.png
+│   ├── 18.png
+│   ├── 19.png
+│   ├── 20.png
+│   ├── five-keys-banner.jpg
+│   ├── hunab-ku-1.png
+│   ├── hunab-ku.png
+│   └── 波符.png
+├── index
+├── index-0110.html
+├── index-test.html
+├── index.html
+├── kin-calculator.js
+├── kinData-260-inline-from-red-brain.js
+├── kinData-inline-from-kinData.js
+├── kinData.js
+├── red-brain.js
+├── red-room
+│   ├── index copy.html
+│   ├── index-0114 copy.html
+│   ├── index-0115.html
+│   ├── index-0119.html
+│   ├── index-114-2.html
+│   ├── index-114.html
+│   ├── index.html
+│   ├── red-115-mobile.html
+│   ├── red-brain.js
+│   ├── red-room-0123.html
+│   ├── red-room-114-17.html
+│   ├── red-room-114-18.html
+│   ├── red-room-A3-fixed2.html
+│   └── red-room-A3.html
+├── test-kin-display.html
+├── white-house
+│   ├── deep-v1.html
+│   ├── deep-v2.html
+│   ├── deep-v3.html
+│   ├── index-V1.html
+│   ├── old
+│   │   ├── index-0113copy.html
+│   │   ├── index-0120-final.html
+│   │   ├── index-0120-v3.html
+│   │   ├── index-0120-v4.html
+│   │   ├── index-0120-v5.html
+│   │   ├── index-0120-v6.html
+│   │   ├── index-0120-v7.html
+│   │   ├── index-0120-v8.html
+│   │   ├── index-0120-v9.html
+│   │   ├── index-CLAUDE copy 3.html
+│   │   └── index-CLAUDE.html
+│   ├── tzolkin-data.js
+│   ├── tzolkin-v1-complete.html
+│   ├── tzolkin-v1.html
+│   ├── tzolkin-v2.html
+│   ├── tzolkin-v3.html
+│   ├── tzolkin-v4.html
+│   ├── tzolkin-v5.html
+│   ├── tzolkin-v6.html
+│   └── tzolkin-v7.html
+└── yellow-room
+    ├── GPT-v1.html
+    ├── GPT-v10.html
+    ├── GPT-v11.html
+    ├── GPT-v12.html
+    ├── GPT-v5.html
+    ├── GPT-v6.html
+    ├── GPT-v9.html
+    ├── QUICK-START.md
+    ├── README.md
+    ├── YELLOW-ROOM-V8-GUIDE.md
+    ├── claude0126-v1.html
+    ├── gem-V2.html
+    ├── gem-V5.html
+    ├── guidance.html
+    ├── kinData.js
+    ├── yellow-room-v8.html
+    ├── yellow-v10.html
+    ├── yellow-v11.html
+    ├── yellow-v12.html
+    ├── yellow-v13.html
+    ├── yellow-v14.html
+    ├── yellow-v16.html
+    ├── yellow-v17.html
+    ├── yellow-v4.html
+    ├── yellow-v5.html
+    ├── yellow-v7.html
+    ├── yellow-v8.html
+    └── yellow-v9.html
+
+10 directories, 149 files

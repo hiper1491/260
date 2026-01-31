@@ -1,0 +1,94 @@
+/* 
+ * Temple Proportion Syntax (Global Standard)
+ * Aligned with Blue Room & 13Moon esthetics.
+ * Master Scale ($W$) = Glyph Width
+ */
+
+:root {
+    /* --- Master Scale --- */
+    /* Dynamic clamp for responsive sizing, similar to Blue Room */
+    --tp-unit-w: 120px;
+
+    /* --- Derived Dimensions --- */
+    /* Project Standard: Bars are roughly equal to Glyph Width (Wide) */
+    --tp-dim-bar-w: calc(var(--tp-unit-w) * 1.0);
+
+    /* Bar Height ~ 1/8 to 1/10 of Width */
+    --tp-dim-bar-h: calc(var(--tp-unit-w) * 0.12);
+
+    /* Dot Diameter ~ Slightly larger than Bar Height */
+    --tp-dim-dot-d: calc(var(--tp-unit-w) * 0.18);
+
+    /* --- Spacing --- */
+    --tp-space-bar-gap: calc(var(--tp-dim-bar-h) * 0.6);
+    --tp-space-dot-gap: calc(var(--tp-dim-dot-d) * 0.6);
+
+    /* Gap between Tone Area and Glyph Image */
+    --tp-space-stack: calc(var(--tp-unit-w) * 0.15);
+
+    /* Standard Colors */
+    --tp-color-tone: #3E2723;
+    --tp-shadow-tone: rgba(0, 0, 0, 0.3);
+}
+
+/* --- Container Layouts --- */
+
+.kin-visual-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.tone-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--tp-space-bar-gap);
+    margin-bottom: var(--tp-space-stack);
+    width: 100%;
+}
+
+.tone-dots-row {
+    display: flex;
+    gap: var(--tp-space-dot-gap);
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    min-height: var(--tp-dim-dot-d);
+}
+
+.tone-bars-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tp-space-bar-gap);
+    align-items: center;
+    width: 100%;
+}
+
+/* --- Elements --- */
+
+.t-dot {
+    width: var(--tp-dim-dot-d);
+    height: var(--tp-dim-dot-d);
+    background: var(--tp-color-tone);
+    border-radius: 50%;
+    box-shadow: inset 0 -1px 2px var(--tp-shadow-tone);
+}
+
+.t-bar {
+    width: var(--tp-dim-bar-w);
+    height: var(--tp-dim-bar-h);
+    background: var(--tp-color-tone);
+    border-radius: 99px;
+    box-shadow: inset 0 -1px 2px var(--tp-shadow-tone);
+}
+
+.glyph-img {
+    width: var(--tp-unit-w);
+    height: var(--tp-unit-w);
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    filter: drop-shadow(0 4px 6px rgba(62, 39, 35, 0.3));
+}
